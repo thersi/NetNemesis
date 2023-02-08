@@ -42,9 +42,9 @@ def draw_arm(ax):
     ax.clear()
     #define frame transforms, follow defined DH-table
     f1 = DH_transform(d=L[0], theta=q[0], alpha=np.pi/2, a = 0)
-    f2 = f1@DH_transform(d=0, theta=q[1], alpha=0, a=L[1])
+    f2 = f1@DH_transform(d=0, theta=q[1]+np.pi/2, alpha=0, a=L[1])
     f3 = f2@DH_transform(d=0, theta=q[2], alpha=-np.pi/2, a=L[2])
-    f4 = f3@DH_transform(d=0, theta=q[3], alpha=-np.pi/2, a=0)
+    f4 = f3@DH_transform(d=0, theta=q[3]-np.pi/2, alpha=-np.pi/2, a=0)
     f5 = f4@DH_transform(d=L[3], theta=q[4], alpha=0, a=0)
     #world frame
     draw_frame(np.eye(4), ax)
@@ -59,9 +59,9 @@ def draw_arm(ax):
     ax.set_zlim(0, 5)
 
 
-fig.subplots_adjust(bottom=0.25, left=0.25)
+fig.subplots_adjust(bottom=0.25)
 
-chk_box = fig.add_axes([0.05, 0.4, 0.1, 0.15])
+chk_box = fig.add_axes([0.10, 0.4, 0.1, 0.2])
 labels = ["$q_1$", "$q_2$", "$q_3$", "$q_4$", "$q_5$"]
 radio = RadioButtons(chk_box, labels)
 radio.value_selected = labels[current_q]
