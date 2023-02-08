@@ -2,43 +2,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as PathEffects
 from matplotlib.widgets import Slider, RadioButtons
+from transform import *
 
-
+##DH params
 L = [1/2, 1.5, 1.5, 1]
-q = np.array([10, 20, 30, -90, 50])*np.pi/180
+q = np.array([0, 0, 0, 0, 0])*np.pi/180
+
 current_q = 0 #what q is activated to rotate about in ui
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1, projection='3d')
-
-def translate_xyz(x, y, z):
-    return np.array([[1, 0, 0, x],
-                     [0, 1, 0, y],
-                     [0, 0, 1, z],
-                     [0, 0, 0, 1]])
-
-def rotate_z(angle):
-    return np.array([[np.cos(angle), -np.sin(angle), 0, 0],
-                     [np.sin(angle), np.cos(angle), 0, 0],
-                     [0, 0, 1, 0],
-                     [0, 0, 0, 1]])
-
-def rotate_y(angle):
-    return np.array([[np.cos(angle), 0, np.sin(angle), 0],
-                     [0, 1, 0, 0],
-                     [-np.sin(angle), 0, np.cos(angle), 0],
-                     [0, 0, 0, 1]])
-
-def rotate_x(angle):
-    return np.array([[1, 0, 0, 0],
-                     [0, np.cos(angle), -np.sin(angle), 0],
-                     [0, np.sin(angle), np.cos(angle), 0],
-                     [0, 0, 0, 1]])
-
-
-def DH_transform(d, theta, a, alpha):
-    return rotate_z(theta)@translate_xyz(0, 0, d)@rotate_x(alpha)@translate_xyz(a, 0, 0)
-
 
 def draw_frame(T, ax, scale=1/2, labels=True):
 
@@ -60,9 +33,14 @@ def draw_frame(T, ax, scale=1/2, labels=True):
         ax.text(X[0, 3], X[1, 3], X[2, 3], 'Z', **textargs)
 
 
+def draw_link(ax, frame, prev_link):
+    pos = frame@np.array([0, 0, 0, 1]).T
+    ax.plot3D([prev_link[0], pos[0]],[prev_link[1], pos[1]],[prev_link[2], pos[2]],color='#121212')
+    return pos
+
 def draw_arm(ax):
     ax.clear()
-    #define frames
+    #define frame transforms, follow defined DH-table
     f1 = DH_transform(d=L[0], theta=q[0], alpha=np.pi/2, a = 0)
     f2 = f1@DH_transform(d=0, theta=q[1], alpha=0, a=L[1])
     f3 = f2@DH_transform(d=0, theta=q[2], alpha=-np.pi/2, a=L[2])
@@ -71,8 +49,10 @@ def draw_arm(ax):
     #world frame
     draw_frame(np.eye(4), ax)
     #joint frames
+    link_start = np.zeros(4)
     for f in [f1, f2, f3, f4, f5]:
         draw_frame(f, ax)
+        link_start = draw_link(ax, f, link_start)
 
     ax.set_xlim(-5, 5)
     ax.set_ylim(-5, 5)
