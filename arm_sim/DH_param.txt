@@ -1,6 +1,6 @@
 #DH parameters per link on format: link number, z-translate, z-rotate, x-translate, x-rotate
 1, L1, q1, 0, pi/2
-2, 0, q2 + offset1, L2, 0
+2, 0, q2 + offset1 + pi/2, L2, 0
 3, 0, q3 + offset2, L3, -pi/2
-4, 0, q4, 0, -pi/2
+4, 0, q4 - pi/2, 0, -pi/2
 5, L4, q5, 0, 0
