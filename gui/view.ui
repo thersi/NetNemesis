@@ -144,16 +144,36 @@ QTabWidget{
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QPushButton" name="button1">
+       <widget class="QPushButton" name="onButton">
+        <property name="styleSheet">
+         <string notr="true">QPushButton{
+background:rgb(150,200,100);
+}
+QPushButton:hover:!pressed
+{
+   background:rgb(50,180,100);
+
+}</string>
+        </property>
         <property name="text">
-         <string>Button 1</string>
+         <string>On</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="button2">
+       <widget class="QPushButton" name="offButton">
+        <property name="styleSheet">
+         <string notr="true">QPushButton{
+background:rgb(200,100,100);
+}
+QPushButton:hover:!pressed
+{
+   background:rgb(200,50,50);
+
+}</string>
+        </property>
         <property name="text">
-         <string>Button 2</string>
+         <string>Off</string>
         </property>
        </widget>
       </item>

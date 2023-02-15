@@ -1,12 +1,17 @@
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication, QDialog
+import serial
+import time
 
 
-Form, Window = uic.loadUiType("gui/view.ui")
-app = QApplication([])
-window = Window()
-form = Form()
-form.setupUi(window)
-form.button1.setText("Hello World")
-window.showMaximized()
-app.exec()
+class Controller:
+    def __init__(self, form):
+        self.form = form
+        ser = serial.Serial('COM3', 9600, timeout=1)
+
+        form.onButton.clicked.connect(lambda: ser.write(str.encode(
+            '<GUIREADY>')))
+        form.offButton.clicked.connect(
+            lambda: ser.write(str.encode('<NOTREADY>')))
+
+# 'Servo1: 200; Servo2: 200; Servo3: 200; Servo4: 200; Servo5: 200; Servo6: 200;'
