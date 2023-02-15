@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainDialog</class>
+ <widget class="QDialog" name="MainDialog">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>622</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::WheelFocus</enum>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QPushButton{ 
+                background:rgb(200,200,200);
+
+
+                border: 1px solid rgb(220,220,220);
+
+
+                border-bottom-style: none;
+                border-bottom-right-radius: 0px;
+                border-bottom-left-radius: 0px;
+                padding: 5px 5px 5px 5px;
+                margin: 2px 0px 0px 0px;
+
+                }
+QPushButton:hover:!pressed
+{
+   background:rgb(150,180,100);
+
+}
+QTabWidget{
+                background:rgb(200,200,200);
+
+                }
+                QTabBar::tab:selected
+                {
+                background:rgb(200,200,200);
+
+
+                border: 1px solid rgb(220,220,220);
+
+                border-bottom-style: none;
+
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 0px;
+                border-bottom-left-radius: 0px;
+                padding: 10px 20px 10px 20px;
+                margin: 5px 0px 0px 0px;
+                }
+
+                QTabBar::tab:!selected
+                {
+
+
+                background: rgb(120,120,120);
+
+
+                border: 1px solid rgb(85,85,85);
+
+                border-bottom-style: none;
+
+
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 0px;
+                border-bottom-left-radius: 0px;
+                padding: 10px 20px 10px 20px;
+                margin: 5px 0px 0px 0px;
+
+
+                }
+
+
+                QTabBar::tab:!selected:hover
+                {
+                background:rgb(200,200,200);
+
+
+                border: 1px solid rgb(220,220,220);
+
+
+                border-bottom-style: none;
+
+
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 0px;
+                border-bottom-left-radius: 0px;
+                padding: 10px 10px 10px 10px;
+                margin: 5px 0px 0px 0px;
+
+                }</string>
+  </property>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>500</width>
+     <height>960</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>1</number>
+   </property>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Tab 1</string>
+    </attribute>
+   </widget>
+   <widget class="QWidget" name="tab_2">
+    <attribute name="title">
+     <string>Tab 2</string>
+    </attribute>
+    <widget class="QWidget" name="verticalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>80</y>
+       <width>91</width>
+       <height>80</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QPushButton" name="button1">
+        <property name="text">
+         <string>Button 1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="button2">
+        <property name="text">
+         <string>Button 2</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
