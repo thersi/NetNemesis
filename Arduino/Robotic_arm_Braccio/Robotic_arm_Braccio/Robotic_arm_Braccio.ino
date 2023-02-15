@@ -20,37 +20,37 @@ Servo gripper;
 
 byte servo1Pin = 11;
 byte servo1In;
-byte servo1Pos = 0;
+byte servo1Pos = 20;
 byte newServo1Pos;
 byte real1Pos;
 
 byte servo2Pin = 10;
 byte servo2In;
-byte servo2Pos = 0;
+byte servo2Pos = 20;
 byte newServo2Pos;
 byte real2Pos;
 
 byte servo3Pin = 9;
 byte servo3In;
-byte servo3Pos = 0;
+byte servo3Pos = 20;
 byte newServo3Pos;
 byte real3Pos;
 
 byte servo4Pin = 6;
 byte servo4In;
-byte servo4Pos = 0;
+byte servo4Pos = 20;
 byte newServo4Pos;
 byte real4Pos;
 
 byte servo5Pin = 5;
 byte servo5In;
-byte servo5Pos = 0;
+byte servo5Pos = 20;
 byte newServo5Pos;
 byte real5Pos;
 
 byte servo6Pin = 3;
 byte servo6In;
-byte servo6Pos = 0;
+byte servo6Pos = 20;
 byte newServo6Pos;
 byte real6Pos;
 
@@ -67,7 +67,11 @@ float m, n;
 
 void setup() {
   Serial.begin(9600);
-  Braccio.begin();
+  
+  pinMode(12, OUTPUT);    //you need to set HIGH the pin 12
+  digitalWrite(12, HIGH);
+  Braccio.begin(SOFT_START_DISABLED);
+  
   pinMode(LED_BUILTIN, OUTPUT);
 
   Serial.println("<Ready>");
@@ -149,7 +153,7 @@ void writeSerial() {
 
 void updateServos() {
 
-  Braccio.ServoMovement(20, servo1Pos, servo2Pos, servo3Pos, servo4Pos, servo5Pos, servo6Pos);
+  Braccio.ServoMovement(10, servo1Pos, servo2Pos, servo3Pos, servo4Pos, servo5Pos, servo6Pos);
   
   delay(50);
 }
