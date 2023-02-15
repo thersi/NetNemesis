@@ -4,6 +4,7 @@ import spatialmath as sm
 import numpy as np
 import spatialgeometry as sg
 
+
 # Make the environment
 env = Swift()
 
