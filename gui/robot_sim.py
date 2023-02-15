@@ -3,10 +3,11 @@ import roboticstoolbox as rtb
 import spatialmath as sm
 import numpy as np
 import spatialgeometry as sg
+from PyQt6.QtCore import QUrl
 
 
 class robot_simulator:
-    def __init__(self, form):
+    def __init__(self):
         # Make the environment
         env = Swift()
 
@@ -15,7 +16,7 @@ class robot_simulator:
         # The realtime flag will ask the simulator to simulate as close as
         # possible to realtime as apposed to as fast as possible
         env.launch(realtime=True)
-        form.simulationView.setUrl(env.url)
+
         env.set_camera_pose([1.3, 0, 0.4], [0, 0, 0.3])
 
         # Note that everytime this cell is run, a new browser tab will open

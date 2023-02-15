@@ -4,7 +4,7 @@ import serial
 import time
 
 
-class Controller:
+class controller:
     def __init__(self, form):
         self.form = form
         ser = serial.Serial('COM3', 9600, timeout=1)
