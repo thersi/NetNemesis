@@ -156,7 +156,7 @@ QPushButton:hover:!pressed
 }</string>
         </property>
         <property name="text">
-         <string>On</string>
+         <string>Std pos</string>
         </property>
        </widget>
       </item>
@@ -173,7 +173,7 @@ QPushButton:hover:!pressed
 }</string>
         </property>
         <property name="text">
-         <string>Off</string>
+         <string>Test pos</string>
         </property>
        </widget>
       </item>

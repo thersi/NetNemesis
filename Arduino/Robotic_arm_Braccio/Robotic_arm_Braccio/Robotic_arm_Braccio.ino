@@ -16,7 +16,7 @@ char *c_servo4;
 char *c_servo5;
 char *c_servo6;
 
-String servo1="";
+String servo1 = " ";
 String servo2="";
 String servo3="";
 String servo4="";
@@ -32,41 +32,41 @@ Servo wrist_ver;
 Servo gripper;
 
 
-byte servo1Pin = 11;
-byte servo1In;
-byte servo1Pos = 20;
-byte newServo1Pos;
-byte real1Pos;
+const byte servo1Pin = 11;
+short servo1In;
+short servo1Pos = 90;
+short newServo1Pos;
+short real1Pos;
 
-byte servo2Pin = 10;
-byte servo2In;
-byte servo2Pos = 20;
-byte newServo2Pos;
-byte real2Pos;
+const byte servo2Pin = 10;
+short servo2In;
+short servo2Pos = 45;
+short newServo2Pos;
+short real2Pos;
 
-byte servo3Pin = 9;
-byte servo3In;
-byte servo3Pos = 20;
-byte newServo3Pos;
-byte real3Pos;
+const byte servo3Pin = 9;
+short servo3In;
+short servo3Pos = 180;
+short newServo3Pos;
+short real3Pos;
 
-byte servo4Pin = 6;
-byte servo4In;
-byte servo4Pos = 20;
-byte newServo4Pos;
-byte real4Pos;
+const byte servo4Pin = 6;
+short servo4In;
+short servo4Pos = 180;
+short newServo4Pos;
+short real4Pos;
 
-byte servo5Pin = 5;
-byte servo5In;
-byte servo5Pos = 20;
-byte newServo5Pos;
-byte real5Pos;
+const byte servo5Pin = 5;
+short servo5In;
+short servo5Pos = 100;
+short newServo5Pos;
+short real5Pos;
 
-byte servo6Pin = 3;
-byte servo6In;
-byte servo6Pos = 20;
-byte newServo6Pos;
-byte real6Pos;
+const byte servo6Pin = 3;
+short servo6In;
+short servo6Pos = 10;
+short newServo6Pos;
+short real6Pos;
 
 int A;
 int B;
@@ -100,8 +100,8 @@ void setup() {
 }
 
 void loop() {
-  //readSerial();
-  psuedoReadSerial();
+  readSerial();
+  //psuedoReadSerial();
   //realPos();
   updateServos();
   //writeSerial();
@@ -111,19 +111,32 @@ void readSerial() {
   while (Serial.available() > 0) {
     line = Serial.readString();
     if (line.indexOf("ervo") > 0) {
-      servo1Pos = line.substring(line.indexOf("Servo1: ") + 8, line.indexOf("Servo1: ") + 10).toInt();
-      servo2Pos = line.substring(line.indexOf("Servo2: ") + 8, line.indexOf("Servo2: ") + 10).toInt();
-      servo3Pos = line.substring(line.indexOf("Servo3: ") + 8, line.indexOf("Servo3: ") + 10).toInt();
-      servo4Pos = line.substring(line.indexOf("Servo4: ") + 8, line.indexOf("Servo4: ") + 10).toInt();
-      servo5Pos = line.substring(line.indexOf("Servo5: ") + 8, line.indexOf("Servo5: ") + 10).toInt();
-      servo6Pos = line.substring(line.indexOf("Servo6: ") + 8, line.indexOf("Servo6: ") + 10).toInt();
+      c_servo1 = strtok(line.c_str(), ";");
+      c_servo2 = strtok(NULL, ";");
+      c_servo3 = strtok(NULL, ";");
+      c_servo4 = strtok(NULL, ";");
+      c_servo5 = strtok(NULL, ";");
+      c_servo6 = strtok(NULL, ";");
 
+      servo1 = String(c_servo1);
+      servo2 = String(c_servo2);
+      servo3 = String(c_servo3);
+      servo4 = String(c_servo4);
+      servo5 = String(c_servo5);
+      servo6 = String(c_servo6);
+
+      servo1Pos = servo1.substring(servo1.indexOf(":") + 2, servo1.length()).toInt();
+      servo2Pos = servo2.substring(servo2.indexOf(":") + 2, servo2.length()).toInt();
+      servo3Pos = servo3.substring(servo3.indexOf(":") + 2, servo3.length()).toInt();
+      servo4Pos = servo4.substring(servo4.indexOf(":") + 2, servo4.length()).toInt();
+      servo5Pos = servo5.substring(servo5.indexOf(":") + 2, servo5.length()).toInt();
+      servo6Pos = servo6.substring(servo6.indexOf(":") + 2, servo6.length()).toInt();
     }
   }
 }
 
 void psuedoReadSerial() {
-    line = "Servo1: 50; Servo2: 50; Servo3: 50; Servo4: 50; Servo5: 50; Servo6: 50;";
+    line = "Servo1: 500; Servo2: 77; Servo3: 100; Servo4: 360; Servo5: 605; Servo6: 290;";
     if (line.indexOf("ervo") > 0) {
       c_servo1 = strtok(line.c_str(), ";");
       c_servo2 = strtok(NULL, ";");
@@ -132,40 +145,33 @@ void psuedoReadSerial() {
       c_servo5 = strtok(NULL, ";");
       c_servo6 = strtok(NULL, ";");
 
-      String serov1 = String(c_servo1);
-      String servo2 = String(c_servo2);
-      String servo3 = String(c_servo3);
-      String servo4 = String(c_servo4);
-      String servo5 = String(c_servo5);
-      String servo6 = String(c_servo6);
+      servo1 = String(c_servo1);
+      servo2 = String(c_servo2);
+      servo3 = String(c_servo3);
+      servo4 = String(c_servo4);
+      servo5 = String(c_servo5);
+      servo6 = String(c_servo6);
 
-      servo1Pos = servo1.substring(servo1.lastIndexOf(": "), servo1.length() - 1).toInt();
-      servo2Pos = servo2.substring(servo2.lastIndexOf(": "), servo2.length() - 1).toInt();
-      servo3Pos = servo3.substring(servo3.lastIndexOf(": "), servo3.length() - 1).toInt();
-      servo4Pos = servo4.substring(servo4.lastIndexOf(": "), servo4.length() - 1).toInt();
-      servo5Pos = servo5.substring(servo5.lastIndexOf(": "), servo5.length() - 1).toInt();
-      servo6Pos = servo6.substring(servo6.lastIndexOf(": "), servo6.length() - 1).toInt();
+      servo1Pos = servo1.substring(servo1.indexOf(":") + 2, servo1.length()).toInt();
+      servo2Pos = servo2.substring(servo2.indexOf(":") + 2, servo2.length()).toInt();
+      servo3Pos = servo3.substring(servo3.indexOf(":") + 2, servo3.length()).toInt();
+      servo4Pos = servo4.substring(servo4.indexOf(":") + 2, servo4.length()).toInt();
+      servo5Pos = servo5.substring(servo5.indexOf(":") + 2, servo5.length()).toInt();
+      servo6Pos = servo6.substring(servo6.indexOf(":") + 2, servo6.length()).toInt();
 
-    Serial.println(servo1);
-    //Serial.println(servo2);
-    //Serial.println(servo3);
-    //Serial.println(servo4);
-    //Serial.println(servo5);
-    //Serial.println(servo6);
-
-    //Serial.println(servo1Pos);
-    //Serial.println(servo2Pos);
-    //Serial.println(servo3Pos);
-    //Serial.println(servo4Pos);
-    //Serial.println(servo5Pos);
-    //Serial.println(servo6Pos);
+    Serial.println(servo1Pos);
+    Serial.println(servo2Pos);
+    Serial.println(servo3Pos);
+    Serial.println(servo4Pos);
+    Serial.println(servo5Pos);
+    Serial.println(servo6Pos);
     }
 }
 
 
 void updateServos() {
 
-  Braccio.ServoMovement(10, servo1Pos, servo2Pos, servo3Pos, servo4Pos, servo5Pos, servo6Pos);
+  Braccio.ServoMovement(20, servo1Pos, servo2Pos, servo3Pos, servo4Pos, servo5Pos, servo6Pos);
   
   delay(100);
 }
