@@ -21,6 +21,14 @@ class Controller:
 
         
         ser = serial.Serial(comport, 9600, timeout=1)
+        time.sleep(2)
+        
+        line = ser.readline()
+        if line:
+            string = line.decode()
+            if "<Ready>" in string:
+                print(string)
+                
 
         form.onButton.clicked.connect(lambda: ser.write(str.encode(
             'Servo1: 90; Servo2: 45; Servo3: 180; Servo4: 180; Servo5: 0; Servo6: 30;')))
