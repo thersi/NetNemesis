@@ -110,7 +110,7 @@ void loop() {
   //psuedoReadSerial();
   realPos();
   updateServos();
-  writeSerial();
+  //writeSerial();
 }
 
 void readSerial() {
