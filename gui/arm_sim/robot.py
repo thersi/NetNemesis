@@ -1,6 +1,6 @@
 import numpy as np
 import roboticstoolbox.robot as robot
-from inverse_kinematics import inverse_kinematics
+from arm_sim.inverse_kinematics import inverse_kinematics
 
 
 links = [robot.RevoluteDH(d = 0.2, a = 0, alpha=np.pi/2),
@@ -11,9 +11,19 @@ links = [robot.RevoluteDH(d = 0.2, a = 0, alpha=np.pi/2),
 
 
 arm_manipulator = robot.DHRobot(links=links, name='EiT arm')
+# Generate random angles from 0 to pi in array of size 5
+#q = np.random.random(size=5)*np.pi - np.pi/2
+q = np.zeros(5)
+q[0] = np.random.uniform(0.5, 1.0)*np.pi
+q[1] = np.random.uniform(0.5, 1.0)*np.pi
+q[2] = np.random.uniform(0.5, 1.0)*np.pi
+q[3] = np.random.uniform(0.5, 1.0)*np.pi
+q[4] = np.random.uniform(0.5, 1.0)*np.pi
 
-q = np.random.random(size=5)*np.pi - np.pi/2
 print('angles ground truth:', q)
+
+q_degrees = (np.rint(q*(180/np.pi))).astype(int)
+print("Vinkler ", q_degrees)
 
 ##analytical solution
 arm_manipulator.q = q
@@ -24,14 +34,15 @@ print('angles analytically:', inv)
 stack = np.vstack((q, inv))
 pattern = np.tile(stack, (5, 1))
 
-arm_manipulator.plot(pattern, dt=1) #simulate the two different solutions
+#arm_manipulator.plot(pattern, dt=1) #simulate the two different solutions
 
 ##numerical solution
 sol, success, iter, searches, res = arm_manipulator.ikine_LM(Te)
+
 
 if not success:
     print('could not find inverse solution numerically')
 else:
     print('angles numerically:', sol)
-    arm_manipulator.plot(sol)
-    input('press any key to close')
+    #arm_manipulator.plot(sol)
+    #input('press any key to close')
