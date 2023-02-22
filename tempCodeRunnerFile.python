@@ -1,0 +1,20 @@
+import serial
+import serial.tools.list_ports
+ports = serial.tools.list_ports.comports()
+
+if (len(ports) == 0):
+        print("No serial ports found!")
+        exit()
+
+# Find comport for Arduino Uno
+for port in ports:
+        if ("Arduino Uno" in port.description):
+                print("Arduino Uno found!")
+                comport = port.device
+
+        
+print (comport)
+
+
+
+
