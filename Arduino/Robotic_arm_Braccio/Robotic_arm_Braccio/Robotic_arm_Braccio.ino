@@ -9,6 +9,7 @@
 #include <Braccio.h>
 
 String line;
+
 char *c_servo1;
 char *c_servo2;
 char *c_servo3;
@@ -110,12 +111,13 @@ void loop() {
   //psuedoReadSerial();
   realPos();
   updateServos();
-  //writeSerial();
+  writeSerial();
 }
 
 void readSerial() {
   while (Serial.available() > 0) {
     line = Serial.readString();
+    digitalWrite(LED_BUILTIN, HIGH);
     if (line.indexOf("ervo") > 0) {
       c_servo1 = strtok(line.c_str(), ";");
       c_servo2 = strtok(NULL, ";");
@@ -137,8 +139,11 @@ void readSerial() {
       servo4Pos = servo4.substring(servo4.indexOf(":") + 2, servo4.length()).toInt();
       servo5Pos = servo5.substring(servo5.indexOf(":") + 2, servo5.length()).toInt();
       servo6Pos = servo6.substring(servo6.indexOf(":") + 2, servo6.length()).toInt();
+
+      
     }
   }
+  digitalWrite(LED_BUILTIN, LOW);
 }
 
 void psuedoReadSerial() {
@@ -190,6 +195,13 @@ void realPos() {
   servo5In = analogRead(A4);
   servo6In = analogRead(A5);
 
+  servo1In = 100;
+  servo2In = 102;
+  servo3In = 104;
+  servo4In = 106;
+  servo5In = 108;
+  servo6In = 110;
+
   real1Pos = m * servo1In + n;
   real2Pos = m * servo2In + n;
   real3Pos = m * servo3In + n;
@@ -199,45 +211,47 @@ void realPos() {
 }
 
 void writeSerial() {
-  while (Serial.availableForWrite() > 0) {
+  if (Serial.availableForWrite() > 0) {
     if (real1Pos != oldReal1Pos){
       Serial.print("ServoPos1: ");
       Serial.print(real1Pos);
-      Serial.print("; ");
+      Serial.print("; \n");
       oldReal1Pos = real1Pos;
+      
     }
     if (real2Pos != oldReal2Pos){
       Serial.print("ServoPos2: ");
       Serial.print(real2Pos);
-      Serial.print("; ");
+      Serial.print("; \n");
       oldReal2Pos = real2Pos;
     }
     if (real3Pos != oldReal3Pos){
       Serial.print("ServoPos3: ");
       Serial.print(real3Pos);
-      Serial.print("; ");
+      Serial.print("; \n");
       oldReal3Pos = real3Pos;
     }
     if (real4Pos != oldReal4Pos){
       Serial.print("ServoPos4: ");
       Serial.print(real4Pos);
-      Serial.print("; ");
+      Serial.print("; \n");
       oldReal4Pos = real4Pos;
     }
     if (real5Pos != oldReal5Pos){
       Serial.print("ServoPos5: ");
       Serial.print(real5Pos);
-      Serial.print("; ");
+      Serial.print("; \n");
       oldReal5Pos = real5Pos;
     }
     if (real6Pos != oldReal6Pos){
       Serial.print("ServoPos6: ");
       Serial.print(real6Pos);
-      Serial.print("; ");
+      Serial.print("; \n");
       oldReal6Pos = real6Pos;
     }
-    Serial.print("\n");
+    //Serial.print("\n");
     delay(100);
+    //break;
   }
 }
 

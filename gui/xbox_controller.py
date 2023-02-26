@@ -5,6 +5,7 @@ import threading
 class XboxController(object):
     MAX_TRIG_VAL = math.pow(2, 8)
     MAX_JOY_VAL = math.pow(2, 15)
+    RightTrigger = 0
 
     def __init__(self):
 
@@ -35,12 +36,19 @@ class XboxController(object):
 
 
     def read(self): # return the buttons/triggers that you care about in this methode
-        x = self.LeftJoystickX
-        y = self.LeftJoystickY
+        left_x = self.LeftJoystickX
+        left_y = self.LeftJoystickY
+        right_x = self.RightJoystickX
+        right_y = self.RightJoystickY
+        rt = self.RightTrigger
+        lt = self.LeftTrigger
         a = self.A
-        b = self.X # b=1, x=2
+        x = self.X # b=1, x=2
+        y = self.Y # y=1, a=2
+        b = self.B
         rb = self.RightBumper
-        return [x, y, a, b, rb]
+        lb = self.LeftBumper
+        return [left_x , right_y, right_x, right_y, rt, lt, a, x, y, b, rb, lb]
 
 
     def _monitor_controller(self):

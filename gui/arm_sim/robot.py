@@ -13,12 +13,10 @@ links = [robot.RevoluteDH(d = 0.2, a = 0, alpha=np.pi/2),
 arm_manipulator = robot.DHRobot(links=links, name='EiT arm')
 # Generate random angles from 0 to pi in array of size 5
 #q = np.random.random(size=5)*np.pi - np.pi/2
-q = np.zeros(5)
-q[0] = np.random.uniform(0.5, 1.0)*np.pi
-q[1] = np.random.uniform(0.5, 1.0)*np.pi
-q[2] = np.random.uniform(0.5, 1.0)*np.pi
-q[3] = np.random.uniform(0.5, 1.0)*np.pi
-q[4] = np.random.uniform(0.5, 1.0)*np.pi
+q = np.random.random(size=5)*np.pi
+
+q[1] = np.random.uniform(1/12, 11/12)*np.pi # Constraing the second joint to be between 15 and 165 degrees
+
 
 print('angles ground truth:', q)
 
