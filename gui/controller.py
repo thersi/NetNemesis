@@ -20,6 +20,15 @@ ServoPos6 = 0
 
 
 
+oldServo1 = ""
+oldServo2 = ""
+oldServo3 = ""
+oldServo4 = ""
+oldServo5 = ""
+oldServo6 = ""
+
+
+
 class Controller(XboxController):
     def __init__(self, form, XboxController):
         self.form = form
@@ -76,45 +85,56 @@ class Controller(XboxController):
                             tempArray = re.findall(r'\d+', string)
                             ServoPos6 = int(tempArray[1])
                             print("ServoPos6:", ServoPos6)
-                            
+                    
+
+        def sendDataThread():
+            global servo1
+            global servo2
+            global servo3
+            global servo4
+            global servo5
+            global servo6
+
+            joy = XboxController
+            joy.__init__(self)
+            controller = joy.read(self)
+            
+            servo1 = str(q_degrees[0])
+            servo2 = str(q_degrees[1])
+            servo3 = str(q_degrees[2])
+            servo4 = str(q_degrees[3])
+            servo5 = str(q_degrees[4])
+            #servo6 = str(int(np.interp(controller[4],[0,1],[10,73])))
+            
+            global oldServo1
+            global oldServo2
+            global oldServo3
+            global oldServo4
+            global oldServo5
+            global oldServo6
+
+            while True:
+                controller = joy.read(self)
+                servo6 = str(int(np.interp(controller[4],[0,1],[10,73])))
+                if oldServo1 != servo1 or oldServo2 != servo2 or oldServo3 != servo3 or oldServo4 != servo4 or oldServo5 != servo5 or oldServo6 != servo6:
+
+                    print(str.encode('Servo1: ' + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";"))
+                    #print(str.encode('Servo6: ' + servo6 + ";"))
+                    ser.write(str.encode('Servo1: ' + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";"))
+                    #ser.write(str.encode('Servo6: ' + servo6 + ";"))
+                    #time.sleep(0.5)
+
+                    oldServo1 = servo1
+                    oldServo2 = servo2
+                    oldServo3 = servo3
+                    oldServo4 = servo4
+                    oldServo5 = servo5
+                    oldServo6 = servo6
 
         x = threading.Thread(target=serialThread, daemon=True)
         x.start()   
 
-        joy = XboxController
-        joy.__init__(self)
-        controller = joy.read(self)
-        
-        servo1 = str(q_degrees[0])
-        servo2 = str(q_degrees[1])
-        servo3 = str(q_degrees[2])
-        servo4 = str(q_degrees[3])
-        servo5 = str(q_degrees[4])
-        servo6 = str(np.interp(controller[4],[0,1],[10,73]))
-
-        def send_data():
-            servo6 = 0
-            oldServo1 = servo1
-            oldServo2 = servo2
-            oldServo3 = servo3
-            oldServo4 = servo4
-            oldServo5 = servo5
-            oldServo6 = servo6
-
-            while oldServo1 != servo1 | oldServo2 != servo2 | oldServo3 != servo3 | oldServo4 != servo4 | oldServo5 != servo5 | oldServo6 != servo6:
-                controller = joy.read(self)
-                servo6 = str(int(np.interp(controller[4],[0,1],[10,73])))
-                print(str.encode('Servo1: ' + servo6  + "; " + 'Servo2: ' + servo6 + "; " + 'Servo3: ' + servo6 + "; " + 'Servo4: ' + servo6 + "; " + 'Servo5: ' + servo6 + ";" + 'Servo6: ' + servo6 + ";"))
-                ser.write(str.encode('Servo1: ' + servo6  + "; " + 'Servo2: ' + servo6 + "; " + 'Servo3: ' + servo6 + "; " + 'Servo4: ' + servo6 + "; " + 'Servo5: ' + servo6 + ";" + 'Servo6: ' + servo6 + ";"))
-                time.sleep(0.1)
-                oldServo1 = servo1
-                oldServo2 = servo2
-                oldServo3 = servo3
-                oldServo4 = servo4
-                oldServo5 = servo5
-                oldServo6 = servo6
-
-        y = threading.Thread(target=send_data, daemon=True)
+        y = threading.Thread(target=sendDataThread, daemon=True)
         y.start()  
 
 
@@ -126,7 +146,7 @@ class Controller(XboxController):
         #form.onButton.clicked.connect(lambda: ser.write(str.encode(
         #    'Servo1: 90; Servo2: 60; Servo3: 90; Servo4: 90; Servo5: 45; Servo6: 0;')))
 
-        form.onButton.clicked.connect(lambda: ser.write(str.encode('Servo1: ' + servo6  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + ";" + 'Servo6: ' + servo6 + ";")))
+        form.onButton.clicked.connect(lambda: ser.write(str.encode('Servo1: ' + servo6  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";")))
         form.offButton.clicked.connect(lambda: ser.write(str.encode('Servo1: 90; Servo2: 60; Servo3: 90; Servo4: 90; Servo5: 45; Servo6: 73;')))
 
 # 'Servo1: 200; Servo2: 200; Servo3: 200; Servo4: 200; Servo5: 200; Servo6: 200;'

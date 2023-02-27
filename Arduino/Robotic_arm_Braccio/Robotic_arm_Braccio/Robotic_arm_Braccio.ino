@@ -147,7 +147,7 @@ void readSerial() {
 }
 
 void psuedoReadSerial() {
-    line = "Servo1: 500; Servo2: 77; Servo3: 100; Servo4: 360; Servo5: 605; Servo6: 290;";
+    line = "Servo1: 90; Servo2: 45; Servo3: 180; Servo4: 180; Servo5: 90; Servo6: 10;";
     if (line.indexOf("ervo") > 0) {
       c_servo1 = strtok(line.c_str(), ";");
       c_servo2 = strtok(NULL, ";");
@@ -182,9 +182,9 @@ void psuedoReadSerial() {
 
 void updateServos() {
 
-  Braccio.ServoMovement(20, servo1Pos, servo2Pos, servo3Pos, servo4Pos, servo5Pos, servo6Pos);
+  Braccio.ServoMovement(10, servo1Pos, servo2Pos, servo3Pos, servo4Pos, servo5Pos, servo6Pos);
   
-  delay(100);
+  //delay(100);
 }
 
 void realPos() {
@@ -250,7 +250,6 @@ void writeSerial() {
       oldReal6Pos = real6Pos;
     }
     //Serial.print("\n");
-    delay(100);
     //break;
   }
 }
