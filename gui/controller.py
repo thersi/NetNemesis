@@ -42,7 +42,7 @@ class Controller(XboxController):
                 print("Arduino Uno found on port: " + port.device)
                 comport = port.device
 
-        ser = serial.Serial(comport, 9600, timeout=1)
+        ser = serial.Serial(comport, 9600, timeout=0.5)
         time.sleep(2)
 
 
@@ -88,48 +88,66 @@ class Controller(XboxController):
                     
 
         def sendDataThread():
-            global servo1
-            global servo2
-            global servo3
-            global servo4
-            global servo5
-            global servo6
+            global servo1, servo2, servo3, servo4, servo5, servo6
+            global oldServo1, oldServo2, oldServo3, oldServo4, oldServo5, oldServo6
+
 
             joy = XboxController
             joy.__init__(self)
-            controller = joy.read(self)
-            
-            servo1 = str(q_degrees[0])
-            servo2 = str(q_degrees[1])
-            servo3 = str(q_degrees[2])
-            servo4 = str(q_degrees[3])
-            servo5 = str(q_degrees[4])
-            #servo6 = str(int(np.interp(controller[4],[0,1],[10,73])))
-            
-            global oldServo1
-            global oldServo2
-            global oldServo3
-            global oldServo4
-            global oldServo5
-            global oldServo6
+
 
             while True:
                 controller = joy.read(self)
+                servo1 = str(q_degrees[0])
+                servo2 = str(q_degrees[1])
+                servo3 = str(q_degrees[2])
+                servo4 = str(q_degrees[3])
+                servo5 = str(q_degrees[4])
                 servo6 = str(int(np.interp(controller[4],[0,1],[10,73])))
-                if oldServo1 != servo1 or oldServo2 != servo2 or oldServo3 != servo3 or oldServo4 != servo4 or oldServo5 != servo5 or oldServo6 != servo6:
 
-                    print(str.encode('Servo1: ' + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";"))
-                    #print(str.encode('Servo6: ' + servo6 + ";"))
-                    ser.write(str.encode('Servo1: ' + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";"))
-                    #ser.write(str.encode('Servo6: ' + servo6 + ";"))
-                    #time.sleep(0.5)
-
+                if oldServo1 != servo1:
+                    print(str.encode("<Servo1: " + servo1  + ";>"))
+                    ser.write(str.encode("<Servo1: " + servo1  + ";>"))
                     oldServo1 = servo1
+                if oldServo2 != servo2:
+                    print(str.encode("<Servo2: " + servo2  + ";>"))
+                    ser.write(str.encode("<Servo2: " + servo2  + ";>"))
                     oldServo2 = servo2
+                if oldServo3 != servo3:
+                    print(str.encode("<Servo3: " + servo3  + ";>"))
+                    ser.write(str.encode("<Servo3: " + servo3  + ";>"))
                     oldServo3 = servo3
+                if oldServo4 != servo4:
+                    print(str.encode("<Servo4: " + servo4  + ";>"))
+                    ser.write(str.encode("<Servo4: " + servo4  + ";>"))
                     oldServo4 = servo4
+                if oldServo5 != servo5:
+                    print(str.encode("<Servo5: " + servo5  + ";>"))
+                    ser.write(str.encode("<Servo5: " + servo5  + ";>"))
                     oldServo5 = servo5
+                if oldServo6 != servo6:
+                    #print(str.encode("<Servo6: " + servo6  + ";>"))
+                    print(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
+                    #ser.write(str.encode("<Servo6: " + servo6  + ";>"))
+                    ser.write(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
                     oldServo6 = servo6
+
+                time.sleep(0.1)
+                
+                # if oldServo1 != servo1 or oldServo2 != servo2 or oldServo3 != servo3 or oldServo4 != servo4 or oldServo5 != servo5 or oldServo6 != servo6:
+
+                #     print(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
+                #     #print(str.encode('Servo6: ' + servo6 + ";"))
+                #     ser.write(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
+                #     #ser.write(str.encode('Servo6: ' + servo6 + ";"))
+                #     #time.sleep(0.5)
+
+                #     oldServo1 = servo1
+                #     oldServo2 = servo2
+                #     oldServo3 = servo3
+                #     oldServo4 = servo4
+                #     oldServo5 = servo5
+                #     oldServo6 = servo6
 
         x = threading.Thread(target=serialThread, daemon=True)
         x.start()   

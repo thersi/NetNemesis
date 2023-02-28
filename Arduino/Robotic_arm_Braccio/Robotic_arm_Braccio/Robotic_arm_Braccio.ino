@@ -10,6 +10,8 @@
 
 String line;
 
+//Servo myservo;
+
 char *c_servo1;
 char *c_servo2;
 char *c_servo3;
@@ -84,17 +86,26 @@ int b;
 int c;
 
 float m, n;
+//Serial greier
+const byte numChars = 32;
 
+bool newData = false;
+
+
+char receivedChars[numChars];
+char tempChars[numChars];
 
 void setup() {
   Serial.begin(9600);
+  //myservo.attach(3);
+  Serial.setTimeout(100);
   
   pinMode(12, OUTPUT);    //you need to set HIGH the pin 12
   digitalWrite(12, HIGH);
   Braccio.begin(SOFT_START_DISABLED);
   
   pinMode(LED_BUILTIN, OUTPUT);
-
+  
   Serial.println("<Ready>");
 
   m = ((A - B) / (a - b) + (C - A) / (c - a)) / 2;
@@ -107,18 +118,88 @@ void setup() {
 }
 
 void loop() {
-  readSerial();
+  //readSerial();
+  readSerialNB();
+  if (newData == true) {
+        //strcpy(tempChars, receivedChars);
+            // this temporary copy is necessary to protect the original data
+            //   because strtok() used in parseData() replaces the commas with \0
+        //parseData();
+        //showParsedData();
+        newData = false;
+    }
   //psuedoReadSerial();
-  realPos();
+  //realPos();
   updateServos();
-  writeSerial();
+  //writeSerial();
+}
+
+void readSerialNB() {
+  static boolean recvInProgress = false;
+  static byte ndx = 0;
+  char startMarker = '<';
+  char endMarker = '>';
+  char rc;
+
+  while (Serial.available() > 0 && newData == false) {
+    digitalWrite(LED_BUILTIN, HIGH);
+    rc = Serial.read();
+    if (recvInProgress == true) {
+      if (rc != endMarker) {
+        receivedChars[ndx] = rc;
+        ndx++;
+        if (ndx >= numChars) {
+            ndx = numChars - 1;
+        }
+      }
+      else {
+        receivedChars[ndx] = '\0'; // terminate the string
+        recvInProgress = false;
+        ndx = 0;
+        newData = true;
+      }
+    }
+
+    else if (rc == startMarker) {
+      recvInProgress = true;
+    }
+    // Rework parsing to fit serial communication from example for non-blocking
+    Serial.println(rc);
+
+    line = String(rc);
+    if (line.indexOf("ervo") > 0) {
+        c_servo1 = strtok(line.c_str(), ";");
+        c_servo2 = strtok(NULL, ";");
+        c_servo3 = strtok(NULL, ";");
+        c_servo4 = strtok(NULL, ";");
+        c_servo5 = strtok(NULL, ";");
+        c_servo6 = strtok(NULL, ";");
+
+        servo1 = String(c_servo1);
+        servo2 = String(c_servo2);
+        servo3 = String(c_servo3);
+        servo4 = String(c_servo4);
+        servo5 = String(c_servo5);
+        servo6 = String(c_servo6);
+
+        servo1Pos = servo1.substring(servo1.indexOf(":") + 2, servo1.length()).toInt();
+        servo2Pos = servo2.substring(servo2.indexOf(":") + 2, servo2.length()).toInt();
+        servo3Pos = servo3.substring(servo3.indexOf(":") + 2, servo3.length()).toInt();
+        servo4Pos = servo4.substring(servo4.indexOf(":") + 2, servo4.length()).toInt();
+        servo5Pos = servo5.substring(servo5.indexOf(":") + 2, servo5.length()).toInt();
+        servo6Pos = servo6.substring(servo6.indexOf(":") + 2, servo6.length()).toInt();
+        
+      }
+    }
+  digitalWrite(LED_BUILTIN, LOW);
+
 }
 
 void readSerial() {
-  while (Serial.available() > 0) {
+  if (Serial.available() > 0) {
     line = Serial.readString();
     digitalWrite(LED_BUILTIN, HIGH);
-    if (line.indexOf("ervo") > 0) {
+    if (line.indexOf("ervo1") > 0 && line.length() > 70) {
       c_servo1 = strtok(line.c_str(), ";");
       c_servo2 = strtok(NULL, ";");
       c_servo3 = strtok(NULL, ";");
@@ -139,16 +220,40 @@ void readSerial() {
       servo4Pos = servo4.substring(servo4.indexOf(":") + 2, servo4.length()).toInt();
       servo5Pos = servo5.substring(servo5.indexOf(":") + 2, servo5.length()).toInt();
       servo6Pos = servo6.substring(servo6.indexOf(":") + 2, servo6.length()).toInt();
-
       
+    }
+    else if (line.indexOf("ervo1") > 0 && line.length() < 17) {
+      servo1Pos = line.substring(line.indexOf(":") + 2, line.length()).toInt();
+      Serial.println("one ");
+    }
+    else if (line.indexOf("ervo2") > 0 && line.length() < 17) {
+      servo1Pos = line.substring(line.indexOf(":") + 2, line.length()).toInt();
+      Serial.println("two ");
+    }
+    else if (line.indexOf("ervo3") > 0 && line.length() < 17) {
+      servo1Pos = line.substring(line.indexOf(":") + 2, line.length()).toInt();
+      Serial.println("three ");
+    }
+    else if (line.indexOf("ervo4") > 0 && line.length() < 17) {
+      servo1Pos = line.substring(line.indexOf(":") + 2, line.length()).toInt();
+      Serial.println("four ");
+    }
+    else if (line.indexOf("ervo5") > 0 && line.length() < 17) {
+      servo1Pos = line.substring(line.indexOf(":") + 2, line.length()).toInt();
+      Serial.println("five ");
+    }
+    else if (line.indexOf("ervo6") > 0 && line.length() < 17) {
+      servo1Pos = line.substring(line.indexOf(":") + 2, line.length()).toInt();
+      Serial.println("six ");
     }
   }
   digitalWrite(LED_BUILTIN, LOW);
 }
 
 void psuedoReadSerial() {
-    line = "Servo1: 90; Servo2: 45; Servo3: 180; Servo4: 180; Servo5: 90; Servo6: 10;";
-    if (line.indexOf("ervo") > 0) {
+    //line = "Servo1: 90; Servo2: 45; Servo3: 180; Servo4: 180; Servo5: 90; Servo6: 10;";
+    line = "Servo3: 180";
+    if (line.indexOf("ervo1") > 0 && line.length() > 70) {
       c_servo1 = strtok(line.c_str(), ";");
       c_servo2 = strtok(NULL, ";");
       c_servo3 = strtok(NULL, ";");
@@ -177,12 +282,38 @@ void psuedoReadSerial() {
     Serial.println(servo5Pos);
     Serial.println(servo6Pos);
     }
+
+    else if (line.indexOf("ervo1") > 0 && line.length() < 13) {
+      servo1Pos = line.substring(line.indexOf(":") + 2, line.length()).toInt();
+      Serial.println(servo1Pos);
+    }
+    else if (line.indexOf("ervo2") > 0 && line.length() < 13) {
+      servo1Pos = line.substring(line.indexOf(":") + 2, line.length()).toInt();
+      Serial.println(servo2Pos);
+    }
+    else if (line.indexOf("ervo3") > 0 && line.length() < 13) {
+      servo1Pos = line.substring(line.indexOf(":") + 2, line.length()).toInt();
+      Serial.println(servo3Pos);
+    }
+    else if (line.indexOf("ervo4") > 0 && line.length() < 13) {
+      servo1Pos = line.substring(line.indexOf(":") + 2, line.length()).toInt();
+      Serial.println(servo4Pos);
+    }
+    else if (line.indexOf("ervo5") > 0 && line.length() < 13) {
+      servo1Pos = line.substring(line.indexOf(":") + 2, line.length()).toInt();
+      Serial.println(servo5Pos);
+    }
+    else if (line.indexOf("ervo6") > 0 && line.length() < 13) {
+      servo1Pos = line.substring(line.indexOf(":") + 2, line.length()).toInt();
+      Serial.println(servo6Pos);
+    }
 }
 
 
 void updateServos() {
 
   Braccio.ServoMovement(10, servo1Pos, servo2Pos, servo3Pos, servo4Pos, servo5Pos, servo6Pos);
+  //myservo.write(servo6Pos);
   
   //delay(100);
 }

@@ -1,0 +1,6 @@
+{
+    "board": "arduino:avr:uno",
+    "port": "COM4",
+    "programmer": "arduinoisp",
+    "sketch": "Arduino\\Robotic_arm_Braccio\\Robotic_arm_Braccio\\Robotic_arm_Braccio.ino"
+}
