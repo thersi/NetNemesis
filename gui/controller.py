@@ -42,7 +42,7 @@ class Controller(XboxController):
                 print("Arduino Uno found on port: " + port.device)
                 comport = port.device
 
-        ser = serial.Serial(comport, 9600, timeout=0.5)
+        ser = serial.Serial(comport, 115200, timeout=0.5)
         time.sleep(2)
 
 
@@ -130,6 +130,7 @@ class Controller(XboxController):
                     print(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
                     #ser.write(str.encode("<Servo6: " + servo6  + ";>"))
                     ser.write(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
+                    ser.write(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
                     oldServo6 = servo6
 
                 time.sleep(0.1)
@@ -164,8 +165,8 @@ class Controller(XboxController):
         #form.onButton.clicked.connect(lambda: ser.write(str.encode(
         #    'Servo1: 90; Servo2: 60; Servo3: 90; Servo4: 90; Servo5: 45; Servo6: 0;')))
 
-        form.onButton.clicked.connect(lambda: ser.write(str.encode('Servo1: ' + servo6  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";")))
-        form.offButton.clicked.connect(lambda: ser.write(str.encode('Servo1: 90; Servo2: 60; Servo3: 90; Servo4: 90; Servo5: 45; Servo6: 73;')))
+        form.onButton.clicked.connect(lambda: ser.write(str.encode('<Servo1: ' + servo6  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>")))
+        form.offButton.clicked.connect(lambda: ser.write(str.encode('<Servo1: 90; Servo2: 60; Servo3: 90; Servo4: 90; Servo5: 45; Servo6: 73;>')))
 
 # 'Servo1: 200; Servo2: 200; Servo3: 200; Servo4: 200; Servo5: 200; Servo6: 200;'
 # Test 'Servo1: 90; Servo2: 60; Servo3: 90; Servo4: 90; Servo5: 45; Servo6: 73;'
