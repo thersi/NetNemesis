@@ -142,10 +142,31 @@ void parseData() {      // split the data into its parts
 
     strtokIndx = strtok(tempChars,":");      // get the first part - the string
     strcpy(messageFromPC, strtokIndx); // copy it to messageFromPC
- 
-    strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
-    servo1Pos = atoi(strtokIndx);     // convert this part to an integer
-
+    if (messageFromPC == "Servo1") {
+      strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
+      servo1Pos = atoi(strtokIndx);     // convert this part to an integer
+    }
+    else if (messageFromPC == "Servo2") {
+      strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
+      servo2Pos = atoi(strtokIndx);     // convert this part to an integer      
+    }
+    else if (messageFromPC == "Servo3") {
+      strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
+      servo3Pos = atoi(strtokIndx);     // convert this part to an integer      
+    }
+    else if (messageFromPC == "Servo4") {
+      strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
+      servo4Pos = atoi(strtokIndx);     // convert this part to an integer      
+    }
+    else if (messageFromPC == "Servo5") {
+      strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
+      servo5Pos = atoi(strtokIndx);     // convert this part to an integer      
+    }
+    else if (messageFromPC == "Servo6") {
+      strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
+      servo6Pos = atoi(strtokIndx);     // convert this part to an integer      
+    }
+    
     strtokIndx = strtok(NULL,":");      // get the first part - the string
     strcpy(messageFromPC, strtokIndx); // copy it to messageFromPC
  
@@ -176,12 +197,12 @@ void parseData() {      // split the data into its parts
     strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
     servo6Pos = atoi(strtokIndx);     // convert this part to an integer
     
-    //Serial.println(servo1Pos);
-    //Serial.println(servo2Pos);
-    //Serial.println(servo3Pos);
-    //Serial.println(servo4Pos);
-    //Serial.println(servo5Pos);
-    //Serial.println(servo6Pos);
+    Serial.println(servo1Pos);
+    Serial.println(servo2Pos);
+    Serial.println(servo3Pos);
+    Serial.println(servo4Pos);
+    Serial.println(servo5Pos);
+    Serial.println(servo6Pos);
 
 }
 
@@ -215,34 +236,7 @@ void readSerialNB() {
     else if (rc == startMarker) {
       recvInProgress = true;
     }
-    // Rework parsing to fit serial communication from example for non-blocking
-    //Serial.println(rc);
-
-    // line = String(rc);
-    // if (line.indexOf("ervo") > 0) {
-    //     c_servo1 = strtok(line.c_str(), ";");
-    //     c_servo2 = strtok(NULL, ";");
-    //     c_servo3 = strtok(NULL, ";");
-    //     c_servo4 = strtok(NULL, ";");
-    //     c_servo5 = strtok(NULL, ";");
-    //     c_servo6 = strtok(NULL, ";");
-
-    //     servo1 = String(c_servo1);
-    //     servo2 = String(c_servo2);
-    //     servo3 = String(c_servo3);
-    //     servo4 = String(c_servo4);
-    //     servo5 = String(c_servo5);
-    //     servo6 = String(c_servo6);
-
-    //     servo1Pos = servo1.substring(servo1.indexOf(":") + 2, servo1.length()).toInt();
-    //     servo2Pos = servo2.substring(servo2.indexOf(":") + 2, servo2.length()).toInt();
-    //     servo3Pos = servo3.substring(servo3.indexOf(":") + 2, servo3.length()).toInt();
-    //     servo4Pos = servo4.substring(servo4.indexOf(":") + 2, servo4.length()).toInt();
-    //     servo5Pos = servo5.substring(servo5.indexOf(":") + 2, servo5.length()).toInt();
-    //     servo6Pos = servo6.substring(servo6.indexOf(":") + 2, servo6.length()).toInt();
-        
-    //  }
-    }
+  }
   //digitalWrite(LED_BUILTIN, LOW);
 
 }
@@ -364,7 +358,8 @@ void psuedoReadSerial() {
 
 void updateServos() {
 
-  Braccio.ServoMovement(10, servo1Pos, servo2Pos, servo3Pos, servo4Pos, servo5Pos, servo6Pos);
+  //Braccio.ServoMovement(10, servo1Pos, servo2Pos, servo3Pos, servo4Pos, servo5Pos, servo6Pos);
+  Braccio.ServoMovement(10, 90, 90, 90, 40, 45, servo6Pos);
   //myservo.write(servo6Pos);
   
   //delay(100);
