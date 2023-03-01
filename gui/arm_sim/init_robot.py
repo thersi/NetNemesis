@@ -71,7 +71,7 @@ class EiT_arm(robot.DHRobot):
         T_sol = self.fkine([q1, q2, q3, q4, q5]).A
 
         if not np.allclose(T_sol, T) and verbose:
-            print("Obs! Analytical solution is not entirely correct")
+            print("Obs! Analytical solution is not entirely correct") #due to lack of spherical wrist this analytical approach does not wprk
 
         return q1, q2, q3, q4, q5
     
