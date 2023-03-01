@@ -2,15 +2,42 @@ import numpy as np
 import roboticstoolbox.robot as robot
 
 class EiT_arm(robot.DHRobot):
-    def __init__(self):        
+    _q_degrees = np.zeros(5)
+    _claw_degree = 0
+
+    def __init__(self, q0_rad = None, claw0_deg = None):        
         links = [robot.RevoluteDH(d = 0.2, a = 0, alpha=np.pi/2),
                  robot.RevoluteDH(d = 0, a = 1/2, alpha= 0),
                  robot.RevoluteDH(d = 0, a = 1/2, alpha = -np.pi/2),
-                 robot.RevoluteDH(d = 0 , a = 0, alpha= -np.pi/2, offset= -np.pi/2),
+                 robot.RevoluteDH(d = 0, a = 0, alpha= -np.pi/2, offset= -np.pi/2),
                  robot.RevoluteDH(d = 1/8 , a = 0, alpha=0)]                
         
-        super().__init__(links, name='EiT arm')
+        if q0_rad is not None:
+            self._q_rads = q0_rad
+            self._q_degrees = q0_rad*180/np.pi
 
+        if claw0_deg is not None:
+            self._claw_degree = claw0_deg
+        
+        super().__init__(links, name='EiT arm')
+    
+    def q_degrees(self, q_deg = None):
+        if q_deg is None:
+            return self._q_degrees
+        
+        self.q_degrees = q_deg
+        self.q = q_deg*np.pi/180
+
+    def q_radians(self, q_rad = None):
+        if q_rad is None:
+            return self.q
+        self.q = q_rad
+        self.q_degrees = q_rad*180/np.pi
+
+    def claw_deg(self, claw_deg = None):
+        if claw_deg is None:
+            return self.claw_deg
+        self.claw_deg = claw_deg
 
     def inverse_kinematics(self, T, verbose=True):
         T = T.A
@@ -49,17 +76,16 @@ class EiT_arm(robot.DHRobot):
         return q1, q2, q3, q4, q5
     
 
-    
-
-
 if __name__ == "__main__":
     arm_manipulator = EiT_arm()
 
     # Generate random angles from 0 to pi in array of size 5
     #q = np.random.random(size=5)*np.pi - np.pi/2
-    q = np.random.random(size=5)*np.pi
+    q = np.random.random(size=5)*np.pi - np.pi/2
 
     q[1] = np.random.uniform(1/12, 11/12)*np.pi # Constraing the second joint to be between 15 and 165 degrees
+
+    # q = [2.76915388, 0.45107274, 1.07980306, 2.90040424, 1.11671079]
 
     print('angles ground truth:', q)
 
