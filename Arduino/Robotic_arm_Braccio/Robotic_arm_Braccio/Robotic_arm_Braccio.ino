@@ -3,7 +3,7 @@
 // through a computer where instructions to the arm is sent via Serial. 
 
 // The format of the message will be as following:
-//    Servo1: x; Servo2: y; Servo3: z; Servo4: a; Servo5: b; Servo6: c;
+//    b'<x,y,z,a,b,c>'
 
 #include <Servo.h>
 #include <Braccio.h>
@@ -73,6 +73,7 @@ short oldReal5Pos;
 const byte servo6Pin = 3;
 short servo6In;
 short servo6Pos = 10;
+short oldServo6Pos;
 short newServo6Pos;
 short real6Pos;
 short oldReal6Pos;
@@ -131,15 +132,35 @@ void loop() {
         //showParsedData();
         newData = false;
     }
+  
   //psuedoReadSerial();
-  //realPos();
+  realPos();
   updateServos();
-  //writeSerial();
+  writeSerial();
 }
 void parseData() {      // split the data into its parts
 
     char * strtokIndx; // this is used by strtok() as an index
 
+    
+    strtokIndx = strtok(tempChars,",");      // get the first part - the string
+    servo1Pos = atoi(strtokIndx);     // convert this part to an integer    
+ 
+    strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
+    servo2Pos = atoi(strtokIndx);     // convert this part to an integer    
+    
+    strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
+    servo3Pos = atoi(strtokIndx);     // convert this part to an integer   
+
+    strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
+    servo4Pos = atoi(strtokIndx);     // convert this part to an integer   
+
+    strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
+    servo5Pos = atoi(strtokIndx);     // convert this part to an integer   
+
+    strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
+    servo6Pos = atoi(strtokIndx);     // convert this part to an integer   
+/*
     strtokIndx = strtok(tempChars,":");      // get the first part - the string
     strcpy(messageFromPC, strtokIndx); // copy it to messageFromPC
     if (messageFromPC == "Servo1") {
@@ -166,6 +187,8 @@ void parseData() {      // split the data into its parts
       strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
       servo6Pos = atoi(strtokIndx);     // convert this part to an integer      
     }
+    strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
+    servo1Pos = atoi(strtokIndx);     // convert this part to an integer
     
     strtokIndx = strtok(NULL,":");      // get the first part - the string
     strcpy(messageFromPC, strtokIndx); // copy it to messageFromPC
@@ -196,6 +219,8 @@ void parseData() {      // split the data into its parts
  
     strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
     servo6Pos = atoi(strtokIndx);     // convert this part to an integer
+
+    */
     
     Serial.println(servo1Pos);
     Serial.println(servo2Pos);
@@ -214,7 +239,7 @@ void readSerialNB() {
   char endMarker = '>';
   char rc;
 
-  while (Serial.available() > 0 && newData == false) {
+  if (Serial.available() > 0 && newData == false) {
     //digitalWrite(LED_BUILTIN, HIGH);
     rc = Serial.read();
     if (recvInProgress == true) {
@@ -358,8 +383,12 @@ void psuedoReadSerial() {
 
 void updateServos() {
 
+  if (oldServo6Pos != servo6Pos) {
+    Braccio.ServoMovement(10, 90, 90, 90, 40, 45, servo6Pos);
+    oldServo6Pos = servo6Pos;    
+  }
+
   //Braccio.ServoMovement(10, servo1Pos, servo2Pos, servo3Pos, servo4Pos, servo5Pos, servo6Pos);
-  Braccio.ServoMovement(10, 90, 90, 90, 40, 45, servo6Pos);
   //myservo.write(servo6Pos);
   
   //delay(100);

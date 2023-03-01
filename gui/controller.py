@@ -99,38 +99,43 @@ class controller(XboxController):
                 servo5 = str(q_degrees[4])
                 servo6 = str(int(np.interp(controller[4], [0, 1], [10, 73])))
 
-                if oldServo1 != servo1:
-                    print(str.encode("<Servo1: " + servo1 + ";>"))
-                    ser.write(str.encode("<Servo1: " + servo1 + ";>"))
-                    oldServo1 = servo1
-                if oldServo2 != servo2:
-                    print(str.encode("<Servo2: " + servo2 + ";>"))
-                    ser.write(str.encode("<Servo2: " + servo2 + ";>"))
-                    oldServo2 = servo2
-                if oldServo3 != servo3:
-                    print(str.encode("<Servo3: " + servo3 + ";>"))
-                    ser.write(str.encode("<Servo3: " + servo3 + ";>"))
-                    oldServo3 = servo3
-                if oldServo4 != servo4:
-                    print(str.encode("<Servo4: " + servo4 + ";>"))
-                    ser.write(str.encode("<Servo4: " + servo4 + ";>"))
-                    oldServo4 = servo4
-                if oldServo5 != servo5:
-                    print(str.encode("<Servo5: " + servo5 + ";>"))
-                    ser.write(str.encode("<Servo5: " + servo5 + ";>"))
-                    oldServo5 = servo5
-                if oldServo6 != servo6:
-                    # print(str.encode("<Servo6: " + servo6  + ";>"))
-                    print(str.encode("<Servo1: " + servo1 + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 +
-                          "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
-                    # ser.write(str.encode("<Servo6: " + servo6  + ";>"))
-                    ser.write(str.encode("<Servo1: " + servo1 + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 +
-                              "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
-                    ser.write(str.encode("<Servo1: " + servo1 + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 +
-                              "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
-                    oldServo6 = servo6
+                # if oldServo1 != servo1:
+                #     print(str.encode("<Servo1: " + servo1 + ";>"))
+                #     ser.write(str.encode("<Servo1: " + servo1 + ";>"))
+                #     oldServo1 = servo1
+                # if oldServo2 != servo2:
+                #     print(str.encode("<Servo2: " + servo2 + ";>"))
+                #     ser.write(str.encode("<Servo2: " + servo2 + ";>"))
+                #     oldServo2 = servo2
+                # if oldServo3 != servo3:
+                #     print(str.encode("<Servo3: " + servo3 + ";>"))
+                #     ser.write(str.encode("<Servo3: " + servo3 + ";>"))
+                #     oldServo3 = servo3
+                # if oldServo4 != servo4:
+                #     print(str.encode("<Servo4: " + servo4 + ";>"))
+                #     ser.write(str.encode("<Servo4: " + servo4 + ";>"))
+                #     oldServo4 = servo4
+                # if oldServo5 != servo5:
+                #     print(str.encode("<Servo5: " + servo5 + ";>"))
+                #     ser.write(str.encode("<Servo5: " + servo5 + ";>"))
+                #     oldServo5 = servo5
+                # if oldServo6 != servo6:
+                #     # print(str.encode("<Servo6: " + servo6  + ";>"))
+                #     print(str.encode("<" + servo1 + ", " + servo2 + ", " + servo3 +
+                #               ", " + servo4 + ", " + servo5 + ", " + servo6 + ">"))
+                #     # ser.write(str.encode("<Servo6: " + servo6  + ";>"))
+                #     ser.write(str.encode("<Servo1: " + servo1 + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 +
+                #               "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
+                #     ser.write(str.encode("<" + servo1 + ", " + servo2 + ", " + servo3 +
+                #               ", " + servo4 + ", " + servo5 + ", " + servo6 + ">"))
+                #     oldServo6 = servo6
+                
+                #print(str.encode("<" + servo1 + ", " + servo2 + ", " + servo3 + ", " + servo4 + ", " + servo5 + ", " + servo6 + ">"))
+                ser.write(str.encode("<" + servo1 + ", " + servo2 + ", " + servo3 + ", " + servo4 + ", " + servo5 + ", " + servo6 + ">"))
 
-                time.sleep(0.1)
+
+
+                #time.sleep(0.3)
 
                 # if oldServo1 != servo1 or oldServo2 != servo2 or oldServo3 != servo3 or oldServo4 != servo4 or oldServo5 != servo5 or oldServo6 != servo6:
 
@@ -162,8 +167,7 @@ class controller(XboxController):
 
         form.onButton.clicked.connect(lambda: ser.write(str.encode('<Servo1: ' + servo6 + "; " + 'Servo2: ' + servo2 + "; " +
                                       'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>")))
-        form.offButton.clicked.connect(lambda: ser.write(str.encode(
-            '<Servo1: 90; Servo2: 60; Servo3: 90; Servo4: 90; Servo5: 45; Servo6: 73;>')))
+        form.offButton.clicked.connect(lambda: ser.write(str.encode('<Servo1: 90; Servo2: 60; Servo3: 90; Servo4: 90; Servo5: 45; Servo6: 73;>')))
 
 # 'Servo1: 200; Servo2: 200; Servo3: 200; Servo4: 200; Servo5: 200; Servo6: 200;'
 # Test 'Servo1: 90; Servo2: 60; Servo3: 90; Servo4: 90; Servo5: 45; Servo6: 73;'
