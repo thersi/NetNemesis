@@ -27,10 +27,8 @@ class XboxController(object):
     UpDPad = 0
     DownDPad = 0
     _monitor_thread = None
+    
     def __init__(self):
-
-        
-        
         self._monitor_thread = threading.Thread(target=self._monitor_controller, args=())
         self._monitor_thread.daemon = True
         self._monitor_thread.start()
