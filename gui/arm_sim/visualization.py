@@ -16,23 +16,25 @@ def main():
     print("Initialized digital twin: ")
     arm = EiT_arm()
     print(arm)
-    print("Sets initial anglles to: [0,0,0,0,0]")
-    arm.q = list([0,0,0,0,0])
+    print("Sets initial angles to: [0,0,0,0,0]")
+    
+    initialPose = arm.fkine([0,0,0,0,0])
 
-    arm.plot(arm.q)
-  
     print("\nInsert list of alngles: ")
     print("Example: 20 20 20 20 20")
 
     stringInput = input()
     print("Your input was: ")
     print(stringInput)
-    anglelist = [float(s)*np.pi/180 for s in stringInput.split(' ')]
-    arm.q = anglelist
-    arm.plot(arm.q)
+
+    inputAngleList = [float(s)*np.pi/180 for s in stringInput.split(' ')]
+
+    secondPose = arm.fkine(inputAngleList)
+
+    #Animating:
+    qt = arm.jtraj(initialPose, secondPose, 50)
+    arm.plot(qt.q, backend='pyplot', movie='panda1.gif')  
 
     print("Press a key to end.")
     input()
-
-
 main()
