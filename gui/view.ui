@@ -1,207 +1,207 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-    <class>MainDialog</class>
-    <widget class="QDialog" name="MainDialog">
-        <property name="enabled">
+   <class>MainDialog</class>
+   <widget class="QDialog" name="MainDialog">
+      <property name="enabled">
+         <bool>true</bool>
+      </property>
+      <property name="geometry">
+         <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>1400</width>
+            <height>800</height>
+         </rect>
+      </property>
+      <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+         </sizepolicy>
+      </property>
+      <property name="focusPolicy">
+         <enum>Qt::WheelFocus</enum>
+      </property>
+      <property name="windowTitle">
+         <string>Dialog</string>
+      </property>
+      <property name="styleSheet">
+         <string notr="true">QDialog{
+            font-family: Calibri;
+            background:rgb(100,100,100);
+
+            }
+            QPushButton{
+            background:rgb(200,200,200);
+
+            font-size: 20px;
+            font-family: Calibri;
+
+            border: 1px solid rgb(220,220,220);
+
+
+            border-bottom-style: none;
+            border-radius: 4px;
+
+            padding: 5px 5px 5px 5px;
+            margin: 2px 0px 0px 0px;
+
+            }
+            QPushButton:hover:!pressed
+            {
+            background:rgb(150,180,100);
+
+            }
+            QTabWidget{
+
+            font-size: 20px;
+            font-family: Calibri;
+
+            }
+            QTabBar::tab:selected
+            {
+
+
+            background:rgb(220,220,220);
+            border: 1px solid rgb(220,220,220);
+
+            border-bottom-style: none;
+
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 0px;
+            border-bottom-left-radius: 0px;
+            padding: 10px 25px 10px 25px;
+            margin: 15px 0px 0px 2px;
+            }
+
+            QTabBar::tab:!selected
+            {
+
+
+            background:rgb(180,180,180);
+
+            border: 1px solid rgb(180,180,180);
+            border-bottom-style: none;
+
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 0px;
+            border-bottom-left-radius: 0px;
+            padding: 10px 25px 10px 25px;
+            margin: 25px 0px 0px 2px;
+
+
+            }
+
+
+            QTabBar::tab:!selected:hover
+            {
+
+            background:rgb(220,220,220);
+
+            border: 1px solid rgb(220,220,220);
+
+
+            border-bottom-style: none;
+
+
+            }</string>
+      </property>
+      <widget class="QTabWidget" name="tabWidget">
+         <property name="enabled">
             <bool>true</bool>
-        </property>
-        <property name="geometry">
+         </property>
+         <property name="geometry">
             <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>1400</width>
-                <height>800</height>
+               <x>0</x>
+               <y>0</y>
+               <width>550</width>
+               <height>960</height>
             </rect>
-        </property>
-        <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-            </sizepolicy>
-        </property>
-        <property name="focusPolicy">
-            <enum>Qt::WheelFocus</enum>
-        </property>
-        <property name="windowTitle">
-            <string>Dialog</string>
-        </property>
-        <property name="styleSheet">
-            <string notr="true">QDialog{
-                font-family: Calibri;
-                background:rgb(100,100,100);
+         </property>
+         <property name="styleSheet">
+            <string notr="true" />
+         </property>
+         <property name="currentIndex">
+            <number>0</number>
+         </property>
+         <widget class="QWidget" name="tab">
+            <attribute name="title">
+               <string>Tab 1</string>
+            </attribute>
+         </widget>
+         <widget class="QWidget" name="tab_2">
+            <attribute name="title">
+               <string>Tab 2</string>
+            </attribute>
+            <widget class="QPushButton" name="onButton">
+               <property name="geometry">
+                  <rect>
+                     <x>200</x>
+                     <y>120</y>
+                     <width>80</width>
+                     <height>35</height>
+                  </rect>
+               </property>
+               <property name="styleSheet">
+                  <string notr="true">QPushButton{
+                     background:rgb(150,200,100);
+                     }
+                     QPushButton:hover:!pressed
+                     {
+                     background:rgb(50,180,100);
 
-                }
-                QPushButton{
-                background:rgb(200,200,200);
-
-                font-size: 20px;
-                font-family: Calibri;
-
-                border: 1px solid rgb(220,220,220);
-
-
-                border-bottom-style: none;
-                border-radius: 4px;
-
-                padding: 5px 5px 5px 5px;
-                margin: 2px 0px 0px 0px;
-
-                }
-                QPushButton:hover:!pressed
-                {
-                background:rgb(150,180,100);
-
-                }
-                QTabWidget{
-
-                font-size: 20px;
-                font-family: Calibri;
-
-                }
-                QTabBar::tab:selected
-                {
-
-
-                background:rgb(220,220,220);
-                border: 1px solid rgb(220,220,220);
-
-                border-bottom-style: none;
-
-                border-top-left-radius: 4px;
-                border-top-right-radius: 4px;
-                border-bottom-right-radius: 0px;
-                border-bottom-left-radius: 0px;
-                padding: 10px 25px 10px 25px;
-                margin: 15px 0px 0px 2px;
-                }
-
-                QTabBar::tab:!selected
-                {
-
-
-                background:rgb(180,180,180);
-
-                border: 1px solid rgb(180,180,180);
-                border-bottom-style: none;
-
-                border-top-left-radius: 4px;
-                border-top-right-radius: 4px;
-                border-bottom-right-radius: 0px;
-                border-bottom-left-radius: 0px;
-                padding: 10px 25px 10px 25px;
-                margin: 25px 0px 0px 2px;
-
-
-                }
-
-
-                QTabBar::tab:!selected:hover
-                {
-
-                background:rgb(220,220,220);
-
-                border: 1px solid rgb(220,220,220);
-
-
-                border-bottom-style: none;
-
-
-                }</string>
-        </property>
-        <widget class="QTabWidget" name="tabWidget">
-            <property name="enabled">
-                <bool>true</bool>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>0</x>
-                    <y>0</y>
-                    <width>550</width>
-                    <height>960</height>
-                </rect>
-            </property>
-            <property name="styleSheet">
-                <string notr="true" />
-            </property>
-            <property name="currentIndex">
-                <number>0</number>
-            </property>
-            <widget class="QWidget" name="tab">
-                <attribute name="title">
-                    <string>Tab 1</string>
-                </attribute>
+                     }</string>
+               </property>
+               <property name="text">
+                  <string>On</string>
+               </property>
             </widget>
-            <widget class="QWidget" name="tab_2">
-                <attribute name="title">
-                    <string>Tab 2</string>
-                </attribute>
-                <widget class="QPushButton" name="onButton">
-                    <property name="geometry">
-                        <rect>
-                            <x>200</x>
-                            <y>120</y>
-                            <width>80</width>
-                            <height>35</height>
-                        </rect>
-                    </property>
-                    <property name="styleSheet">
-                        <string notr="true">QPushButton{
-                            background:rgb(150,200,100);
-                            }
-                            QPushButton:hover:!pressed
-                            {
-                            background:rgb(50,180,100);
+            <widget class="QPushButton" name="offButton">
+               <property name="geometry">
+                  <rect>
+                     <x>200</x>
+                     <y>170</y>
+                     <width>80</width>
+                     <height>35</height>
+                  </rect>
+               </property>
+               <property name="styleSheet">
+                  <string notr="true">QPushButton{
+                     background:rgb(200,100,100);
+                     }
+                     QPushButton:hover:!pressed
+                     {
+                     background:rgb(200,50,50);
 
-                            }</string>
-                    </property>
-                    <property name="text">
-                        <string>On</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" name="offButton">
-                    <property name="geometry">
-                        <rect>
-                            <x>200</x>
-                            <y>170</y>
-                            <width>80</width>
-                            <height>35</height>
-                        </rect>
-                    </property>
-                    <property name="styleSheet">
-                        <string notr="true">QPushButton{
-                            background:rgb(200,100,100);
-                            }
-                            QPushButton:hover:!pressed
-                            {
-                            background:rgb(200,50,50);
-
-                            }</string>
-                    </property>
-                    <property name="text">
-                        <string>Off</string>
-                    </property>
-                </widget>
+                     }</string>
+               </property>
+               <property name="text">
+                  <string>Off</string>
+               </property>
             </widget>
-        </widget>
-        <widget class="QWebEngineView" name="simulationView" native="true">
-            <property name="geometry">
-                <rect>
-                    <x>580</x>
-                    <y>60</y>
-                    <width>800</width>
-                    <height>800</height>
-                </rect>
-            </property>
-        </widget>
-    </widget>
-    <customwidgets>
-        <customwidget>
-            <class>QWebEngineView</class>
-            <extends>QWidget</extends>
-            <header location="global">qwebengineview.h</header>
-            <container>1</container>
-        </customwidget>
-    </customwidgets>
-    <resources />
-    <connections />
+         </widget>
+      </widget>
+      <widget class="QWebEngineView" name="simulationView" native="true">
+         <property name="geometry">
+            <rect>
+               <x>580</x>
+               <y>60</y>
+               <width>800</width>
+               <height>800</height>
+            </rect>
+         </property>
+      </widget>
+   </widget>
+   <customwidgets>
+      <customwidget>
+         <class>QWebEngineView</class>
+         <extends>QWidget</extends>
+         <header location="global">qwebengineview.h</header>
+         <container>1</container>
+      </customwidget>
+   </customwidgets>
+   <resources />
+   <connections />
 </ui>

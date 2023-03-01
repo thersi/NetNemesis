@@ -5,6 +5,10 @@ import numpy as np
 import spatialgeometry as sg
 
 
+# Make the environment
+env = Swift()
+
+
 class robot_simulator:
     def __init__(self, form):
         # Make the environment
