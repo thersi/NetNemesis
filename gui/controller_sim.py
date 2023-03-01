@@ -35,10 +35,12 @@ class Controller(XboxController):
 
 
     def _onClick():
-        read()        
+        # read()   
+        pass     
 
     def _offClick():
         #send
         q = [90, 60, 90, 90, 45]
         claw = 73
-        self.send(q, claw)
+        # self.send(q, claw)
+        pass

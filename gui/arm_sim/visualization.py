@@ -1,5 +1,3 @@
-from numpy import angle
-from genpy import struct_I
 from init_robot import EiT_arm
 import numpy as np
 
@@ -37,4 +35,6 @@ def main():
 
     print("Press a key to end.")
     input()
-main()
+
+if __name__ == "__main__":
+    main()

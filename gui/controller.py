@@ -15,6 +15,8 @@ class Controller(XboxController):
         self.form = form
         ports = serial.tools.list_ports.comports()
 
+        print("init")
+
         if (len(ports) == 0):
             print("No serial ports found")
             exit()
@@ -23,6 +25,7 @@ class Controller(XboxController):
             if ("Arduino Uno" in port.description):
                 print("Arduino Uno found on port: " + port.device)
                 comport = port.device
+
         self.ser = serial.Serial(comport, 9600, timeout=0.5)
 
         x = threading.Thread(target=self._readDataThread, daemon=True)

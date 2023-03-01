@@ -1,8 +1,7 @@
 from PyQt6 import uic
-from PyQt6.QtWidgets import QApplication, QDialog
+from PyQt6.QtWidgets import QApplication
 from controller import Controller
 from PyQt6.QtCore import QUrl
-from xbox_controller import XboxController
 
 Form, Window = uic.loadUiType("gui/view.ui")
 app = QApplication([])
@@ -13,4 +12,5 @@ form.simulationView.load(QUrl('http://localhost:52000/?53084'))
 form.simulationView.show()
 Controller(form)
 window.showMaximized()
+# window.show()
 app.exec()
