@@ -23,7 +23,7 @@ class Controller(XboxController):
             if ("Arduino Uno" in port.description):
                 print("Arduino Uno found on port: " + port.device)
                 comport = port.device
-        self.ser = serial.Serial(comport, 115200, timeout=0.5)
+        self.ser = serial.Serial(comport, 9600, timeout=0.5)
 
         x = threading.Thread(target=self._readDataThread, daemon=True)
         x.start()   
@@ -117,4 +117,4 @@ class Controller(XboxController):
             print(str.encode("<" + servo1 + ", " + servo2 + ", " + servo3 + ", " + servo4 + ", " + servo5 + ", " + servo6 + ">"))
             self.ser.write(str.encode("<" + servo1 + ", " + servo2 + ", " + servo3 + ", " + servo4 + ", " + servo5 + ", " + servo6 + ">"))
 
-            time.sleep(0.1)
+            time.sleep(0.25)
