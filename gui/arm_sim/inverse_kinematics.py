@@ -1,6 +1,6 @@
 import numpy as np
 
-def inverse_kinematics(T, robot):
+def inverse_kinematics(T, robot, verbose=True):
     T = T.A
     Ls = []
     for l in robot.links:
@@ -28,5 +28,10 @@ def inverse_kinematics(T, robot):
 
     R4 = robot.A(3, [q1, q2, q3, q4]).A[:3, :3] #rotation matrix from world to last joint
     q5 = np.arccos((R4.T@R)[1, 1])
+
+    T_sol = robot.fkine([q1, q2, q3, q4, q5]).A
+
+    if not np.allclose(T_sol, T) and verbose:
+        print("Obs! Analytical solution is not entirely correct")
 
     return q1, q2, q3, q4, q5

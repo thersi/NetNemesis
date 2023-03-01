@@ -1,15 +1,18 @@
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication, QDialog
-from controller import Controller
+from PyQt6.QtCore import QUrl
+from controller import controller
+from robot_sim import robot_simulator
 from xbox_controller import XboxController
 
+robot_simulator()
 Form, Window = uic.loadUiType("gui/view.ui")
 app = QApplication([])
 window = Window()
 form = Form()
 form.setupUi(window)
-Controller(form, XboxController)
-window.show()
+form.simulationView.load(QUrl('http://localhost:52000/?53084'))
+form.simulationView.show()
+controller(form, XboxController)
+window.showMaximized()
 app.exec()
-
-
