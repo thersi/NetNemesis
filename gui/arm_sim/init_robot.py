@@ -25,19 +25,19 @@ class EiT_arm(robot.DHRobot):
         if q_deg is None:
             return self._q_degrees
         
-        self.q_degrees = q_deg
+        self._q_degrees = q_deg
         self.q = q_deg*np.pi/180
 
     def q_radians(self, q_rad = None):
         if q_rad is None:
             return self.q
         self.q = q_rad
-        self.q_degrees = q_rad*180/np.pi
+        self._q_degrees = q_rad*180/np.pi
 
     def claw_deg(self, claw_deg = None):
         if claw_deg is None:
             return self.claw_deg
-        self.claw_deg = claw_deg
+        self._claw_degree = claw_deg
 
     def inverse_kinematics(self, T, verbose=True):
         T = T.A

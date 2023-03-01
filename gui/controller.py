@@ -80,37 +80,41 @@ class Controller(XboxController):
             # claw_deg = np.rint(self.arm.claw_deg()).astype(int)
 
             controller_state = self.read()
+            
             servo1 = str(q_degrees[0])
             servo2 = str(q_degrees[1])
             servo3 = str(q_degrees[2])
             servo4 = str(q_degrees[3])
             servo5 = str(q_degrees[4])
-            servo6 = str(int(np.interp(controller_state[4],[0,1],[10,73])))
+            servo6 = str(int(np.interp(controller_state[5],[0,1],[10,73])))
 
-            if oldServo1 != servo1:
-                print(str.encode("<Servo1: " + servo1  + ";>"))
-                self.ser.write(str.encode("<Servo1: " + servo1  + ";>"))
-                oldServo1 = servo1
-            if oldServo2 != servo2:
-                print(str.encode("<Servo2: " + servo2  + ";>"))
-                self.ser.write(str.encode("<Servo2: " + servo2  + ";>"))
-                oldServo2 = servo2
-            if oldServo3 != servo3:
-                print(str.encode("<Servo3: " + servo3  + ";>"))
-                self.ser.write(str.encode("<Servo3: " + servo3  + ";>"))
-                oldServo3 = servo3
-            if oldServo4 != servo4:
-                print(str.encode("<Servo4: " + servo4  + ";>"))
-                self.ser.write(str.encode("<Servo4: " + servo4  + ";>"))
-                oldServo4 = servo4
-            if oldServo5 != servo5:
-                print(str.encode("<Servo5: " + servo5  + ";>"))
-                self.ser.write(str.encode("<Servo5: " + servo5  + ";>"))
-                oldServo5 = servo5
-            if oldServo6 != servo6:
-                print(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
-                self.ser.write(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
-                self.ser.write(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
-                oldServo6 = servo6
+            # if oldServo1 != servo1:
+            #     print(str.encode("<Servo1: " + servo1  + ";>"))
+            #     self.ser.write(str.encode("<Servo1: " + servo1  + ";>"))
+            #     oldServo1 = servo1
+            # if oldServo2 != servo2:
+            #     print(str.encode("<Servo2: " + servo2  + ";>"))
+            #     self.ser.write(str.encode("<Servo2: " + servo2  + ";>"))
+            #     oldServo2 = servo2
+            # if oldServo3 != servo3:
+            #     print(str.encode("<Servo3: " + servo3  + ";>"))
+            #     self.ser.write(str.encode("<Servo3: " + servo3  + ";>"))
+            #     oldServo3 = servo3
+            # if oldServo4 != servo4:
+            #     print(str.encode("<Servo4: " + servo4  + ";>"))
+            #     self.ser.write(str.encode("<Servo4: " + servo4  + ";>"))
+            #     oldServo4 = servo4
+            # if oldServo5 != servo5:
+            #     print(str.encode("<Servo5: " + servo5  + ";>"))
+            #     self.ser.write(str.encode("<Servo5: " + servo5  + ";>"))
+            #     oldServo5 = servo5
+            # if oldServo6 != servo6:
+            #     print(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
+            #     self.ser.write(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
+            #     self.ser.write(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
+            #     oldServo6 = servo6
+
+            print(str.encode("<" + servo1 + ", " + servo2 + ", " + servo3 + ", " + servo4 + ", " + servo5 + ", " + servo6 + ">"))
+            self.ser.write(str.encode("<" + servo1 + ", " + servo2 + ", " + servo3 + ", " + servo4 + ", " + servo5 + ", " + servo6 + ">"))
 
             time.sleep(0.1)
