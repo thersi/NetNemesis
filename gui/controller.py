@@ -18,7 +18,7 @@ class Controller(XboxController):
         if (len(ports) == 0):
             print("No serial ports found")
             exit()
-        
+
         for port in ports:
             if ("Arduino Uno" in port.description):
                 print("Arduino Uno found on port: " + port.device)

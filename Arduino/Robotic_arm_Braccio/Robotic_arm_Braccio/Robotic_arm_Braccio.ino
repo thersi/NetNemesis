@@ -164,6 +164,12 @@ void parseData() {      // split the data into its parts
     Serial.println(servo4Pos);
     Serial.println(servo5Pos);
     Serial.println(servo6Pos);
+    Serial.println(servo1Pos);
+    Serial.println(servo2Pos);
+    Serial.println(servo3Pos);
+    Serial.println(servo4Pos);
+    Serial.println(servo5Pos);
+    Serial.println(servo6Pos);
 
 }
 
@@ -197,6 +203,7 @@ void readSerial() {
     else if (rc == startMarker) {
       recvInProgress = true;
     }
+  }
   }
   //digitalWrite(LED_BUILTIN, LOW);
 
