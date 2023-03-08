@@ -51,22 +51,22 @@ class Controller(XboxController):
                         print("Connection established")
                     if "ServoPos1" in string:
                         curr_degs[0] = re.findall(r'\d+', string)[1]
-                        print("ServoPos1:", curr_degs[0])
+                        #print("ServoPos1:", curr_degs[0])
                     if "ServoPos2" in string:
                         curr_degs[1] = re.findall(r'\d+', string)[1]        
-                        print("ServoPos2:", curr_degs[1])
+                        #print("ServoPos2:", curr_degs[1])
                     if "ServoPos3" in string:
                         curr_degs[2] = re.findall(r'\d+', string)[1]                        
-                        print("ServoPos3:", curr_degs[2])
+                        #print("ServoPos3:", curr_degs[2])
                     if "ServoPos4" in string:
                         curr_degs[3] = re.findall(r'\d+', string)[1]                        
-                        print("ServoPos4:", curr_degs[3])
+                        #print("ServoPos4:", curr_degs[3])
                     if "ServoPos5" in string:
                         curr_degs[4] = re.findall(r'\d+', string)[1]                        
-                        print("ServoPos5:", curr_degs[4])
+                        #print("ServoPos5:", curr_degs[4])
                     if "ServoPos6" in string:
                         claw_deg = re.findall(r'\d+', string)[1]                        
-                        print("ServoPos6:", claw_deg)
+                        #print("ServoPos6:", claw_deg)
 
                     self.arm.q_degrees(curr_degs)
                     self.arm.claw_deg(claw_deg)
@@ -75,46 +75,38 @@ class Controller(XboxController):
 
     def _sendDataThread(self):
 
+        prevServo1 = 0
+        prevServo2 = 0
+        prevServo3 = 0
+        prevServo4 = 0
+        prevServo5 = 0
+        prevServo6 = 0
+
         while True:
             q_degrees = np.rint(self.arm.q_degrees()).astype(int)
             # claw_deg = np.rint(self.arm.claw_deg()).astype(int)
 
             controller_state = self.read()
             
-            servo1 = str(q_degrees[0])
+            servo1 = str(int(np.interp(controller_state[2],[-1,1],[0,180])))
             servo2 = str(q_degrees[1])
             servo3 = str(q_degrees[2])
             servo4 = str(q_degrees[3])
             servo5 = str(q_degrees[4])
             servo6 = str(int(np.interp(controller_state[5],[0,1],[10,73])))
 
-            # if oldServo1 != servo1:
-            #     print(str.encode("<Servo1: " + servo1  + ";>"))
-            #     self.ser.write(str.encode("<Servo1: " + servo1  + ";>"))
-            #     oldServo1 = servo1
-            # if oldServo2 != servo2:
-            #     print(str.encode("<Servo2: " + servo2  + ";>"))
-            #     self.ser.write(str.encode("<Servo2: " + servo2  + ";>"))
-            #     oldServo2 = servo2
-            # if oldServo3 != servo3:
-            #     print(str.encode("<Servo3: " + servo3  + ";>"))
-            #     self.ser.write(str.encode("<Servo3: " + servo3  + ";>"))
-            #     oldServo3 = servo3
-            # if oldServo4 != servo4:
-            #     print(str.encode("<Servo4: " + servo4  + ";>"))
-            #     self.ser.write(str.encode("<Servo4: " + servo4  + ";>"))
-            #     oldServo4 = servo4
-            # if oldServo5 != servo5:
-            #     print(str.encode("<Servo5: " + servo5  + ";>"))
-            #     self.ser.write(str.encode("<Servo5: " + servo5  + ";>"))
-            #     oldServo5 = servo5
-            # if oldServo6 != servo6:
-            #     print(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
-            #     self.ser.write(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
-            #     self.ser.write(str.encode("<Servo1: " + servo1  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>"))
-            #     oldServo6 = servo6
+            
 
-            print(str.encode("<" + servo1 + ", " + servo2 + ", " + servo3 + ", " + servo4 + ", " + servo5 + ", " + servo6 + ">"))
-            self.ser.write(str.encode("<" + servo1 + ", " + servo2 + ", " + servo3 + ", " + servo4 + ", " + servo5 + ", " + servo6 + ">"))
+            if prevServo1 != servo1 or prevServo2 != servo2 or prevServo3 != servo3 or prevServo4 != servo4 or prevServo5 != servo5 or prevServo6 != servo6:
+                print(str.encode("<" + servo1 + ", " + servo2 + ", " + servo3 + ", " + servo4 + ", " + servo5 + ", " + servo6 + ">"))
+                self.ser.write(str.encode("<" + servo1 + ", " + servo2 + ", " + servo3 + ", " + servo4 + ", " + servo5 + ", " + servo6 + ">"))
+                prevServo1 = servo1
+                prevServo2 = servo2
+                prevServo3 = servo3
+                prevServo4 = servo4
+                prevServo5 = servo5
+                prevServo6 = servo6
+                
+            # b'<90,45,180,180,90,10>'
 
             #time.sleep(0.1)

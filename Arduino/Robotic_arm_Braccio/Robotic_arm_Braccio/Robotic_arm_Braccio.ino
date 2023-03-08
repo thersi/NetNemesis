@@ -10,14 +10,6 @@
 
 String line;
 
-//Servo myservo;
-
-char *c_servo1;
-char *c_servo2;
-char *c_servo3;
-char *c_servo4;
-char *c_servo5;
-char *c_servo6;
 
 String servo1 = "";
 String servo2 = "";
@@ -26,58 +18,43 @@ String servo4 = "";
 String servo5 = "";
 String servo6 = "";
 
-
-Servo base;
-Servo shoulder;
-Servo elbow;
-Servo wrist_rot;
-Servo wrist_ver;
-Servo gripper;
-
-
-const byte servo1Pin = 11;
 short servo1In;
 short servo1Pos = 90;
-short newServo1Pos;
 short real1Pos;
 short oldReal1Pos;
+short oldServo1Pos;
 
-const byte servo2Pin = 10;
 short servo2In;
 short servo2Pos = 45;
-short newServo2Pos;
 short real2Pos;
 short oldReal2Pos;
+short oldServo2Pos;
 
-const byte servo3Pin = 9;
 short servo3In;
 short servo3Pos = 180;
-short newServo3Pos;
 short real3Pos;
 short oldReal3Pos;
+short oldServo3Pos;
 
-const byte servo4Pin = 6;
 short servo4In;
 short servo4Pos = 180;
-short newServo4Pos;
 short real4Pos;
 short oldReal4Pos;
+short oldServo4Pos;
 
-const byte servo5Pin = 5;
 short servo5In;
 short servo5Pos = 100;
-short newServo5Pos;
 short real5Pos;
 short oldReal5Pos;
+short oldServo5Pos;
 
-const byte servo6Pin = 3;
 short servo6In;
 short servo6Pos = 10;
-short oldServo6Pos;
-short newServo6Pos;
 short real6Pos;
 short oldReal6Pos;
+short oldServo6Pos;
 
+// Servo calibration variables
 int A;
 int B;
 int C;
@@ -87,6 +64,14 @@ int b;
 int c;
 
 float m, n;
+
+Servo base;
+Servo shoulder;
+Servo elbow;
+Servo wrist_rot;
+Servo wrist_ver;
+Servo gripper;
+
 //Serial greier
 const byte numChars = 32;
 char receivedChars[numChars];
@@ -102,6 +87,7 @@ void setup() {
   Serial.begin(9600);
   //myservo.attach(3);
   //Serial.setTimeout(100);
+  Braccio.ServoMovement(20, 45, 45, 180, 180, 90, 10);
   
   pinMode(12, OUTPUT);    //you need to set HIGH the pin 12
   digitalWrite(12, HIGH);
@@ -203,9 +189,28 @@ void readSerial() {
 }
 
 void updateServos() {
-
+  if (oldServo1Pos != servo1Pos) {
+    base.write(servo1Pos);
+    oldServo1Pos = servo1Pos;    
+  }
+  if (oldServo2Pos != servo2Pos) {
+    shoulder.write(servo2Pos);
+    oldServo2Pos = servo2Pos;    
+  }
+  if (oldServo3Pos != servo3Pos) {
+    elbow.write(servo3Pos);
+    oldServo3Pos = servo3Pos;    
+  }
+  if (oldServo4Pos != servo4Pos) {
+    wrist_ver.write(servo6Pos);
+    oldServo4Pos = servo4Pos;    
+  }
+  if (oldServo5Pos != servo5Pos) {
+    wrist_rot.write(servo5Pos);
+    oldServo5Pos = servo5Pos;    
+  }  
   if (oldServo6Pos != servo6Pos) {
-    Braccio.ServoMovement(0, 90, 90, 90, 40, 45, servo6Pos);
+    gripper.write(servo6Pos);
     oldServo6Pos = servo6Pos;    
   }
 
