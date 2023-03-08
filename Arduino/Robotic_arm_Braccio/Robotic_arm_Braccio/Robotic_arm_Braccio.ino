@@ -205,7 +205,7 @@ void readSerial() {
 void updateServos() {
 
   if (oldServo6Pos != servo6Pos) {
-    Braccio.ServoMovement(10, 90, 90, 90, 40, 45, servo6Pos);
+    Braccio.ServoMovement(0, 90, 90, 90, 40, 45, servo6Pos);
     oldServo6Pos = servo6Pos;    
   }
 

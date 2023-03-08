@@ -117,4 +117,4 @@ class Controller(XboxController):
             print(str.encode("<" + servo1 + ", " + servo2 + ", " + servo3 + ", " + servo4 + ", " + servo5 + ", " + servo6 + ">"))
             self.ser.write(str.encode("<" + servo1 + ", " + servo2 + ", " + servo3 + ", " + servo4 + ", " + servo5 + ", " + servo6 + ">"))
 
-            time.sleep(0.25)
+            #time.sleep(0.1)
