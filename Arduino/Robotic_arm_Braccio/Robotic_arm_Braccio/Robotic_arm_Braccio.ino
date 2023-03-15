@@ -25,7 +25,7 @@ short oldReal1Pos;
 short oldServo1Pos;
 
 short servo2In;
-short servo2Pos = 45;
+short servo2Pos = 5;
 short real2Pos;
 short oldReal2Pos;
 short oldServo2Pos;
@@ -57,13 +57,13 @@ short oldReal6Pos;
 short oldServo6Pos;
 
 // Servo calibration variables
-int A;
-int B;
-int C;
+int A = 85;
+int B = 4;
+int C = 245;
 
-int a;
-int b;
-int c;
+int a = 380;
+int b = 403;
+int c = 393;
 
 float m, n;
 
@@ -89,7 +89,7 @@ void setup() {
   Serial.begin(9600);
   //myservo.attach(3);
   //Serial.setTimeout(100);
-  Braccio.ServoMovement(20, 45, 45, 180, 180, 90, 10);
+  Braccio.ServoMovement(20, 90, 5, 180, 180, 90, 10);
   
   pinMode(12, OUTPUT);    //you need to set HIGH the pin 12
   digitalWrite(12, HIGH);
@@ -120,8 +120,8 @@ void loop() {
         updateServos();
         newData = false;
     }
-  //realPos();
-  //writeSerial();
+  realPos();
+  writeSerial();
 }
 void parseData() {      // split the data into its parts
 
@@ -201,65 +201,81 @@ void updateServos() {
     elbow.write(servo3Pos);
     oldServo3Pos = servo3Pos;    
   }
+   if (oldServo4Pos != servo4Pos) {
+     wrist_rot.write(servo4Pos);
+     oldServo4Pos = servo4Pos;    
+   }
 
-  if (oldServo4Pos != servo4Pos) {
-    if (oldServo4Pos > servo4Pos) {
-      Serial.println("Smaller");
-      Serial.println(oldServo4Pos);
-      oldServo4Pos -= 6;
-      if (oldServo4Pos <= servo4Pos) {
-        wrist_rot.write(servo4Pos);
-        oldServo4Pos = servo4Pos;  
-      }
-      else {
-        wrist_rot.write(oldServo4Pos);
-      }
-    }
-    else {
-      oldServo4Pos += 6;
-      Serial.println("Bigger");
-      Serial.println(oldServo4Pos);
-      if (oldServo4Pos >= servo4Pos) {
-        wrist_rot.write(servo4Pos);
-        oldServo4Pos = servo4Pos;  
-      }
-      else {
-        wrist_rot.write(oldServo4Pos);
-      }
-    }
-  }
 
   if (oldServo5Pos != servo5Pos) {
-    if (tempPos5 != oldServo5Pos) {
-      Serial.println(tempPos5);
-      Serial.println("Hit1");
-      if (oldServo5Pos > servo5Pos) {
-        Serial.println("Hit2");
-        tempPos5 = tempPos5 - 2;
-        Serial.println(tempPos5);
-        wrist_ver.write(tempPos5);
-        if (tempPos5 <= servo5Pos) {
-          Serial.println("Hit3");
-          wrist_ver.write(servo5Pos);
-          oldServo5Pos = servo5Pos;  
-        }
-      }
-      else { // oldServoPos < servoPos
-        Serial.println("Hit2");
-        tempPos5 = tempPos5 + 2;
-        Serial.println(tempPos5);
-        wrist_ver.write(tempPos5);
-        if (tempPos5 >= servo5Pos) {
-          Serial.println("Hit3");
-          wrist_ver.write(servo5Pos);
-          oldServo5Pos = servo5Pos;  
-        }
-      } 
-    }
-    else {
-      tempPos5 = oldServo5Pos;
-    }
-  }  
+    wrist_ver.write(servo5Pos);
+    oldServo5Pos = servo5Pos;    
+  }
+  
+  
+  // if (oldServo3Pos != servo3Pos) {
+  //   error = servoPos - oldServoPos;
+  //   elbow.write(servo3Pos);
+  //   oldServo3Pos = servo3Pos;    
+  // }
+  // if (oldServo4Pos != servo4Pos) {
+  //   if (oldServo4Pos > servo4Pos) {
+  //     Serial.println("Smaller");
+  //     Serial.println(oldServo4Pos);
+  //     oldServo4Pos -= 2;
+  //     if (oldServo4Pos <= servo4Pos) {
+  //       wrist_rot.write(servo4Pos);
+  //       oldServo4Pos = servo4Pos;  
+  //     }
+  //     else {
+  //       wrist_rot.write(oldServo4Pos);
+  //     }
+  //   }
+  //   else {
+  //     oldServo4Pos += 2;
+  //     Serial.println("Bigger");
+  //     Serial.println(oldServo4Pos);
+  //     if (oldServo4Pos >= servo4Pos) {
+  //       wrist_rot.write(servo4Pos);
+  //       oldServo4Pos = servo4Pos;  
+  //     }
+  //     else {
+  //       wrist_rot.write(oldServo4Pos);
+  //     }
+  //   }
+  // }
+
+  // if (oldServo5Pos != servo5Pos) {
+  //   if (tempPos5 != oldServo5Pos) {
+  //     Serial.println(tempPos5);
+  //     Serial.println("Hit1");
+  //     if (oldServo5Pos > servo5Pos) {
+  //       Serial.println("Hit2");
+  //       tempPos5 = tempPos5 - 2;
+  //       Serial.println(tempPos5);
+  //       wrist_ver.write(tempPos5);
+  //       if (tempPos5 <= servo5Pos) {
+  //         Serial.println("Hit3");
+  //         wrist_ver.write(servo5Pos);
+  //         oldServo5Pos = servo5Pos;  
+  //       }
+  //     }
+  //     else { // oldServoPos < servoPos
+  //       Serial.println("Hit2");
+  //       tempPos5 = tempPos5 + 2;
+  //       Serial.println(tempPos5);
+  //       wrist_ver.write(tempPos5);
+  //       if (tempPos5 >= servo5Pos) {
+  //         Serial.println("Hit3");
+  //         wrist_ver.write(servo5Pos);
+  //         oldServo5Pos = servo5Pos;  
+  //       }
+  //     } 
+  //   }
+  //   else {
+  //     tempPos5 = oldServo5Pos;
+  //   }
+  // }  
 
   if (oldServo6Pos != servo6Pos) {
     gripper.write(servo6Pos);
