@@ -77,7 +77,7 @@ class optimization_controller:
 
     def optimization_controller(self, dt):        
         # Set the gain on the manipulability maximisation
-        λm = 1.0
+        # λm = 1.0
         # Set the gain on the joint velocity norm minimisation
         λq = 0.1
 
@@ -89,7 +89,10 @@ class optimization_controller:
             # Run the simulation until the robot arrives at the goal
             while not self.arrived:
                 # Work out the base frame manipulator Jacobian using the current robot configuration
-                J = self.robot.jacob0(self.robot.q)                          
+                J = self.robot.jacob0(self.robot.q)     
+
+                # Calculate the manipulability Jacobian
+                # Jm = panda.jacobm(panda.q, axes='rot')                     
 
                 # The end-effector pose of the panda (using .A to get a numpy array instead of an SE3 object)
                 Te = self.robot.fkine(self.robot.q).A
@@ -122,6 +125,7 @@ class optimization_controller:
                 Ain[:self.robot.n, :self.robot.n], bin[:self.robot.n] = self._joint_velocity_damper()
 
                 # Linear component of objective function: the manipulability Jacobian, but have no manipulability so is zero
+                # c = np.r_[λm * -Jm.reshape((panda.n,)), np.zeros(6)]
                 c = np.zeros(self.robot.n + 6)
 
                 # The lower and upper bounds on the joint velocity and slack variable
