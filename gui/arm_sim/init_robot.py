@@ -11,6 +11,9 @@ class EiT_arm(robot.DHRobot):
                  robot.RevoluteDH(d = 0, a = 0, alpha= -np.pi/2, offset= -np.pi/2),
                  robot.RevoluteDH(d = 1/8 , a = 0, alpha=0)] 
         
+        for link in links:
+            link.qlim = np.r_[-270/360*np.pi, 270/360*np.pi]
+
         super().__init__(links, name='EiT arm')               
         
         if q0 is not None:
@@ -19,8 +22,7 @@ class EiT_arm(robot.DHRobot):
         if claw0 is not None:
             self._claw_angle = claw0
 
-
-        self.control_mode = "p" #get encoder positions for simulating
+        self.control_mode = "p"
         
     
     def q_degrees(self):        
