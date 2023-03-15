@@ -29,10 +29,10 @@ Te = arm_manipulator.fkine(arm_manipulator.q)
 inv = inverse_kinematics(Te, arm_manipulator)
 print('angles analytically:', inv)
 
-stack = np.vstack((q, inv))
-pattern = np.tile(stack, (5, 1))
+# stack = np.vstack((q, inv))
+# pattern = np.tile(stack, (5, 1))
 
-#arm_manipulator.plot(pattern, dt=1) #simulate the two different solutions
+# arm_manipulator.plot(pattern, dt=1) #simulate the two different solutions
 
 ##numerical solution
 sol, success, iter, searches, res = arm_manipulator.ikine_LM(Te)
@@ -42,5 +42,5 @@ if not success:
     print('could not find inverse solution numerically')
 else:
     print('angles numerically:', sol)
-    #arm_manipulator.plot(sol)
-    #input('press any key to close')
+    # arm_manipulator.plot(sol)
+    # input('press any key to close')
