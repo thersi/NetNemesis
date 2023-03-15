@@ -1,8 +1,9 @@
 import numpy as np
-from init_robot import EiT_arm
+from arm_sim.init_robot import EiT_arm
 import roboticstoolbox as rtb
 import threading
 import time
+
 
 class position_controller:
     """
@@ -14,19 +15,18 @@ class position_controller:
     The controller is launched in new thread, and new values for position and rotation is set using the set_pos method
     """
 
-    def __init__(self, robot : EiT_arm, kt = 1.0, kr = 1.3):
+    def __init__(self, robot: EiT_arm, kt=1.0, kr=1.3):
         self.robot = robot
         self.goal = robot.fkine(robot.q).A
-        self.arrived = True      
+        self.arrived = True
 
         self.k = np.array([kt, kt, kt, kr, kr, kr])
 
-
     def start(self, dt):
-        self.t = threading.Thread(target=self.position_controller, args = [dt], daemon = True)
+        self.t = threading.Thread(
+            target=self.position_controller, args=[dt], daemon=True)
         self.t.start()
 
-   
     def _joint_velocity(self, ev):
         """
         Calculates the required joint velocities qd to achieve the desired
@@ -40,10 +40,10 @@ class position_controller:
         J0 = self.robot.jacob0(self.robot.q)
         # Calculate the pseudoinverse of the base-frame manipulator Jacobian
         J0_pinv = np.linalg.pinv(J0)
-        qd = J0_pinv @ ev #+ (1.0 / λ) * (np.eye(robot.n) - J0_pinv @ J0) @ qnull.reshape(robot.n,)
+        # + (1.0 / λ) * (np.eye(robot.n) - J0_pinv @ J0) @ qnull.reshape(robot.n,)
+        qd = J0_pinv @ ev
 
         return qd
-    
 
     def set_pos(self, T_goal):
         """
@@ -54,8 +54,7 @@ class position_controller:
         self.goal = T_goal
         self.arrived = False
 
-
-    def position_controller(self, dt):        
+    def position_controller(self, dt):
         # Run the simulation until the robot arrives at the goal
         while True:
             while not self.arrived:
@@ -63,12 +62,13 @@ class position_controller:
                 Te = self.robot.fkine(self.robot.q).A
 
                 # Calculate the required end-effector velocity and whether the robot has arrived
-                ev, self.arrived = rtb.p_servo(Te, self.goal, gain=self.k, threshold=0.001, method="angle-axis")
+                ev, self.arrived = rtb.p_servo(
+                    Te, self.goal, gain=self.k, threshold=0.001, method="angle-axis")
 
                 # Calculate the required joint velocities and apply to the robot
                 self.robot.qd = self._joint_velocity(ev)
 
-                time.sleep(dt)           
+                time.sleep(dt)
             time.sleep(0.5)
 
 
@@ -90,8 +90,9 @@ if __name__ == "__main__":
 
     flag = False
     while True:
-        arm.q = arm.q + dt*(arm.qd) #get encoder values. Here simulated perfectly (no noise)
-        env.step(dt) #update plot
+        # get encoder values. Here simulated perfectly (no noise)
+        arm.q = arm.q + dt*(arm.qd)
+        env.step(dt)  # update plot
 
         if ctr.arrived:
             if flag:
