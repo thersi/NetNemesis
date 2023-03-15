@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QApplication
 from controller import Controller
 from PyQt6.QtCore import QUrl
 
+
 Form, Window = uic.loadUiType("gui/view.ui")
 app = QApplication([])
 window = Window()

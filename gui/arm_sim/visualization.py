@@ -18,7 +18,7 @@ def main():
     
     initialPose = arm.fkine([0,0,0,0,0])
 
-    print("\nInsert list of alngles: ")
+    print("\nInsert list of angles: ")
     print("Example: 20 20 20 20 20")
 
     stringInput = input()

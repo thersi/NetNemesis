@@ -9,7 +9,7 @@ class Controller(XboxController):
         self.arm = EiT_arm() #arm model corresponds to our physical arm
         self.form = form
 
-        self.arm_twin = EiT_arm() #
+        self.arm_twin = EiT_arm() #digital twin 
 
         reader = self._readDataThread()
         sender = self._sendDataThread()
@@ -35,12 +35,10 @@ class Controller(XboxController):
 
 
     def _onClick():
-        # read()   
-        pass     
+        read()        
 
     def _offClick():
         #send
         q = [90, 60, 90, 90, 45]
         claw = 73
-        # self.send(q, claw)
-        pass
+        self.send(q, claw)

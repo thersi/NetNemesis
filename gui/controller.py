@@ -13,9 +13,7 @@ class Controller(XboxController):
         
         self.arm = EiT_arm()
         self.form = form
-        ports = serial.tools.list_ports.comports()
-
-        print("init")
+        ports = serial.tools.list_ports.comports()        
 
         if (len(ports) == 0):
             print("No serial ports found")
