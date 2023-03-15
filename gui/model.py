@@ -10,6 +10,8 @@ import threading
 import time
 
 from arm_sim.position_controller import position_controller
+from controller import Controller
+from xbox_controller import XboxController
 
 Form, Window = uic.loadUiType("gui/view.ui")
 app = QApplication([])
@@ -75,7 +77,6 @@ timer = QTimer()
 timer.timeout.connect(update)
 timer.start(1)
 
-
-# Controller(form)
+Controller(form, XboxController)
 window.showMaximized()
 app.exec()
