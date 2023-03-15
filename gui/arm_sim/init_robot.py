@@ -18,6 +18,9 @@ class EiT_arm(robot.DHRobot):
 
         if claw0 is not None:
             self._claw_angle = claw0
+
+
+        self.control_mode = "p" #get encoder positions for simulating
         
     
     def q_degrees(self):        
