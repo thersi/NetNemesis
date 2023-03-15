@@ -11,11 +11,15 @@ class EiT_arm(robot.DHRobot):
                  robot.RevoluteDH(d = 0, a = 0, alpha= -np.pi/2, offset= -np.pi/2),
                  robot.RevoluteDH(d = 1/8 , a = 0, alpha=0)] 
         
-        for link in links:
-            link.qlim = np.r_[-270/360*np.pi, 270/360*np.pi]
 
-        super().__init__(links, name='EiT arm')               
-        
+
+        super().__init__(links, name='EiT arm')      
+
+        self.qlims = np.zeros((2, self.n))
+
+        for i in range(self.n):
+            self.qlims[:, i] = np.c_[-270/360*np.pi, 270/360*np.pi]
+
         if q0 is not None:
             self.q = q0          
 
@@ -23,6 +27,8 @@ class EiT_arm(robot.DHRobot):
             self._claw_angle = claw0
 
         self.control_mode = "p"
+
+        
         
     
     def q_degrees(self):        

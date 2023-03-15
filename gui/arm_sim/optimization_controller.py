@@ -54,11 +54,11 @@ class optimization_controller:
         Bin = np.zeros(self.robot.n)
 
         for i in range(self.robot.n):
-            if self.robot.q[i] - self.robot.qlim[0, i] <= self.pi:
-                Bin[i] = -self.gain * (((self.robot.qlim[0, i] - self.robot.q[i]) + self.ps) / (self.pi - self.ps))
+            if self.robot.q[i] - self.robot.qlims[0, i] <= self.pi:
+                Bin[i] = -self.gain * (((self.robot.qlims[0, i] - self.robot.q[i]) + self.ps) / (self.pi - self.ps))
                 Ain[i, i] = -1
-            if self.robot.qlim[1, i] - self.robot.q[i] <= self.pi:
-                Bin[i] = self.gain * ((self.robot.qlim[1, i] - self.robot.q[i]) - self.ps) / (self.pi - self.ps)
+            if self.robot.qlims[1, i] - self.robot.q[i] <= self.pi:
+                Bin[i] = self.gain * ((self.robot.qlims[1, i] - self.robot.q[i]) - self.ps) / (self.pi - self.ps)
                 Ain[i, i] = 1
 
         return Ain, Bin
