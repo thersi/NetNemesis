@@ -10,7 +10,7 @@
             <x>0</x>
             <y>0</y>
             <width>1388</width>
-            <height>800</height>
+            <height>900</height>
          </rect>
       </property>
       <property name="sizePolicy">
@@ -114,10 +114,10 @@
          </property>
          <property name="geometry">
             <rect>
-               <x>9</x>
+               <x>20</x>
                <y>0</y>
-               <width>571</width>
-               <height>791</height>
+               <width>461</width>
+               <height>850</height>
             </rect>
          </property>
          <property name="styleSheet">
@@ -186,13 +186,14 @@
       <widget class="QWidget" name="verticalLayoutWidget">
          <property name="geometry">
             <rect>
-               <x>660</x>
-               <y>240</y>
-               <width>631</width>
-               <height>541</height>
+               <x>570</x>
+               <y>69</y>
+               <width>800</width>
+               <height>790</height>
             </rect>
          </property>
-         <layout class="QVBoxLayout" name="simulationLayout" />
+         <layout class="QVBoxLayout" name="simulationLayout">
+         </layout>
       </widget>
    </widget>
    <resources />

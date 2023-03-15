@@ -5,19 +5,20 @@ import roboticstoolbox as rtb
 import threading
 import time
 
-import init_robot
+from arm_sim.init_robot import EiT_arm
 
 
-arm = init_robot.EiT_arm()
+arm = EiT_arm()
 
 
 dt = 0.05
+
 
 def q_change():
     while True:
         arm.q += 0.3*np.random.random(size=arm.q.shape)
         time.sleep(dt)
-    
+
 
 t = threading.Thread(target=q_change, daemon=True)
 t.start()
