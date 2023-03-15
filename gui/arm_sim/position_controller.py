@@ -88,12 +88,14 @@ if __name__ == "__main__":
     # Change the robot configuration to a ready position
     arm.q = [0.21, -0.03, 0.35, -1.90, -0.04]
 
-
-    t = 0
+    flag = False
     while True:
-        t = t + 1
         arm.q = arm.q + dt*(arm.qd) #get encoder values. Here simulated perfectly (no noise)
         env.step(dt) #update plot
 
-        if t == 100: #change goal
-            ctr.set_pos(arm.fkine([0.61, -0.03, 0.35, -1.90, -0.04]).A)
+        if ctr.arrived:
+            if flag:
+                ctr.set_pos(arm.fkine([1, 0, 1, 0, 1]).A)
+            else:
+                ctr.set_pos(arm.fkine([0.61, -0.03, 0.35, -1.90, -0.04]).A)
+            flag = not flag

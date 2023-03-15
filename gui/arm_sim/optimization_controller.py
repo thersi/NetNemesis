@@ -1,7 +1,5 @@
-
 import numpy as np
-import roboticstoolbox as rtb
-import spatialgeometry as sg                            
+import roboticstoolbox as rtb                         
 import qpsolvers as qp # this package provides several solvers for solving quadratic programmes
 import threading
 import time
@@ -91,10 +89,7 @@ class optimization_controller:
             # Run the simulation until the robot arrives at the goal
             while not self.arrived:
                 # Work out the base frame manipulator Jacobian using the current robot configuration
-                J = self.robot.jacob0(self.robot.q)
-
-                # Calculate the manipulability Jacobian
-                Jm = self.robot.jacobm(self.robot.q, axes='rot')            
+                J = self.robot.jacob0(self.robot.q)                          
 
                 # The end-effector pose of the panda (using .A to get a numpy array instead of an SE3 object)
                 Te = self.robot.fkine(self.robot.q).A
@@ -126,8 +121,8 @@ class optimization_controller:
                 # Form the joint limit velocity damper
                 Ain[:self.robot.n, :self.robot.n], bin[:self.robot.n] = self._joint_velocity_damper()
 
-                # Linear component of objective function: the manipulability Jacobian
-                c = np.r_[λm * -Jm.reshape((self.robot.n,)), np.zeros(6)]
+                # Linear component of objective function: the manipulability Jacobian, but have no manipulability so is zero
+                c = np.zeros(self.robot.n + 6)
 
                 # The lower and upper bounds on the joint velocity and slack variable
                 lb = np.r_[qd_lb, -10 * np.ones(6)]
@@ -160,11 +155,15 @@ if __name__ == "__main__":
     # Change the robot configuration to a ready position
     arm.q = [0.21, -0.03, 0.35, -1.90, -0.04]
 
-    t = 0
+    flag = False
     while True:
-        t = t + 1
         arm.q = arm.q + dt*(arm.qd) #get encoder values. Here simulated perfectly (no noise)
         env.step(dt) #update plot
 
-        if t == 100: #change goal
-            ctr.set_pos(arm.fkine([0.61, -0.03, 0.35, -1.90, -0.04]).A)
+        if ctr.arrived:
+            if flag:
+                ctr.set_pos(arm.fkine([1, 0, 1, 0, 1]).A)
+            else:
+                ctr.set_pos(arm.fkine([0.61, -0.03, 0.35, -1.90, -0.04]).A)
+            flag = not flag
+            
