@@ -4,7 +4,7 @@ import qpsolvers as qp # this package provides several solvers for solving quadr
 import threading
 import time
 
-from init_robot import EiT_arm
+from arm_sim.init_robot import EiT_arm
 
 
 class optimization_controller:

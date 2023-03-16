@@ -8,6 +8,7 @@ import time
 
 from arm_sim.init_robot import EiT_arm
 from arm_sim.position_controller import position_controller
+from arm_sim.optimization_controller import optimization_controller
 from Driver import Driver
 from xbox_controller import XboxController
 
@@ -25,7 +26,10 @@ arm = EiT_arm(q0 = [0.21, -0.03, 0.35, -1.90, -0.04]) #initial pose
 
 #controller time steps, how often new qd is calculated
 dt = 0.1
-ctr = position_controller(arm)
+
+# ctr = position_controller(arm)
+ctr = optimization_controller(arm)
+
 ctr.set_pos(arm.fkine([1, 0, 1, 0, 1]).A)
 ctr.start(dt)
 
@@ -37,7 +41,7 @@ def q_change(): #will be romved when arm encoders are up
     flag = False
     while True:
         # get encoder values. Here simulated perfectly (no noise)
-        arm.q = arm.q + dt*(arm.qd)
+        arm.q = arm.q + dt*arm.qd
         if ctr.arrived:
             if flag:
                 ctr.set_pos(arm.fkine([1, 0, 1, 0, 1]).A)
