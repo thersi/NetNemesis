@@ -9,8 +9,8 @@
          <rect>
             <x>0</x>
             <y>0</y>
-            <width>1400</width>
-            <height>800</height>
+            <width>1388</width>
+            <height>900</height>
          </rect>
       </property>
       <property name="sizePolicy">
@@ -114,10 +114,10 @@
          </property>
          <property name="geometry">
             <rect>
-               <x>0</x>
+               <x>20</x>
                <y>0</y>
-               <width>550</width>
-               <height>960</height>
+               <width>461</width>
+               <height>850</height>
             </rect>
          </property>
          <property name="styleSheet">
@@ -131,7 +131,7 @@
                <string>Tab 1</string>
             </attribute>
          </widget>
-         <widget class="QWidget" name="tab_2">
+         <widget class="QWidget" name="simulator">
             <attribute name="title">
                <string>Tab 2</string>
             </attribute>
@@ -183,25 +183,19 @@
             </widget>
          </widget>
       </widget>
-      <widget class="QWebEngineView" name="simulationView" native="true">
+      <widget class="QWidget" name="verticalLayoutWidget">
          <property name="geometry">
             <rect>
-               <x>580</x>
-               <y>60</y>
+               <x>570</x>
+               <y>69</y>
                <width>800</width>
-               <height>800</height>
+               <height>790</height>
             </rect>
          </property>
+         <layout class="QVBoxLayout" name="simulationLayout">
+         </layout>
       </widget>
    </widget>
-   <customwidgets>
-      <customwidget>
-         <class>QWebEngineView</class>
-         <extends>QWidget</extends>
-         <header location="global">qwebengineview.h</header>
-         <container>1</container>
-      </customwidget>
-   </customwidgets>
    <resources />
    <connections />
 </ui>
