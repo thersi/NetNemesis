@@ -1,16 +1,14 @@
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from arm_sim.init_robot import EiT_arm
-import numpy as np
+import matplotlib.pyplot as plt
 import roboticstoolbox as rtb
 import threading
 import time
 
+from arm_sim.init_robot import EiT_arm
 from arm_sim.position_controller import position_controller
-from controller import Controller
+from Driver import Driver
 from xbox_controller import XboxController
 
 Form, Window = uic.loadUiType("gui/view.ui")
@@ -20,30 +18,22 @@ form = Form()
 form.setupUi(window)
 
 # Create figure with subplots
-figure = Figure()
-ax1 = figure.add_subplot(111, projection="3d")
-canvas = FigureCanvas(figure)
+figure = plt.figure()
+form.simulationLayout.addWidget(figure.canvas)
 
-layout = form.simulationLayout
-layout.addWidget(canvas)
+arm = EiT_arm(q0 = [0.21, -0.03, 0.35, -1.90, -0.04]) #initial pose
 
-
-arm = EiT_arm()
-
-
-dt = 0.05
-
+#controller time steps, how often new qd is calculated
+dt = 0.1
 ctr = position_controller(arm)
 ctr.set_pos(arm.fkine([1, 0, 1, 0, 1]).A)
 ctr.start(dt)
-# Change the robot configuration to a ready position
-arm.q = [0.21, -0.03, 0.35, -1.90, -0.04]
-
 
 env = rtb.backends.PyPlot.PyPlot()
+env.launch(name = "environment", fig=figure) #lauches a second plot. could copy robotic toolbox source and comment out plt.show() insted. should solve issue
+env.add(arm)
 
-
-def q_change():
+def q_change(): #will be romved when arm encoders are up
     flag = False
     while True:
         # get encoder values. Here simulated perfectly (no noise)
@@ -56,27 +46,24 @@ def q_change():
             flag = not flag
         time.sleep(dt)
 
-
 t = threading.Thread(target=q_change, daemon=True)
 t.start()
 
+def update(): #update plot periodically
+    # env.step(dt) #this lauches the second plot on every iteration
 
-env.launch("environment")
+    env.robots[0].draw() #easy hack by inspection of toolbox source code, perhaps should redraw something more later
+    #consequence is that time is not shown, however not important for our use (I think)
 
-env.ax = ax1
-env.add(arm)
-
-
-def update():
-    env.step(dt)
-    canvas.draw()
+    # figure.canvas.draw() #for some reason not neccessary
 
 
 # Initialize QTimer
 timer = QTimer()
 timer.timeout.connect(update)
-timer.start(1)
+timer.start(dt)
 
-Controller(form, XboxController)
+# xbxCtrl = XboxController()
+# Driver(arm, XboxController) ##assign to variable to avoid garbage collection?
 window.showMaximized()
 app.exec()
