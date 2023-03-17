@@ -77,6 +77,6 @@ timer = QTimer()
 timer.timeout.connect(update)
 timer.start(1)
 
-Controller(form, XboxController)
+Controller(XboxController)
 window.showMaximized()
 app.exec()
