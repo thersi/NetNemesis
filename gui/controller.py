@@ -32,7 +32,7 @@ class Controller(XboxController):
         x.start()   
 
         y = threading.Thread(target=self._sendDataThread, daemon=True)
-        y.start()  
+        #y.start()  
 
         # form.onButton.clicked.connect(lambda: ser.write(str.encode('<Servo1: ' + servo6  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>")))
         # form.offButton.clicked.connect(lambda: ser.write(str.encode('<Servo1: 90; Servo2: 60; Servo3: 90; Servo4: 90; Servo5: 45; Servo6: 73;>')))
@@ -99,7 +99,7 @@ class Controller(XboxController):
 
         while True:
             q_degrees = np.rint(self.arm.q_degrees()).astype(int)
-            # claw_deg = np.rint(self.arm.claw_deg()).astype(int)
+            claw_deg = np.rint(self.arm.claw_deg()).astype(int)
 
             controller_state = self.read()
 
@@ -132,13 +132,13 @@ class Controller(XboxController):
             joy2 = int(np.interp(controller_state[1],[-1,1],[0,100]))
             if joy2 >= 65:
                 #print(joy2)
-                servo2int += 1 + controller_state[1] * 2
+                servo2int += 0.5 #+ controller_state[1] * 2
                 if servo2int >= 180:                  
                     servo2int = 180
                 servo2 = str(int(servo2int))
             elif joy2 <= 35:
                 #print(joy2)
-                servo2int -= 1 - controller_state[1] * 2
+                servo2int -= 0.5 #- controller_state[1] * 2
                 if servo2int <= 0:                  
                     servo2int = 0
                 servo2 = str(int(servo2int))
@@ -147,43 +147,43 @@ class Controller(XboxController):
             joy3 = int(np.interp(controller_state[0],[-1,1],[0,100]))
             if joy3 >= 65:
                 #print(joy3)
-                servo3int += 1 + controller_state[0] * 2
+                servo3int += 0.5 #+ controller_state[0] * 2
                 if servo3int >= 180:                  
                     servo3int = 180
                 servo3 = str(int(servo3int))
             elif joy3 <= 35:
                 #print(joy3)
-                servo3int -= 1 - controller_state[0] * 2
+                servo3int -= 0.5 #- controller_state[0] * 2
                 if servo3int <= 0:                  
                     servo3int = 0
                 servo3 = str(int(servo3int))
 
             #servo4 = str(180)
-            joy4 = int(np.interp(controller_state[2],[-1,1],[0,100]))
+            joy4 = int(np.interp(controller_state[3],[-1,1],[0,100]))
             if joy4 >= 65:
                 #print(joy4)
-                servo4int += 1 + controller_state[2] * 2
+                servo4int += 0.5 #+ controller_state[3] * 2
                 if servo4int >= 180:                  
                     servo4int = 180
                 servo4 = str(int(servo4int))
             elif joy4 <= 35:
                 #print(joy4)
-                servo4int -= 1 - controller_state[2] * 2
+                servo4int -= 0.5 #- controller_state[3] * 2
                 if servo4int <= 0:                  
                     servo4int = 0
                 servo4 = str(int(servo4int))
 
             #servo5 = str(90)
-            joy5 = int(np.interp(controller_state[3],[-1,1],[0,100]))
+            joy5 = int(np.interp(controller_state[2],[-1,1],[0,100]))
             if joy5 >= 65:
                 #print(joy5)
-                servo5int += 1 + controller_state[3] * 2
+                servo5int += 0.5 #+ controller_state[2] * 2
                 if servo5int >= 180:                  
                     servo5int = 180
                 servo5 = str(int(servo5int))
             elif joy5 <= 35:
                 #print(joy5)
-                servo5int -= 1 - controller_state[3] * 2
+                servo5int -= 0.5 #- controller_state[2] * 2
                 if servo5int <= 0:                  
                     servo5int = 0
                 servo5 = str(int(servo5int))

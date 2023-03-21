@@ -5,8 +5,9 @@
 // The format of the message will be as following:
 //    b'<x,y,z,a,b,c>'
 
-#include <Servo.h>
-#include <Braccio.h>
+//#include <Servo.h>
+//#include <Braccio.h>
+#include <VarSpeedServo.h>
 
 String line;
 
@@ -67,12 +68,12 @@ int c = 393;
 
 float m, n;
 
-Servo base;
-Servo shoulder;
-Servo elbow;
-Servo wrist_ver;
-Servo wrist_rot;
-Servo gripper;
+VarSpeedServo base;
+VarSpeedServo shoulder;
+VarSpeedServo elbow;
+VarSpeedServo wrist_ver;
+VarSpeedServo wrist_rot;
+VarSpeedServo gripper;
 
 //Serial greier
 const byte numChars = 32;
@@ -87,32 +88,37 @@ bool newData = false;
 
 void setup() {
   Serial.begin(9600);
-  //myservo.attach(3);
+
+  gripper.write(10);
+  wrist_rot.write(90);
+  wrist_ver.write(180);
+  elbow.write(180);
+  shoulder.write(5);
+  base.write(90);
+
   //Serial.setTimeout(100);
-  Braccio.ServoMovement(20, 90, 5, 180, 180, 90, 10);
+  //Braccio.ServoMovement(20, 90, 5, 180, 180, 90, 10);
   
   pinMode(12, OUTPUT);    //you need to set HIGH the pin 12
   digitalWrite(12, HIGH);
-  Braccio.begin(SOFT_START_DISABLED);
+  //Braccio.begin(SOFT_START_DISABLED);
+  gripper.attach(3);
+  wrist_rot.attach(5);
+  wrist_ver.attach(6);
+  elbow.attach(9);
+  shoulder.attach(10);
+  base.attach(11);
+  
   updateServos();  
   
   pinMode(LED_BUILTIN, OUTPUT);
   
   Serial.println("<Ready>");
-
-  m = ((A - B) / (a - b) + (C - A) / (c - a)) / 2;
-  n = ((A * b - B * a) / (b - a) + (B * c - C * b) / (c - b)) / 2;
-
-  m = 0.47;
-  n = -33.4;
-
-  
 }
 
 void loop() {
   readSerial();
   if (newData == true) {
-        digitalWrite(LED_BUILTIN, HIGH);
         strcpy(tempChars, receivedChars);
           // this temporary copy is necessary to protect the original data
           //   because strtok() used in parseData() replaces the commas with \0
@@ -162,7 +168,6 @@ void readSerial() {
   char rc;
 
   if (Serial.available() > 0 && newData == false) {
-    //digitalWrite(LED_BUILTIN, HIGH);
     rc = Serial.read();
     if (recvInProgress == true) {
       if (rc != endMarker) {
@@ -184,108 +189,34 @@ void readSerial() {
       recvInProgress = true;
     }
   }
-  //digitalWrite(LED_BUILTIN, LOW);
 
 }
 
 void updateServos() {
   if (oldServo1Pos != servo1Pos) {
-    base.write(servo1Pos);
+    base.write(servo1Pos, 20);
     oldServo1Pos = servo1Pos;    
   }
   if (oldServo2Pos != servo2Pos) {
-    shoulder.write(servo2Pos);
+    shoulder.write(servo2Pos, 20);
     oldServo2Pos = servo2Pos;    
   }
   if (oldServo3Pos != servo3Pos) {
-    elbow.write(servo3Pos);
+    elbow.write(servo3Pos, 20);
     oldServo3Pos = servo3Pos;    
   }
-   if (oldServo4Pos != servo4Pos) {
-     wrist_rot.write(servo4Pos);
-     oldServo4Pos = servo4Pos;    
-   }
-
-
+  if (oldServo4Pos != servo4Pos) {
+    wrist_rot.write(servo4Pos, 30);
+    oldServo4Pos = servo4Pos;    
+  }
   if (oldServo5Pos != servo5Pos) {
-    wrist_ver.write(servo5Pos);
+    wrist_ver.write(servo5Pos, 50);
     oldServo5Pos = servo5Pos;    
   }
-  
-  
-  // if (oldServo3Pos != servo3Pos) {
-  //   error = servoPos - oldServoPos;
-  //   elbow.write(servo3Pos);
-  //   oldServo3Pos = servo3Pos;    
-  // }
-  // if (oldServo4Pos != servo4Pos) {
-  //   if (oldServo4Pos > servo4Pos) {
-  //     Serial.println("Smaller");
-  //     Serial.println(oldServo4Pos);
-  //     oldServo4Pos -= 2;
-  //     if (oldServo4Pos <= servo4Pos) {
-  //       wrist_rot.write(servo4Pos);
-  //       oldServo4Pos = servo4Pos;  
-  //     }
-  //     else {
-  //       wrist_rot.write(oldServo4Pos);
-  //     }
-  //   }
-  //   else {
-  //     oldServo4Pos += 2;
-  //     Serial.println("Bigger");
-  //     Serial.println(oldServo4Pos);
-  //     if (oldServo4Pos >= servo4Pos) {
-  //       wrist_rot.write(servo4Pos);
-  //       oldServo4Pos = servo4Pos;  
-  //     }
-  //     else {
-  //       wrist_rot.write(oldServo4Pos);
-  //     }
-  //   }
-  // }
-
-  // if (oldServo5Pos != servo5Pos) {
-  //   if (tempPos5 != oldServo5Pos) {
-  //     Serial.println(tempPos5);
-  //     Serial.println("Hit1");
-  //     if (oldServo5Pos > servo5Pos) {
-  //       Serial.println("Hit2");
-  //       tempPos5 = tempPos5 - 2;
-  //       Serial.println(tempPos5);
-  //       wrist_ver.write(tempPos5);
-  //       if (tempPos5 <= servo5Pos) {
-  //         Serial.println("Hit3");
-  //         wrist_ver.write(servo5Pos);
-  //         oldServo5Pos = servo5Pos;  
-  //       }
-  //     }
-  //     else { // oldServoPos < servoPos
-  //       Serial.println("Hit2");
-  //       tempPos5 = tempPos5 + 2;
-  //       Serial.println(tempPos5);
-  //       wrist_ver.write(tempPos5);
-  //       if (tempPos5 >= servo5Pos) {
-  //         Serial.println("Hit3");
-  //         wrist_ver.write(servo5Pos);
-  //         oldServo5Pos = servo5Pos;  
-  //       }
-  //     } 
-  //   }
-  //   else {
-  //     tempPos5 = oldServo5Pos;
-  //   }
-  // }  
-
   if (oldServo6Pos != servo6Pos) {
     gripper.write(servo6Pos);
     oldServo6Pos = servo6Pos;    
   }
-
-  //Braccio.ServoMovement(0, servo1Pos, servo2Pos, servo3Pos, servo4Pos, servo5Pos, servo6Pos);
-  //myservo.write(servo6Pos);
-  
-  //delay(100);
 }
 
 void realPos() {
@@ -350,7 +281,5 @@ void writeSerial() {
       Serial.print("; \n");
       oldReal6Pos = real6Pos;
     }
-    //Serial.print("\n");
-    //break;
   }
 }
