@@ -11,7 +11,6 @@
 
 String line;
 
-
 String servo1 = "";
 String servo2 = "";
 String servo3 = "";
@@ -57,17 +56,6 @@ short real6Pos;
 short oldReal6Pos;
 short oldServo6Pos;
 
-// Servo calibration variables
-int A = 85;
-int B = 4;
-int C = 245;
-
-int a = 380;
-int b = 403;
-int c = 393;
-
-float m, n;
-
 VarSpeedServo base;
 VarSpeedServo shoulder;
 VarSpeedServo elbow;
@@ -102,12 +90,12 @@ void setup() {
   pinMode(12, OUTPUT);    //you need to set HIGH the pin 12
   digitalWrite(12, HIGH);
   //Braccio.begin(SOFT_START_DISABLED);
-  gripper.attach(3);
-  wrist_rot.attach(5);
-  wrist_ver.attach(6);
-  elbow.attach(9);
-  shoulder.attach(10);
-  base.attach(11);
+  gripper.attach(3, 500, 2500);
+  wrist_rot.attach(5, 500, 2500);
+  wrist_ver.attach(6, 500, 2500);
+  elbow.attach(9, 500, 2500);
+  shoulder.attach(10, 500, 2500);
+  base.attach(11, 500, 2500);
   
   updateServos();  
   
@@ -194,23 +182,28 @@ void readSerial() {
 
 void updateServos() {
   if (oldServo1Pos != servo1Pos) {
-    base.write(servo1Pos, 20);
+    int servoValue = map(servo1Pos, 0, 270, 500, 2500);
+    base.write(servoValue, 20);
     oldServo1Pos = servo1Pos;    
   }
   if (oldServo2Pos != servo2Pos) {
-    shoulder.write(servo2Pos, 20);
+    int servoValue = map(servo2Pos, 0, 270, 500, 2500);
+    shoulder.write(servoValue, 20);
     oldServo2Pos = servo2Pos;    
   }
   if (oldServo3Pos != servo3Pos) {
-    elbow.write(servo3Pos, 20);
+    int servoValue = map(servo3Pos, 0, 270, 500, 2500);
+    elbow.write(servoValue, 20);
     oldServo3Pos = servo3Pos;    
   }
   if (oldServo4Pos != servo4Pos) {
-    wrist_rot.write(servo4Pos, 30);
+    int servoValue = map(servo4Pos, 0, 270, 500, 2500);
+    wrist_ver.write(servoValue, 30);
     oldServo4Pos = servo4Pos;    
   }
   if (oldServo5Pos != servo5Pos) {
-    wrist_ver.write(servo5Pos, 50);
+    int servoValue = map(servo4Pos, 0, 270, 500, 2500);
+    wrist_rot.write(servoValue, 50);
     oldServo5Pos = servo5Pos;    
   }
   if (oldServo6Pos != servo6Pos) {
@@ -233,13 +226,6 @@ void realPos() {
   servo4In = 106;
   servo5In = 108;
   servo6In = 110;
-
-  real1Pos = m * servo1In + n;
-  real2Pos = m * servo2In + n;
-  real3Pos = m * servo3In + n;
-  real4Pos = m * servo4In + n;
-  real5Pos = m * servo5In + n;
-  real6Pos = m * servo6In + n;
 }
 
 void writeSerial() {

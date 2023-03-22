@@ -32,7 +32,7 @@ class Controller(XboxController):
         x.start()   
 
         y = threading.Thread(target=self._sendDataThread, daemon=True)
-        #y.start()  
+        y.start()  
 
         # form.onButton.clicked.connect(lambda: ser.write(str.encode('<Servo1: ' + servo6  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>")))
         # form.offButton.clicked.connect(lambda: ser.write(str.encode('<Servo1: 90; Servo2: 60; Servo3: 90; Servo4: 90; Servo5: 45; Servo6: 73;>')))
@@ -159,31 +159,31 @@ class Controller(XboxController):
                 servo3 = str(int(servo3int))
 
             #servo4 = str(180)
-            joy4 = int(np.interp(controller_state[3],[-1,1],[0,100]))
+            joy4 = int(np.interp(controller_state[2],[-1,1],[0,100]))
             if joy4 >= 65:
                 #print(joy4)
-                servo4int += 0.5 #+ controller_state[3] * 2
+                servo4int += 0.5 #+ controller_state[2] * 2
                 if servo4int >= 180:                  
                     servo4int = 180
                 servo4 = str(int(servo4int))
             elif joy4 <= 35:
                 #print(joy4)
-                servo4int -= 0.5 #- controller_state[3] * 2
+                servo4int -= 0.5 #- controller_state[2] * 2
                 if servo4int <= 0:                  
                     servo4int = 0
                 servo4 = str(int(servo4int))
 
             #servo5 = str(90)
-            joy5 = int(np.interp(controller_state[2],[-1,1],[0,100]))
+            joy5 = int(np.interp(controller_state[3],[-1,1],[0,100]))
             if joy5 >= 65:
                 #print(joy5)
-                servo5int += 0.5 #+ controller_state[2] * 2
+                servo5int += 0.5 #+ controller_state[3] * 2
                 if servo5int >= 180:                  
                     servo5int = 180
                 servo5 = str(int(servo5int))
             elif joy5 <= 35:
                 #print(joy5)
-                servo5int -= 0.5 #- controller_state[2] * 2
+                servo5int -= 0.5 #- controller_state[3] * 2
                 if servo5int <= 0:                  
                     servo5int = 0
                 servo5 = str(int(servo5int))
