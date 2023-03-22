@@ -65,7 +65,7 @@ def update(): #update plot periodically
 # Initialize QTimer
 timer = QTimer()
 timer.timeout.connect(update)
-timer.start(dt)
+timer.start(5)
 
 # xbxCtrl = XboxController()
 # Driver(arm, XboxController) ##assign to variable to avoid garbage collection?

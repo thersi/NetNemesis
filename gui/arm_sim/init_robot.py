@@ -36,7 +36,7 @@ class EiT_arm(robot.DHRobot):
 
 
     def claw_deg(self):
-        return self.claw_deg*180/np.pi
+        return self.claw_angle*180/np.pi
 
 
     def inverse_kinematics(self, T, verbose=True):
