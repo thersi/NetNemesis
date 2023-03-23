@@ -47,33 +47,60 @@ class Controller(XboxController):
             if self.ser.in_waiting > 0:                
                 line = self.ser.readline()
                 if line:
-                    curr_degs = self.arm.q_degrees()
-                    claw_deg = self.arm.claw_deg()
+                    #curr_degs = self.arm.q_degrees()
+                    #claw_deg = self.arm.claw_deg()
 
                     string = line.decode()
-                    if "<Ready>" in string:
-                        print("Connection established")
+                    while True:
+                        if "<Ready>" in string:
+                            print("Connection established")
+                            break
+                    
                     if "ServoPos1" in string:
-                        curr_degs[0] = re.findall(r'\d+', string)[1]
-                        print("ServoPos1:", int(curr_degs[0]))
-                    if "ServoPos2" in string:
-                        curr_degs[1] = re.findall(r'\d+', string)[1]        
-                        print("ServoPos2:", int(curr_degs[1]))
-                    if "ServoPos3" in string:
-                        curr_degs[2] = re.findall(r'\d+', string)[1]                        
-                        print("ServoPos3:", int(curr_degs[2]))
-                    if "ServoPos4" in string:
-                        curr_degs[3] = re.findall(r'\d+', string)[1]                        
-                        print("ServoPos4:", int(curr_degs[3]))
-                    if "ServoPos5" in string:
-                        curr_degs[4] = re.findall(r'\d+', string)[1]                        
-                        print("ServoPos5:", int(curr_degs[4]))
-                    if "ServoPos6" in string:
-                        claw_deg = re.findall(r'\d+', string)[1]                        
-                        print("ServoPos6:", claw_deg)
+                        tempArray = re.findall(r'\d+', string)
+                        ServoPos1 = float(tempArray[1])
 
-                    self.arm.q_degrees(curr_degs)
-                    self.arm.claw_deg(claw_deg)
+                        self.arm.q[0] = ServoPos1*np.pi/180.0
+
+                        #print("ServoPos1:", ServoPos1)
+                    if "ServoPos2" in string:
+                        tempArray = re.findall(r'\d+', string)
+                        ServoPos2 = float(tempArray[1])
+
+                        self.arm.q[1] = ServoPos2*np.pi/180.0
+
+                        #print("ServoPos2:", ServoPos2)
+                    if "ServoPos3" in string:
+                        tempArray = re.findall(r'\d+', string)
+                        ServoPos3 = float(tempArray[1])
+
+                        self.arm.q[2] = ServoPos3*np.pi/180.0
+
+                        #print("ServoPos3:", ServoPos3)
+                    if "ServoPos4" in string:
+                        tempArray = re.findall(r'\d+', string)
+                        ServoPos4 = float(tempArray[1])
+
+                        self.arm.q[3] = ServoPos4*np.pi/180.0
+
+                        print("ServoPos4:", ServoPos4)
+                    if "ServoPos5" in string:
+                        tempArray = re.findall(r'\d+', string)
+                        ServoPos5 = float(tempArray[1])
+
+                        self.arm.q[4] = ServoPos5*np.pi/180.0
+
+                        #print("ServoPos5:", ServoPos5)
+                    if "ServoPos6" in string:
+                        tempArray = re.findall(r'\d+', string)
+                        ServoPos6 = float(tempArray[1])
+
+                        self.arm.claw_angle = ServoPos6*np.pi/180.0
+
+                        #print("ServoPos6:", ServoPos6)
+
+                    #self.arm.q_degrees(curr_degs)
+                    #self.arm.claw_deg(claw_deg)
                 
                     
 

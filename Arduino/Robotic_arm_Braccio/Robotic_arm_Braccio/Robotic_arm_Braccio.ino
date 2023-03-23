@@ -220,23 +220,149 @@ void realPos() {
   servo5In = analogRead(A4);
   servo6In = analogRead(A5);
 
-  servo1In = 100;
-  servo2In = 102;
-  servo3In = 104;
-  servo4In = 106;
-  servo5In = 108;
-  servo6In = 110;
+  // servo1In = 100;
+  // servo2In = 102;
+  // servo3In = 104;
+  // servo4In = 106;
+  // servo5In = 108;
+  // servo6In = 110;
+
+  real1Pos = map(servo1In, 47, 609, 0, 270);
+  real2Pos = map(servo2In, 47, 609, 0, 270);
+  real3Pos = map(servo3In, 47, 609, 0, 270);
+  real4Pos = map(servo4In, 47, 609, 0, 270);
+  real5Pos = map(servo5In, 47, 609, 0, 270);
+  real6Pos = map(servo6In, 47, 609, 0, 270);
+
 }
 
 void writeSerial() {
   if (Serial.availableForWrite() > 0) {
-    if (real1Pos != oldReal1Pos){
-      Serial.print("ServoPos1: ");
-      Serial.print(real1Pos);
-      Serial.print("; \n");
-      oldReal1Pos = real1Pos;
-      
-    }
+    if (real1Pos != oldReal1Pos || real2Pos != oldReal2Pos || real3Pos != oldReal3Pos || 
+        real4Pos != oldReal4Pos || real5Pos != oldReal5Pos || real6Pos != oldReal6Pos) {
+          Serial.print("<");
+          Serial.print(real1Pos);
+          Serial.print(",");
+          Serial.print(real2Pos);
+          Serial.print(",");
+          Serial.print(real3Pos);
+          Serial.print(",");
+          Serial.print(real4Pos);
+          Serial.print(",");
+          Serial.print(real5Pos);
+          Serial.print(",");
+          Serial.print(real6Pos);
+          Serial.println(">");
+        }
+
+    // if (real1Pos != oldReal1Pos){
+    //   if (real1Pos > oldReal1Pos) {
+    //     if(real1Pos - oldReal1Pos > 10) {
+    //       Serial.print("ServoPos1: ");
+    //       Serial.print(real1Pos);
+    //       Serial.print("; \n");
+    //       oldReal1Pos = real1Pos;
+    //     }
+    //   }
+    //   else {
+    //     if(oldReal1Pos - real1Pos > 10) {
+    //       Serial.print("ServoPos1: ");
+    //       Serial.print(real1Pos);
+    //       Serial.print("; \n");
+    //       oldReal1Pos = real1Pos;
+    //     }
+    //   } 
+    // }
+    // if (real2Pos != oldReal2Pos){
+    //   if (real2Pos > oldReal2Pos) {
+    //     if(real2Pos - oldReal2Pos > 10) {
+    //       Serial.print("ServoPos2: ");
+    //       Serial.print(real2Pos);
+    //       Serial.print("; \n");
+    //       oldReal2Pos = real2Pos;
+    //     }
+    //   }
+    //   else {
+    //     if(oldReal2Pos - real2Pos > 10) {
+    //       Serial.print("ServoPos2: ");
+    //       Serial.print(real2Pos);
+    //       Serial.print("; \n");
+    //       oldReal2Pos = real2Pos;
+    //     }
+    //   } 
+    // }
+    // if (real3Pos != oldReal3Pos){
+    //   if (real3Pos > oldReal3Pos) {
+    //     if(real3Pos - oldReal3Pos > 10) {
+    //       Serial.print("ServoPos3: ");
+    //       Serial.print(real3Pos);
+    //       Serial.print("; \n");
+    //       oldReal3Pos = real3Pos;
+    //     }
+    //   }
+    //   else {
+    //     if(oldReal3Pos - real3Pos > 10) {
+    //       Serial.print("ServoPos3: ");
+    //       Serial.print(real3Pos);
+    //       Serial.print("; \n");
+    //       oldReal3Pos = real3Pos;
+    //     }
+    //   } 
+    // }
+    if (real4Pos != oldReal4Pos){
+      if (real4Pos > oldReal4Pos) {
+        if(real4Pos - oldReal4Pos > 5) {
+          Serial.print("ServoPos4: ");
+          Serial.print(real4Pos);
+          Serial.print("; \n");
+          oldReal4Pos = real4Pos;
+        }
+      }
+      else {
+        if(oldReal4Pos - real4Pos > 5) {
+          Serial.print("ServoPos4: ");
+          Serial.print(real4Pos);
+          Serial.print("; \n");
+          oldReal4Pos = real4Pos;
+        }
+      } 
+    }/*if (real1Pos != oldReal1Pos){
+      if (real1Pos > oldReal1Pos) {
+        if(real1Pos - oldReal1Pos > 10) {
+          Serial.print("ServoPos1: ");
+          Serial.print(real1Pos);
+          Serial.print("; \n");
+          oldReal1Pos = real1Pos;
+        }
+      }
+      else {
+        if(oldReal1Pos - real1Pos > 10) {
+          Serial.print("ServoPos1: ");
+          Serial.print(real1Pos);
+          Serial.print("; \n");
+          oldReal1Pos = real1Pos;
+        }
+      } 
+    }if (real1Pos != oldReal1Pos){
+      if (real1Pos > oldReal1Pos) {
+        if(real1Pos - oldReal1Pos > 10) {
+          Serial.print("ServoPos1: ");
+          Serial.print(real1Pos);
+          Serial.print("; \n");
+          oldReal1Pos = real1Pos;
+        }
+      }
+      else {
+        if(oldReal1Pos - real1Pos > 10) {
+          Serial.print("ServoPos1: ");
+          Serial.print(real1Pos);
+          Serial.print("; \n");
+          oldReal1Pos = real1Pos;
+        }
+      } 
+    }*/
+
+    /*
     if (real2Pos != oldReal2Pos){
       Serial.print("ServoPos2: ");
       Serial.print(real2Pos);
@@ -266,6 +392,6 @@ void writeSerial() {
       Serial.print(real6Pos);
       Serial.print("; \n");
       oldReal6Pos = real6Pos;
-    }
+    }*/
   }
 }
