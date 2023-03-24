@@ -78,5 +78,5 @@ timer.timeout.connect(update)
 timer.start(1)
 
 Controller(XboxController)
-window.showMaximized()
+window.show()
 app.exec()

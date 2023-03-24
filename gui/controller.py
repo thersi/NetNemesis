@@ -42,7 +42,13 @@ class Controller(XboxController):
 
 
     def _readDataThread(self):
-        claw_deg = 0        
+        claw_deg = 0
+        ServoPos1 = 90
+        ServoPos2 = 0
+        ServoPos3 = 180 
+        ServoPos4 = 180
+        ServoPos5 = 0
+        ServoPos6 = 10        
         while True:
             if self.ser.in_waiting > 0:                
                 line = self.ser.readline()
@@ -51,51 +57,68 @@ class Controller(XboxController):
                     #claw_deg = self.arm.claw_deg()
 
                     string = line.decode()
-                    while True:
-                        if "<Ready>" in string:
-                            print("Connection established")
-                            break
+                    if "<Ready>" in string:
+                        print("Connection established")
                     
-                    if "ServoPos1" in string:
-                        tempArray = re.findall(r'\d+', string)
-                        ServoPos1 = float(tempArray[1])
+                    if "<" in string and ">" in string and not "<Ready>" in string:
+                        string = string.split(",")
+                        #TODO from here
+                        ServoPos1 = int(string[0].translate({ord('<'): None}))
+                        ServoPos2 = int(string[1])
+                        ServoPos3 = int(string[2])
+                        ServoPos4 = int(string[3])
+                        ServoPos5 = int(string[4])
+                        ServoPos6 = int(string[5].translate({ord('>'): None}))
 
-                        self.arm.q[0] = ServoPos1*np.pi/180.0
+                        print("ServoPos1: ", ServoPos1)
+                        print("ServoPos2: ", ServoPos2)
+                        print("ServoPos3: ", ServoPos3)
+                        print("ServoPos4: ", ServoPos4)
+                        print("ServoPos5: ", ServoPos5)
+                        print("ServoPos6: ", ServoPos6)
 
-                        #print("ServoPos1:", ServoPos1)
-                    if "ServoPos2" in string:
-                        tempArray = re.findall(r'\d+', string)
-                        ServoPos2 = float(tempArray[1])
 
-                        self.arm.q[1] = ServoPos2*np.pi/180.0
 
-                        #print("ServoPos2:", ServoPos2)
-                    if "ServoPos3" in string:
-                        tempArray = re.findall(r'\d+', string)
-                        ServoPos3 = float(tempArray[1])
+                    # if "ServoPos1" in string:
+                    #     tempArray = re.findall(r'\d+', string)
+                    #     ServoPos1 = float(tempArray[1])
 
-                        self.arm.q[2] = ServoPos3*np.pi/180.0
+                    #     self.arm.q[0] = ServoPos1*np.pi/180.0
 
-                        #print("ServoPos3:", ServoPos3)
-                    if "ServoPos4" in string:
-                        tempArray = re.findall(r'\d+', string)
-                        ServoPos4 = float(tempArray[1])
+                    #     #print("ServoPos1:", ServoPos1)
+                    # if "ServoPos2" in string:
+                    #     tempArray = re.findall(r'\d+', string)
+                    #     ServoPos2 = float(tempArray[1])
 
-                        self.arm.q[3] = ServoPos4*np.pi/180.0
+                    #     self.arm.q[1] = ServoPos2*np.pi/180.0
 
-                        print("ServoPos4:", ServoPos4)
-                    if "ServoPos5" in string:
-                        tempArray = re.findall(r'\d+', string)
-                        ServoPos5 = float(tempArray[1])
+                    #     #print("ServoPos2:", ServoPos2)
+                    # if "ServoPos3" in string:
+                    #     tempArray = re.findall(r'\d+', string)
+                    #     ServoPos3 = float(tempArray[1])
 
-                        self.arm.q[4] = ServoPos5*np.pi/180.0
+                    #     self.arm.q[2] = ServoPos3*np.pi/180.0
 
-                        #print("ServoPos5:", ServoPos5)
-                    if "ServoPos6" in string:
-                        tempArray = re.findall(r'\d+', string)
-                        ServoPos6 = float(tempArray[1])
+                    #     #print("ServoPos3:", ServoPos3)
+                    # if "ServoPos4" in string:
+                    #     tempArray = re.findall(r'\d+', string)
+                    #     ServoPos4 = float(tempArray[1])
 
-                        self.arm.claw_angle = ServoPos6*np.pi/180.0
+                    #     self.arm.q[3] = ServoPos4*np.pi/180.0
+
+                    #     print("ServoPos4:", ServoPos4)
+                    # if "ServoPos5" in string:
+                    #     tempArray = re.findall(r'\d+', string)
+                    #     ServoPos5 = float(tempArray[1])
+
+                    #     self.arm.q[4] = ServoPos5*np.pi/180.0
+
+                    #     #print("ServoPos5:", ServoPos5)
+                    # if "ServoPos6" in string:
+                    #     tempArray = re.findall(r'\d+', string)
+                    #     ServoPos6 = float(tempArray[1])
+
+                    self.arm.claw_angle = ServoPos6*np.pi/180.0
 
                         #print("ServoPos6:", ServoPos6)
 
