@@ -45,23 +45,20 @@ ctr.start()
 def q_change(): #will be removed when arm encoders are up
     while True:
         # get encoder values. Here simulated by forward euler integration
-        arm.q = arm.q + dt*arm.qd
+        arm.q = np.clip(arm.q + dt*arm.qd, arm.q_lims[0, :], arm.q_lims[1, :])
         time.sleep(dt)
 
 t = threading.Thread(target=q_change, daemon=True)
 t.start()
 
 def change_ep(): #simulate user input to change end effector position
-    while True:
-        ep.rotate(0, 0, 0.05)
-        if np.random.randint(0, 10) < 1:
-            ep.translate(0.2*np.random.random(), 0, 0)
+    T_new = arm.fkine(np.random.random(size=5)*1.5*np.pi-0.75*np.pi).A
+    while T_new[2, 3] <= 0: #need positive z-position (above ground)
+        T_new = arm.fkine(np.random.random(size=5)*1.5*np.pi-0.75*np.pi).A
 
-        ctr.set_position(ep.get_pos())
-        time.sleep(5*dt)
+    ep.set_pos(T_new)
+    ctr.set_position(ep.get_pos())
 
-t = threading.Thread(target=change_ep, daemon=True)
-t.start()
 
 def update(): #update plot periodically
     env.robots[0].draw()
@@ -71,7 +68,18 @@ def update(): #update plot periodically
 # Initialize QTimer
 timer = QTimer()
 timer.timeout.connect(update)
-timer.start(5)
+timer.start(int(dt*1000))
+
+form.onButton.clicked.connect(change_ep)
+
+modes = ["Auto", "Position", "Optimization"]
+i = 0
+def nextMode():
+    global i
+    m = modes[i]
+    i = (i+1)%3
+    return m
+form.offButton.clicked.connect(lambda : ctr.change_mode(nextMode()))
 
 # xbxCtrl = XboxController()
 # Driver(arm, XboxController) ##assign to variable to avoid garbage collection?

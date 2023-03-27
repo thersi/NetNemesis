@@ -10,24 +10,24 @@ class Optimization_controller:
     The controller is launched in new thread, and new values for position and rotation is set using the set_pos method
     """
 
-    def __init__(self, qlim):
+    def __init__(self, qlim, qdlim):
         #ps: The minimum angle (in radians) in which the joint is allowed to approach to its limit
         self.ps = 0.05
         #pi: The influence angle (in radians) in which the velocity damper becomes active
-        self.pi = 0.9
+        self.pi = 0.5
         #The gain for the velocity damper
         self.gain = 1.0
 
         # Set the gain on the joint velocity norm minimisation
-        self.λq = 0.1
+        self.λq = 0.5
 
         # Make a variable for the upper and lower limits of the robot angle velocities
-        self.qd_lb = -20.0*np.ones(len(qlim[0, :]))
-        self.qd_ub = 20.0*np.ones(len(qlim[0, :]))
+        self.qd_lb = qdlim[0, :]
+        self.qd_ub = qdlim[1, :]
         #The gain for the p_servo method for translation
-        kt = 1.0
+        kt = 4
         #The gain for the p_servo method for rotation
-        kr = 0.5
+        kr = 1
         self.k = np.array([kt, kt, kt, kr, kr, kr])
 
         self.qlim = qlim

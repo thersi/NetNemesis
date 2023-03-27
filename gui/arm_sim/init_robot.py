@@ -15,10 +15,13 @@ class EiT_arm(robot.DHRobot):
 
         super().__init__(links, name='EiT arm')      
 
-        self.qlims = np.zeros((2, self.n))
-
+        self.q_lims = np.zeros((2, self.n))
         for i in range(self.n):
-            self.qlims[:, i] = np.c_[-270/360*np.pi, 270/360*np.pi]
+            self.q_lims[:, i] = np.c_[-270/360*np.pi, 270/360*np.pi] #same limits for all
+
+        self.qd_lims = np.zeros((2, self.n))
+        for i in range(self.n):
+            self.qd_lims[:, i] = np.c_[-np.pi/2, np.pi/2] #same limits for all
 
         if q0 is not None:
             self.q = q0          
@@ -26,11 +29,8 @@ class EiT_arm(robot.DHRobot):
         if claw0 is not None:
             self._claw_angle = claw0
 
-        self.control_mode = "p"
+        self.control_mode = "p" #used in env.step to simulate robot, we do not use this since we simulate ourselves
 
-        
-        
-    
     def q_degrees(self):        
         return self.q*180/np.pi
 

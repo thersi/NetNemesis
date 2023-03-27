@@ -8,12 +8,11 @@ class Position_controller:
     and using the manipulator jacobian for computing joint angles.
     Due to 5 DOF's and 6 paramters to control, we do not have a nullspace to use for nullspace projection.
     Instability, critical configurations and impossible end goals might occur.
-
-    The controller is launched in new thread, and new values for position and rotation is set using the set_pos method
     """
 
-    def __init__(self, kt=1.0, kr=1.3):
+    def __init__(self, qdlim, kt=0.5, kr=0.6):
         self.k = np.array([kt, kt, kt, kr, kr, kr])
+        self.qdlim = qdlim
 
 
     def _joint_velocity(self, J0, ev):
@@ -37,4 +36,9 @@ class Position_controller:
         ev, arrived = rtb.p_servo(Te, goal, gain=self.k, threshold=0.001, method="angle-axis")
 
         # Calculate the required joint velocities and apply to the robot
-        return self._joint_velocity(J0, ev), arrived
+        qd =  self._joint_velocity(J0, ev)
+
+        #should limit qd here, psuedoinverse can give huge qds
+        qd_limited = np.clip(qd, self.qdlim[0, :], self.qdlim[1, :])
+
+        return qd_limited, arrived

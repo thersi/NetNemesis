@@ -13,26 +13,31 @@ class Controller:
     """
     def __init__(self, arm, init_pos, dt):
         self.arm = arm
-        self.opt = Optimization_controller(arm.qlims)
-        self.pos = Position_controller()
+        
+        self.opt = Optimization_controller(arm.q_lims, arm.qd_lims)
+        self.pos = Position_controller(arm.qd_lims)
+
+        self.switch_threshold = 25*np.pi/180 #angle in rads for when to use optimization based controller
 
         self.T = init_pos
         self.dt = dt
-        self.enabled = True
 
         self.arrived = False
 
-        self.active = "Position"
+        self.mode = "Auto"
+        self.active = "N/A"
+
+    def change_mode(self, new_mode = "Auto"):
+        if new_mode not in ["Auto", "Optimization", "Position"]:
+            raise ValueError("Mode must be one of Auto, Optimization, Position")
+        self.mode = new_mode
+        self.active = "N/A"
+        self.arrived = False
+        print("Set controller mode to: ", new_mode)
 
     def set_position(self, T):
         self.T = T
         self.arrived = False
-
-    def disable(self):
-        self.enabled = False
-
-    def enable(self):
-        self.enabled = True
 
     def start(self):
         self.t = threading.Thread(target=self._control, daemon=True)
@@ -41,43 +46,39 @@ class Controller:
     def _control(self):
         while True:
             while not self.arrived:
-
-                if not self.enabled:
-                    break
-
+                
                 Te = self.arm.fkine(self.arm.q).A
                 # Calculate the base-frame manipulator Jacobian
                 J0 = self.arm.jacob0(self.arm.q)
 
-                qd1, arrived1 = self.pos.position_controller(J0, Te, self.T)
-                qd2, arrived2 = self.opt.optimization_controller(J0, Te, self.arm.q, self.T)
+                # qd, arrived = None, None
 
-                if arrived1 or arrived2:
+                if self.mode == "Auto":
+                    #check if close to limits for choosing which controller
+                    lim_low = np.any((self.arm.q - self.arm.q_lims[0, :]) < self.switch_threshold)
+                    lim_high = np.any((self.arm.q_lims[1, :] - self.arm.q) < self.switch_threshold)
+                    if lim_high or lim_low:
+                        if self.active != "Optimization":
+                            print("Auto: Changed to Optimization controller")
+                        self.active = "Optimization"
+                    else:
+                        if self.active != "Position":
+                            print("Auto: Changed to Position controller")
+                        self.active = "Position"
+
+                if self.mode == "Optimization" or self.active == "Optimization":
+                    qd, arrived = self.opt.optimization_controller(J0, Te, self.arm.q, self.T)
+                    if qd is None: #optimizer failed to find a solution
+                        self.active = "Position"
+
+                if self.mode == "Position" or self.active == "Position":
+                    qd, arrived = self.pos.position_controller(J0, Te, self.T)
+                                
+                self.arm.qd = qd
+
+                if arrived:
                     self.arrived = True
-                    self.arm.qd = np.zeros(self.arm.n)
                     break
 
-                if qd2 is None: #the optimizer might not find a solution
-                    self.arm.qd = qd1
-                else:                    #logic for choosing qds
-                    minv = 0.5
-
-                    lim_low = min(self.arm.q - self.arm.qlims[0, :]) < minv
-                    lim_high = min(self.arm.qlims[1, :] - self.arm.q) < minv
-                    
-                    if lim_low or lim_high: #optimization
-                        self.arm.qd = qd2
-
-                        if self.active == "Position":
-                            print("Changed to Optimization")
-                            self.active = "Optimization"
-                    else:
-                        self.arm.qd = qd1
-
-                        if self.active == "Optimization":
-                            print("Changed to Position")
-                            self.active = "Position"
-
                 time.sleep(self.dt)
-
             time.sleep(2)
