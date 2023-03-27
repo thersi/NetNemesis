@@ -5,18 +5,16 @@
 // The format of the message will be as following:
 //    b'<x,y,z,a,b,c>'
 
-//#include <Servo.h>
-//#include <Braccio.h>
 #include <VarSpeedServo.h>
 
 String line;
 
-String servo1 = "";
-String servo2 = "";
-String servo3 = "";
-String servo4 = "";
-String servo5 = "";
-String servo6 = "";
+// String servo1 = "";
+// String servo2 = "";
+// String servo3 = "";
+// String servo4 = "";
+// String servo5 = "";
+// String servo6 = "";
 
 short servo1In;
 short servo1Pos = 90;
@@ -207,12 +205,12 @@ void updateServos() {
     oldServo4Pos = servo4Pos;    
   }
   if (oldServo5Pos != servo5Pos) {
-    int servoValue = map(servo4Pos, 0, 270, 500, 2500);
+    int servoValue = map(servo5Pos, 0, 270, 500, 2500);
     wrist_rot.write(servoValue, 50);
     oldServo5Pos = servo5Pos;    
   }
   if (oldServo6Pos != servo6Pos) {
-    gripper.write(servo6Pos);
+    gripper.write(servo6Pos, 30);
     oldServo6Pos = servo6Pos;    
   }
 }
