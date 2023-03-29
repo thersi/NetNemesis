@@ -7,7 +7,7 @@ from tqdm import tqdm
 def main():
     arm = EiT_arm()
 
-    angle_array = np.linspace(0, 270, 15) * np.pi / 180
+    angle_array = np.linspace(-135, 135, 15) * np.pi / 180
 
     angles = itertools.product(angle_array, repeat=5)
     num_poses = len(angle_array) ** 5
