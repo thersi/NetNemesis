@@ -91,4 +91,4 @@ class Controller:
                     break
 
                 time.sleep(self.dt)
-            time.sleep(2)
+            time.sleep(1)

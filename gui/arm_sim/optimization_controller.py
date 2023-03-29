@@ -27,7 +27,7 @@ class Optimization_controller:
         #The gain for the p_servo method for translation
         kt = 2
         #The gain for the p_servo method for rotation
-        kr = 0.3
+        kr = 1
         self.k = np.array([kt, kt, kt, kr, kr, kr])
 
         self.qlim = qlim

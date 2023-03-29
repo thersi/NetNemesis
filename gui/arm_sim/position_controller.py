@@ -10,7 +10,7 @@ class Position_controller:
     Instability, critical configurations and impossible end goals might occur.
     """
 
-    def __init__(self, qdlim, kt=2, kr=0.3):
+    def __init__(self, qdlim, kt=2, kr=1):
         self.k = np.array([kt, kt, kt, kr, kr, kr])
         self.qdlim = qdlim
 

@@ -28,8 +28,10 @@ figure = plt.figure()
 form.simulationLayout.addWidget(figure.canvas)
 
 arm = EiT_arm(q0=[0.21, -0.03, 0.35, -1.90, -0.04])  # initial pose
-# controller time steps, how often new qd is calculated and plots updated
+# controller time steps, how often new qd is calculated
 dt = 0.1
+# how often plots are updated
+update_dt = dt/4
 
 # xbxCtrl = XboxController()
 # Driver(arm, XboxController) ##assign to variable to avoid garbage collection?
@@ -148,8 +150,8 @@ form.follow.stateChanged.connect(
 def q_change():  # will be removed when arm encoders are up
     while True:
         # get encoder values. Here simulated by forward euler integration
-        arm.q = np.clip(arm.q + dt*arm.qd, arm.q_lims[0, :], arm.q_lims[1, :])
-        time.sleep(dt)
+        arm.q = np.clip(arm.q + update_dt*arm.qd, arm.q_lims[0, :], arm.q_lims[1, :])
+        time.sleep(update_dt)
 
 
 t = threading.Thread(target=q_change, daemon=True)
@@ -168,7 +170,7 @@ def update():  # update plot periodically
 # Initialize QTimer
 timer = QTimer()
 timer.timeout.connect(update)
-timer.start(int(dt*500))
+timer.start(int(update_dt*1000)) #how often to update (in ms dt is in s)
 
 window.show()
 app.exec()
