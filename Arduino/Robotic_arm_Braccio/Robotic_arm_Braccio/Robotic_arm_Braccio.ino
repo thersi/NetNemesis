@@ -1,22 +1,20 @@
 
-// Program for the control of a robotic arm. The arm is to be controlled from a interface 
-// through a computer where instructions to the arm is sent via Serial. 
+// Program for the control of a robotic arm. The arm is to be controlled from a interface
+// through a computer where instructions to the arm is sent via Serial.
 
 // The format of the message will be as following:
 //    b'<x,y,z,a,b,c>'
 
-#include <Servo.h>
-#include <Braccio.h>
+#include <VarSpeedServo.h>
 
 String line;
 
-
-String servo1 = "";
-String servo2 = "";
-String servo3 = "";
-String servo4 = "";
-String servo5 = "";
-String servo6 = "";
+// String servo1 = "";
+// String servo2 = "";
+// String servo3 = "";
+// String servo4 = "";
+// String servo5 = "";
+// String servo6 = "";
 
 short servo1In;
 short servo1Pos = 90;
@@ -56,25 +54,16 @@ short real6Pos;
 short oldReal6Pos;
 short oldServo6Pos;
 
-// Servo calibration variables
-int A = 85;
-int B = 4;
-int C = 245;
+VarSpeedServo base;
+VarSpeedServo shoulder;
+VarSpeedServo elbow;
+VarSpeedServo wrist_ver;
+VarSpeedServo wrist_rot;
+VarSpeedServo gripper;
 
-int a = 380;
-int b = 403;
-int c = 393;
+unsigned long timeOld;
 
-float m, n;
-
-Servo base;
-Servo shoulder;
-Servo elbow;
-Servo wrist_ver;
-Servo wrist_rot;
-Servo gripper;
-
-//Serial greier
+// Serial greier
 const byte numChars = 32;
 char receivedChars[numChars];
 char tempChars[numChars];
@@ -85,94 +74,111 @@ float floatFromPC = 0.0;
 
 bool newData = false;
 
-void setup() {
+void setup()
+{
   Serial.begin(9600);
-  //myservo.attach(3);
-  //Serial.setTimeout(100);
-  Braccio.ServoMovement(20, 90, 5, 180, 180, 90, 10);
-  
-  pinMode(12, OUTPUT);    //you need to set HIGH the pin 12
+
+  gripper.write(10);
+  wrist_rot.write(90);
+  wrist_ver.write(180);
+  elbow.write(180);
+  shoulder.write(5);
+  base.write(90);
+
+  // Serial.setTimeout(100);
+  // Braccio.ServoMovement(20, 90, 5, 180, 180, 90, 10);
+
+  pinMode(12, OUTPUT); // you need to set HIGH the pin 12
   digitalWrite(12, HIGH);
-  Braccio.begin(SOFT_START_DISABLED);
-  updateServos();  
-  
+  // Braccio.begin(SOFT_START_DISABLED);
+  gripper.attach(3, 500, 2500);
+  wrist_rot.attach(5, 500, 2500);
+  wrist_ver.attach(6, 500, 2500);
+  elbow.attach(9, 500, 2500);
+  shoulder.attach(10, 500, 2500);
+  base.attach(11, 500, 2500);
+
+  updateServos();
+
   pinMode(LED_BUILTIN, OUTPUT);
-  
+
   Serial.println("<Ready>");
-
-  m = ((A - B) / (a - b) + (C - A) / (c - a)) / 2;
-  n = ((A * b - B * a) / (b - a) + (B * c - C * b) / (c - b)) / 2;
-
-  m = 0.47;
-  n = -33.4;
-
-  
 }
 
-void loop() {
+void loop()
+{
+  unsigned long timeNow = millis();
   readSerial();
-  if (newData == true) {
-        digitalWrite(LED_BUILTIN, HIGH);
-        strcpy(tempChars, receivedChars);
-          // this temporary copy is necessary to protect the original data
-          //   because strtok() used in parseData() replaces the commas with \0
-        parseData();
-        updateServos();
-        newData = false;
-    }
-  realPos();
-  writeSerial();
+  if (newData == true)
+  {
+    strcpy(tempChars, receivedChars);
+    // this temporary copy is necessary to protect the original data
+    //   because strtok() used in parseData() replaces the commas with \0
+    parseData();
+    updateServos();
+    newData = false;
+  }
+  if (timeNow - timeOld >= 100)
+  {
+    writeSerial();
+    timeOld = timeNow;
+  }
 }
-void parseData() {      // split the data into its parts
+void parseData()
+{ // split the data into its parts
 
-    char * strtokIndx; // this is used by strtok() as an index
+  char *strtokIndx; // this is used by strtok() as an index
 
-    strtokIndx = strtok(tempChars,",");      // get the first part - the string
-    servo1Pos = atoi(strtokIndx);     // convert this part to an integer    
- 
-    strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
-    servo2Pos = atoi(strtokIndx);     // convert this part to an integer    
-    
-    strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
-    servo3Pos = atoi(strtokIndx);     // convert this part to an integer   
+  strtokIndx = strtok(tempChars, ","); // get the first part - the string
+  servo1Pos = atoi(strtokIndx);        // convert this part to an integer
 
-    strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
-    servo4Pos = atoi(strtokIndx);     // convert this part to an integer   
+  strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
+  servo2Pos = atoi(strtokIndx);   // convert this part to an integer
 
-    strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
-    servo5Pos = atoi(strtokIndx);     // convert this part to an integer   
+  strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
+  servo3Pos = atoi(strtokIndx);   // convert this part to an integer
 
-    strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
-    servo6Pos = atoi(strtokIndx);     // convert this part to an integer   
-    
-    //Serial.println(servo1Pos);
-    //Serial.println(servo2Pos);
-    //Serial.println(servo3Pos);
-    //Serial.println(servo4Pos);
-    //Serial.println(servo5Pos);
-    //Serial.println(servo6Pos);
+  strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
+  servo4Pos = atoi(strtokIndx);   // convert this part to an integer
+
+  strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
+  servo5Pos = atoi(strtokIndx);   // convert this part to an integer
+
+  strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
+  servo6Pos = atoi(strtokIndx);   // convert this part to an integer
+
+  // Serial.println(servo1Pos);
+  // Serial.println(servo2Pos);
+  // Serial.println(servo3Pos);
+  // Serial.println(servo4Pos);
+  // Serial.println(servo5Pos);
+  // Serial.println(servo6Pos);
 }
 
-
-void readSerial() {
+void readSerial()
+{
   static boolean recvInProgress = false;
   static byte ndx = 0;
   char startMarker = '<';
   char endMarker = '>';
   char rc;
 
-  if (Serial.available() > 0 && newData == false) {
-    //digitalWrite(LED_BUILTIN, HIGH);
+  if (Serial.available() > 0 && newData == false)
+  {
     rc = Serial.read();
-    if (recvInProgress == true) {
-      if (rc != endMarker) {
+    if (recvInProgress == true)
+    {
+      if (rc != endMarker)
+      {
         receivedChars[ndx] = rc;
         ndx++;
-        if (ndx >= numChars) {
-            ndx = numChars - 1;
+        if (ndx >= numChars)
+        {
+          ndx = numChars - 1;
         }
       }
-      else {
+      else
+      {
         receivedChars[ndx] = '\0'; // terminate the string
         recvInProgress = false;
         ndx = 0;
@@ -180,115 +186,61 @@ void readSerial() {
       }
     }
 
-    else if (rc == startMarker) {
+    else if (rc == startMarker)
+    {
       recvInProgress = true;
     }
   }
-  //digitalWrite(LED_BUILTIN, LOW);
-
+}
+// digitalWrite(LED_BUILTIN, LOW);
 }
 
-void updateServos() {
-  if (oldServo1Pos != servo1Pos) {
-    base.write(servo1Pos);
-    oldServo1Pos = servo1Pos;    
+void updateServos()
+{
+  if (oldServo1Pos != servo1Pos)
+  {
+    int servoValue = map(servo1Pos, 0, 270, 500, 2500);
+    base.write(servoValue, 20);
+    oldServo1Pos = servo1Pos;
   }
-  if (oldServo2Pos != servo2Pos) {
-    shoulder.write(servo2Pos);
-    oldServo2Pos = servo2Pos;    
+  if (oldServo2Pos != servo2Pos)
+  {
+    int servoValue = map(servo2Pos, 0, 270, 500, 2500);
+    shoulder.write(servoValue, 20);
+    oldServo2Pos = servo2Pos;
   }
-  if (oldServo3Pos != servo3Pos) {
-    elbow.write(servo3Pos);
-    oldServo3Pos = servo3Pos;    
+  if (oldServo3Pos != servo3Pos)
+  {
+    int servoValue = map(servo3Pos, 0, 270, 500, 2500);
+    elbow.write(servoValue, 20);
+    oldServo3Pos = servo3Pos;
   }
-   if (oldServo4Pos != servo4Pos) {
-     wrist_rot.write(servo4Pos);
-     oldServo4Pos = servo4Pos;    
-   }
-
-
-  if (oldServo5Pos != servo5Pos) {
-    wrist_ver.write(servo5Pos);
-    oldServo5Pos = servo5Pos;    
+  if (oldServo4Pos != servo4Pos)
+  {
+    int servoValue = map(servo4Pos, 0, 270, 500, 2500);
+    wrist_ver.write(servoValue, 30);
+    oldServo4Pos = servo4Pos;
   }
-  
-  
-  // if (oldServo3Pos != servo3Pos) {
-  //   error = servoPos - oldServoPos;
-  //   elbow.write(servo3Pos);
-  //   oldServo3Pos = servo3Pos;    
-  // }
-  // if (oldServo4Pos != servo4Pos) {
-  //   if (oldServo4Pos > servo4Pos) {
-  //     Serial.println("Smaller");
-  //     Serial.println(oldServo4Pos);
-  //     oldServo4Pos -= 2;
-  //     if (oldServo4Pos <= servo4Pos) {
-  //       wrist_rot.write(servo4Pos);
-  //       oldServo4Pos = servo4Pos;  
-  //     }
-  //     else {
-  //       wrist_rot.write(oldServo4Pos);
-  //     }
-  //   }
-  //   else {
-  //     oldServo4Pos += 2;
-  //     Serial.println("Bigger");
-  //     Serial.println(oldServo4Pos);
-  //     if (oldServo4Pos >= servo4Pos) {
-  //       wrist_rot.write(servo4Pos);
-  //       oldServo4Pos = servo4Pos;  
-  //     }
-  //     else {
-  //       wrist_rot.write(oldServo4Pos);
-  //     }
-  //   }
-  // }
-
-  // if (oldServo5Pos != servo5Pos) {
-  //   if (tempPos5 != oldServo5Pos) {
-  //     Serial.println(tempPos5);
-  //     Serial.println("Hit1");
-  //     if (oldServo5Pos > servo5Pos) {
-  //       Serial.println("Hit2");
-  //       tempPos5 = tempPos5 - 2;
-  //       Serial.println(tempPos5);
-  //       wrist_ver.write(tempPos5);
-  //       if (tempPos5 <= servo5Pos) {
-  //         Serial.println("Hit3");
-  //         wrist_ver.write(servo5Pos);
-  //         oldServo5Pos = servo5Pos;  
-  //       }
-  //     }
-  //     else { // oldServoPos < servoPos
-  //       Serial.println("Hit2");
-  //       tempPos5 = tempPos5 + 2;
-  //       Serial.println(tempPos5);
-  //       wrist_ver.write(tempPos5);
-  //       if (tempPos5 >= servo5Pos) {
-  //         Serial.println("Hit3");
-  //         wrist_ver.write(servo5Pos);
-  //         oldServo5Pos = servo5Pos;  
-  //       }
-  //     } 
-  //   }
-  //   else {
-  //     tempPos5 = oldServo5Pos;
-  //   }
-  // }  
-
-  if (oldServo6Pos != servo6Pos) {
-    gripper.write(servo6Pos);
-    oldServo6Pos = servo6Pos;    
+  if (oldServo5Pos != servo5Pos)
+  {
+    int servoValue = map(servo5Pos, 0, 270, 500, 2500);
+    wrist_rot.write(servoValue, 50);
+    oldServo5Pos = servo5Pos;
+  }
+  if (oldServo6Pos != servo6Pos)
+  {
+    gripper.write(servo6Pos, 30);
+    oldServo6Pos = servo6Pos;
   }
 
-  //Braccio.ServoMovement(0, servo1Pos, servo2Pos, servo3Pos, servo4Pos, servo5Pos, servo6Pos);
-  //myservo.write(servo6Pos);
-  
-  //delay(100);
+  // Braccio.ServoMovement(10, servo1Pos, servo2Pos, servo3Pos, servo4Pos, servo5Pos, servo6Pos);
+  // myservo.write(servo6Pos);
+
+  // delay(100);
 }
 
-void realPos() {
+void writeSerial()
+{
   servo1In = analogRead(A0);
   servo2In = analogRead(A1);
   servo3In = analogRead(A2);
@@ -296,61 +248,45 @@ void realPos() {
   servo5In = analogRead(A4);
   servo6In = analogRead(A5);
 
-  servo1In = 100;
-  servo2In = 102;
-  servo3In = 104;
-  servo4In = 106;
-  servo5In = 108;
-  servo6In = 110;
+  real1Pos = map(servo1In, 47, 609, 0, 270);
+  real2Pos = map(servo2In, 47, 609, 0, 270);
+  real3Pos = map(servo3In, 47, 609, 0, 270);
+  real4Pos = map(servo4In, 47, 609, 0, 270);
+  real5Pos = map(servo5In, 47, 609, 0, 270);
+  real6Pos = map(servo6In, 47, 609, 0, 270);
 
-  real1Pos = m * servo1In + n;
-  real2Pos = m * servo2In + n;
-  real3Pos = m * servo3In + n;
-  real4Pos = m * servo4In + n;
-  real5Pos = m * servo5In + n;
-  real6Pos = m * servo6In + n;
-}
-
-void writeSerial() {
-  if (Serial.availableForWrite() > 0) {
-    if (real1Pos != oldReal1Pos){
-      Serial.print("ServoPos1: ");
+  // real1Pos = 10;
+  // real2Pos = 20;
+  // real3Pos = 30;
+  ////real4Pos = 40;
+  // real5Pos = 50;
+  // real6Pos = 60;
+  //
+  if (Serial.availableForWrite() > 0)
+  {
+    if (real1Pos != oldReal1Pos || real2Pos != oldReal2Pos || real3Pos != oldReal3Pos ||
+        real4Pos != oldReal4Pos || real5Pos != oldReal5Pos || real6Pos != oldReal6Pos)
+    {
+      Serial.print("<");
       Serial.print(real1Pos);
-      Serial.print("; \n");
-      oldReal1Pos = real1Pos;
-      
-    }
-    if (real2Pos != oldReal2Pos){
-      Serial.print("ServoPos2: ");
+      Serial.print(",");
       Serial.print(real2Pos);
-      Serial.print("; \n");
-      oldReal2Pos = real2Pos;
-    }
-    if (real3Pos != oldReal3Pos){
-      Serial.print("ServoPos3: ");
+      Serial.print(",");
       Serial.print(real3Pos);
-      Serial.print("; \n");
-      oldReal3Pos = real3Pos;
-    }
-    if (real4Pos != oldReal4Pos){
-      Serial.print("ServoPos4: ");
+      Serial.print(",");
       Serial.print(real4Pos);
-      Serial.print("; \n");
-      oldReal4Pos = real4Pos;
-    }
-    if (real5Pos != oldReal5Pos){
-      Serial.print("ServoPos5: ");
+      Serial.print(",");
       Serial.print(real5Pos);
-      Serial.print("; \n");
-      oldReal5Pos = real5Pos;
-    }
-    if (real6Pos != oldReal6Pos){
-      Serial.print("ServoPos6: ");
+      Serial.print(",");
       Serial.print(real6Pos);
-      Serial.print("; \n");
+      Serial.println(">");
+
+      oldReal1Pos = real1Pos;
+      oldReal2Pos = real2Pos;
+      oldReal3Pos = real3Pos;
+      oldReal4Pos = real4Pos;
+      oldReal5Pos = real5Pos;
       oldReal6Pos = real6Pos;
     }
-    //Serial.print("\n");
-    //break;
   }
 }

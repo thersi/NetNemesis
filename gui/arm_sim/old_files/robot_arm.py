@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as PathEffects
 from matplotlib.widgets import Slider, RadioButtons
-from transform import *
+from gui.arm_sim.transform import *
 
 ##DH params
 L = [1/2, 1.5, 1.5, 1]

@@ -29,8 +29,7 @@ class XboxController(object):
     _monitor_thread = None
     
     def __init__(self):
-        self._monitor_thread = threading.Thread(target=self._monitor_controller, args=())
-        self._monitor_thread.daemon = True
+        self._monitor_thread = threading.Thread(target=self._monitor_controller, daemon=True)
         self._monitor_thread.start()
 
     def read(self): # return the buttons/triggers that you care about in this methode
@@ -93,8 +92,6 @@ class XboxController(object):
                     self.UpDPad = event.state
                 elif event.code == 'BTN_TRIGGER_HAPPY4':
                     self.DownDPad = event.state
-
-
 
 
 if __name__ == '__main__':
