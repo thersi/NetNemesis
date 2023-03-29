@@ -81,8 +81,7 @@ def initialize_view():
     # Add modes to mode_select
     form.mode_select.addItems(["Auto", "Position", "Optimization"])
     form.mode_select.setCurrentIndex(0)
-    form.mode_select.currentIndexChanged.connect(
-        lambda: form.mode_select.setCurrentText(form.mode_select.currentText()))
+
 
 
 initialize_view()
@@ -118,15 +117,6 @@ t = threading.Thread(target=q_change, daemon=True)
 t.start()
 
 
-def change_ep():  # simulate user input to change end effector position
-    T_new = arm.fkine(np.random.random(size=5)*1.5*np.pi-0.75*np.pi).A
-    while T_new[2, 3] <= 0:  # need positive z-position (above ground)
-        T_new = arm.fkine(np.random.random(size=5)*1.5*np.pi-0.75*np.pi).A
-
-    ep.set_pos(T_new)
-    ctr.set_position(ep.get_pos())
-
-
 def update():  # update plot periodically
     env.robots[0].draw()
     ep.draw()
@@ -136,20 +126,6 @@ def update():  # update plot periodically
 timer = QTimer()
 timer.timeout.connect(update)
 timer.start(int(dt*1000))
-
-
-modes = ["Auto", "Position", "Optimization"]
-i = 0
-
-
-def nextMode():
-    global i
-    i = (i+1) % 3
-    m = modes[i]
-    return m
-
-# form.offButton.clicked.connect(lambda : ctr.change_mode(nextMode()))
-# form.onButton.clicked.connect(change_ep)
 
 
 def changeTab(tabIndex):
@@ -164,7 +140,25 @@ def changeTab(tabIndex):
 
 
 form.tabWidget.currentChanged.connect(changeTab)
+form.mode_select.currentIndexChanged.connect(lambda: ctr.change_mode(form.mode_select.currentText()))
 
+inc = 0.02
+inc_a = 5*np.pi/180
+
+form.x_up.clicked.connect(lambda: ep.translate(inc, 0, 0))
+form.y_up.clicked.connect(lambda: ep.translate(0, inc, 0))
+form.z_up.clicked.connect(lambda: ep.translate(0, 0, inc))
+form.x_cc.clicked.connect(lambda: ep.rotate(inc_a, 0, 0))
+form.y_cc.clicked.connect(lambda: ep.rotate(0, inc_a, 0))
+form.z_cc.clicked.connect(lambda: ep.rotate(0, 0, inc_a))
+form.x_down.clicked.connect(lambda: ep.translate(-inc, 0, 0))
+form.y_down.clicked.connect(lambda: ep.translate(0, -inc, 0))
+form.z_down.clicked.connect(lambda: ep.translate(0, 0, -inc))
+form.x_c.clicked.connect(lambda: ep.rotate(-inc_a, 0, 0))
+form.y_c.clicked.connect(lambda: ep.rotate(0, -inc_a, 0))
+form.z_c.clicked.connect(lambda: ep.rotate(0, 0, -inc_a))
+
+form.set_goal.clicked.connect(lambda: ctr.set_position(ep.get_pos()))
 
 # xbxCtrl = XboxController()
 # Driver(arm, XboxController) ##assign to variable to avoid garbage collection?

@@ -1397,6 +1397,19 @@
       </property>
      </widget>
     </widget>
+   <widget class="QToolButton" name="set_goal">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>70</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Set goal</string>
+      </property>
+    </widget>
     <widget class="QLabel" name="rotation_label">
      <property name="geometry">
       <rect>
