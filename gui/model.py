@@ -107,10 +107,13 @@ def q_change():  # will be removed when arm encoders are up
 t = threading.Thread(target=q_change, daemon=True)
 t.start()
 
+follow = True
 
 def update():  # update plot periodically
     env.robots[0].draw()
     ep.draw()
+    if follow:
+        ctr.set_position(ep.get_pos())
 
 
 # Initialize QTimer
