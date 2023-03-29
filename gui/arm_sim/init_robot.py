@@ -21,7 +21,7 @@ class EiT_arm(robot.DHRobot):
 
         self.qd_lims = np.zeros((2, self.n))
         for i in range(self.n):
-            self.qd_lims[:, i] = np.c_[-np.pi/2, np.pi/2] #same limits for all
+            self.qd_lims[:, i] = np.c_[-np.pi/4, np.pi/4] #same limits for all
 
         if q0 is not None:
             self.q = q0          

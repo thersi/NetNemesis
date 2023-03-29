@@ -1,3 +1,4 @@
+from arm_sim.end_pos import EndPosition
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer
@@ -11,9 +12,6 @@ from arm_sim.init_robot import EiT_arm
 from Driver import Driver
 from arm_sim.controller import Controller
 from xbox_controller import XboxController
-
-
-from arm_sim.end_pos_controller import EndPosition
 
 
 Form, Window = uic.loadUiType("gui/view.ui")
@@ -139,7 +137,6 @@ timer = QTimer()
 timer.timeout.connect(update)
 timer.start(int(dt*1000))
 
-# form.onButton.clicked.connect(change_ep)
 
 modes = ["Auto", "Position", "Optimization"]
 i = 0
@@ -147,12 +144,27 @@ i = 0
 
 def nextMode():
     global i
-    m = modes[i]
     i = (i+1) % 3
+    m = modes[i]
     return m
 
+# form.offButton.clicked.connect(lambda : ctr.change_mode(nextMode()))
+# form.onButton.clicked.connect(change_ep)
 
-# form.offButton.clicked.connect(lambda: ctr.change_mode(nextMode()))
+
+def changeTab(tabIndex):
+    if tabIndex == 0:
+        ctr.disable()
+        ep.disable()
+    elif tabIndex == 1:
+        ep.set_pos(arm.fkine(arm.q).A)
+        ctr.set_position(ep.get_pos())
+        ep.enable()
+        ctr.enable()
+
+
+form.tabWidget.currentChanged.connect(changeTab)
+
 
 # xbxCtrl = XboxController()
 # Driver(arm, XboxController) ##assign to variable to avoid garbage collection?

@@ -26,6 +26,7 @@ class Controller:
 
         self.mode = "Auto"
         self.active = "N/A"
+        self.enabled = True
 
     def change_mode(self, new_mode = "Auto"):
         if new_mode not in ["Auto", "Optimization", "Position"]:
@@ -41,11 +42,18 @@ class Controller:
 
     def start(self):
         self.t = threading.Thread(target=self._control, daemon=True)
-        self.t.start()        
+        self.t.start()   
+
+    def enable(self):
+        self.enabled = True 
+
+    def disable(self):
+        self.enabled = False    
+        self.arm.qd = np.zeros(self.arm.n)
 
     def _control(self):
         while True:
-            while not self.arrived:
+            while not self.arrived and self.enabled:
                 
                 Te = self.arm.fkine(self.arm.q).A
                 # Calculate the base-frame manipulator Jacobian
@@ -69,15 +77,17 @@ class Controller:
                 if self.mode == "Optimization" or self.active == "Optimization":
                     qd, arrived = self.opt.optimization_controller(J0, Te, self.arm.q, self.T)
                     if qd is None: #optimizer failed to find a solution
+                        print("Optimizer failed")
                         self.active = "Position"
 
                 if self.mode == "Position" or self.active == "Position":
-                    qd, arrived = self.pos.position_controller(J0, Te, self.T)
+                    qd, arrived = self.pos.position_controller(J0, Te, self.arm.q, self.T)
                                 
                 self.arm.qd = qd
 
                 if arrived:
                     self.arrived = True
+                    print("Arrived")
                     break
 
                 time.sleep(self.dt)
