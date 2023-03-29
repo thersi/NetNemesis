@@ -1,16 +1,18 @@
-from arm_sim.end_pos import EndPosition
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer
+
 import matplotlib.pyplot as plt
 import roboticstoolbox as rtb
 import threading
 import time
 import numpy as np
 
+from arm_sim.end_pos import EndPosition
 from arm_sim.init_robot import EiT_arm
-from Driver import Driver
 from arm_sim.controller import Controller
+
+from Driver import Driver
 from xbox_controller import XboxController
 
 
