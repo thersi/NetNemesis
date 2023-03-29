@@ -34,14 +34,13 @@ class EndPosition:
         if not self.enabled:
             if self.drawn: #need to remove from plot
 
-
                 for a in self.axes:
-                    self.ax.lines.remove(a)
+                    a.remove()
                 del self.axes
 
                 if self.labels:
                     for l in self.txts:
-                        self.ax.texts.remove(l)
+                        l.remove()
                     del self.txts
 
                 self.drawn = False
