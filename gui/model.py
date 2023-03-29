@@ -18,6 +18,7 @@ Form, Window = uic.loadUiType("gui/view.ui")
 app = QApplication([])
 window = Window()
 form = Form()
+
 form.setupUi(window)
 
 # Create figure with subplots
@@ -166,6 +167,5 @@ def update():  # update plot periodically
 timer = QTimer()
 timer.timeout.connect(update)
 timer.start(int(dt*1000))
-
-window.showMaximized()
+window.show()
 app.exec()
