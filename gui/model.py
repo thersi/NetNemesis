@@ -50,7 +50,7 @@ def slider_change():
     form.q3.setText(str(arr[2]))
     form.q4.setText(str(arr[3]))
     form.q5.setText(str(arr[4]))
-    arm.q = qs
+    arm.q = qs #####Shall not be done this way as this should only be changed by encoders. Need another way to send to robot
 
 def initialize_view():
     # Set up angle slider 1
