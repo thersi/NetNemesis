@@ -77,6 +77,7 @@ class Controller:
                 if self.mode == "Optimization" or self.active == "Optimization":
                     qd, arrived = self.opt.optimization_controller(J0, Te, self.arm.q, self.T)
                     if qd is None: #optimizer failed to find a solution
+                        print("Optimizer failed")
                         self.active = "Position"
 
                 if self.mode == "Position" or self.active == "Position":
@@ -86,6 +87,7 @@ class Controller:
 
                 if arrived:
                     self.arrived = True
+                    print("Arrived")
                     break
 
                 time.sleep(self.dt)

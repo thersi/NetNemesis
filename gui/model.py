@@ -76,8 +76,8 @@ modes = ["Auto", "Position", "Optimization"]
 i = 0
 def nextMode():
     global i
-    m = modes[i]
     i = (i+1)%3
+    m = modes[i]
     return m
 
 form.offButton.clicked.connect(lambda : ctr.change_mode(nextMode()))

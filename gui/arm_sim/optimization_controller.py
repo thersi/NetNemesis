@@ -25,9 +25,9 @@ class Optimization_controller:
         self.qd_lb = qdlim[0, :]
         self.qd_ub = qdlim[1, :]
         #The gain for the p_servo method for translation
-        kt = 4
+        kt = 2
         #The gain for the p_servo method for rotation
-        kr = 1
+        kr = 0.3
         self.k = np.array([kt, kt, kt, kr, kr, kr])
 
         self.qlim = qlim
@@ -63,11 +63,12 @@ class Optimization_controller:
 
         # Spatial error
         e = np.sum(np.abs(rtb.angle_axis(Te, goal)))
+        # e = np.linalg.norm(Te[:3, 3] - goal[:3, 3])
 
         # Calculate the required end-effector velocity and whether the robot has arrived
-        ev, arrived = rtb.p_servo(Te, goal, gain=self.k, threshold=0.001, method="angle-axis")
+        ev, arrived = rtb.p_servo(Te, goal, gain=self.k, threshold=0.01, method="angle-axis")
 
-        if arrived:
+        if arrived:            
             return np.zeros(n), True
 
         ### Calculate each component of the quadratic programme

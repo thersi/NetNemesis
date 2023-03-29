@@ -10,7 +10,7 @@ class Position_controller:
     Instability, critical configurations and impossible end goals might occur.
     """
 
-    def __init__(self, qdlim, kt=0.5, kr=0.6):
+    def __init__(self, qdlim, kt=2, kr=0.3):
         self.k = np.array([kt, kt, kt, kr, kr, kr])
         self.qdlim = qdlim
 
@@ -33,7 +33,7 @@ class Position_controller:
 
     def position_controller(self, J0, Te, qs, goal):
         # Calculate the required end-effector velocity and whether the robot has arrived
-        ev, arrived = rtb.p_servo(Te, goal, gain=self.k, threshold=0.001, method="angle-axis")
+        ev, arrived = rtb.p_servo(Te, goal, gain=self.k, threshold=0.01, method="angle-axis")
         if arrived:
             n = len(qs)
             return np.zeros(n), True
