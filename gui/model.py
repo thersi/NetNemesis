@@ -28,6 +28,20 @@ arm = EiT_arm(q0=[0.21, -0.03, 0.35, -1.90, -0.04])  # initial pose
 # controller time steps, how often new qd is calculated and plots updated
 dt = 0.1
 
+# xbxCtrl = XboxController()
+# Driver(arm, XboxController) ##assign to variable to avoid garbage collection?
+
+env = rtb.backends.PyPlot.PyPlot()
+env.launch(name="EiT environment", fig=figure)  # lauches a second plot
+env.add(arm)
+plt.close()  # closes second plot
+
+ep = EndPosition(arm.fkine(arm.q).A, env.ax)
+ep.set_pos(arm.fkine([0.61, -0.03, 0.35, -1.90, -0.04]).A)
+
+ctr = Controller(arm, ep.get_pos(), dt)
+ctr.start()
+
 def set_sliders():
     ang = arm.q_degrees().astype(int)
     form.q1_slider.setValue(ang[0])
@@ -50,7 +64,7 @@ def slider_change():
     form.q3.setText(str(arr[2]))
     form.q4.setText(str(arr[3]))
     form.q5.setText(str(arr[4]))
-    arm.q = qs #####Shall not be done this way as this should only be changed by encoders. Need another way to send to robot
+    arm.q = qs #####Shall not be done this way as this should only be changed by encoders. Send using Driver
 
 def initialize_view():
     # Set up angle slider 1
@@ -85,43 +99,6 @@ def initialize_view():
 
 initialize_view()
 
-env = rtb.backends.PyPlot.PyPlot()
-env.launch(name="EiT environment", fig=figure)  # lauches a second plot
-env.add(arm)
-plt.close()  # closes second plot
-
-ep = EndPosition(arm.fkine(arm.q).A, env.ax)
-ep.set_pos(arm.fkine([0.61, -0.03, 0.35, -1.90, -0.04]).A)
-
-ctr = Controller(arm, ep.get_pos(), dt)
-ctr.start()
-
-
-def q_change():  # will be removed when arm encoders are up
-    while True:
-        # get encoder values. Here simulated by forward euler integration
-        arm.q = np.clip(arm.q + dt*arm.qd, arm.q_lims[0, :], arm.q_lims[1, :])
-        time.sleep(dt)
-
-
-t = threading.Thread(target=q_change, daemon=True)
-t.start()
-
-follow = True
-
-def update():  # update plot periodically
-    env.robots[0].draw()
-    ep.draw()
-    if follow:
-        ctr.set_position(ep.get_pos())
-
-
-# Initialize QTimer
-timer = QTimer()
-timer.timeout.connect(update)
-timer.start(int(dt*1000))
-
-
 def changeTab(tabIndex):
     if tabIndex == 0:
         ctr.disable()
@@ -133,12 +110,11 @@ def changeTab(tabIndex):
         ep.enable()
         ctr.enable()
 
-
 form.tabWidget.currentChanged.connect(changeTab)
 form.mode_select.currentIndexChanged.connect(lambda: ctr.change_mode(form.mode_select.currentText()))
 
-inc = 0.02
-inc_a = 5*np.pi/180
+inc = 0.02 #increments for movement
+inc_a = 5*np.pi/180 #angular increments
 
 form.x_up.clicked.connect(lambda: ep.translate(inc, 0, 0))
 form.y_up.clicked.connect(lambda: ep.translate(0, inc, 0))
@@ -154,8 +130,29 @@ form.y_c.clicked.connect(lambda: ep.rotate(0, -inc_a, 0))
 form.z_c.clicked.connect(lambda: ep.rotate(0, 0, -inc_a))
 
 form.set_goal.clicked.connect(lambda: ctr.set_position(ep.get_pos()))
+# form.follow.stateChanged.connect(checkBoxEvent)
 
-# xbxCtrl = XboxController()
-# Driver(arm, XboxController) ##assign to variable to avoid garbage collection?
+def q_change():  # will be removed when arm encoders are up
+    while True:
+        # get encoder values. Here simulated by forward euler integration
+        arm.q = np.clip(arm.q + dt*arm.qd, arm.q_lims[0, :], arm.q_lims[1, :])
+        time.sleep(dt)
+
+t = threading.Thread(target=q_change, daemon=True)
+t.start()
+
+def update():  # update plot periodically
+    env.robots[0].draw()
+    ep.draw()
+
+    follow = form.follow.isChecked()
+    if follow:
+        ctr.set_position(ep.get_pos())
+
+# Initialize QTimer
+timer = QTimer()
+timer.timeout.connect(update)
+timer.start(int(dt*1000))
+
 window.showMaximized()
 app.exec()
