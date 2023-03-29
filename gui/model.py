@@ -13,7 +13,7 @@ from xbox_controller import XboxController
 
 
 from arm_sim.controller import Controller
-from arm_sim.end_pos_controller import EndPosition
+from arm_sim.end_pos import EndPosition
 
 
 Form, Window = uic.loadUiType("gui/view.ui")
@@ -65,12 +65,12 @@ def update(): #update plot periodically
     ep.draw()
 
 
+
 # Initialize QTimer
 timer = QTimer()
 timer.timeout.connect(update)
 timer.start(int(dt*1000))
 
-form.onButton.clicked.connect(change_ep)
 
 modes = ["Auto", "Position", "Optimization"]
 i = 0
@@ -79,7 +79,24 @@ def nextMode():
     m = modes[i]
     i = (i+1)%3
     return m
+
 form.offButton.clicked.connect(lambda : ctr.change_mode(nextMode()))
+form.onButton.clicked.connect(change_ep)
+
+
+
+def changeTab(tabIndex):
+    if tabIndex == 0:
+        ctr.disable()
+        ep.disable()
+    elif tabIndex == 1:
+        ep.set_pos(arm.fkine(arm.q).A)
+        ctr.set_position(ep.get_pos())
+        ep.enable()
+        ctr.enable()
+
+form.tabWidget.currentChanged.connect(changeTab)
+
 
 # xbxCtrl = XboxController()
 # Driver(arm, XboxController) ##assign to variable to avoid garbage collection?

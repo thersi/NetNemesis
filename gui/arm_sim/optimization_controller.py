@@ -67,6 +67,9 @@ class Optimization_controller:
         # Calculate the required end-effector velocity and whether the robot has arrived
         ev, arrived = rtb.p_servo(Te, goal, gain=self.k, threshold=0.001, method="angle-axis")
 
+        if arrived:
+            return np.zeros(n), True
+
         ### Calculate each component of the quadratic programme
         # Quadratic component of objective function
         Q = np.eye(n + 6)

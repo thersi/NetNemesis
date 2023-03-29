@@ -10,6 +10,13 @@ class EndPosition:
         self.ax = ax
         self.scale = scale
         self.labels = labels
+        self.enabled = True
+
+    def enable(self):
+        self.enabled = True
+
+    def disable(self):
+        self.enabled = False
 
     def set_pos(self, T):
         self.T = T
@@ -24,6 +31,22 @@ class EndPosition:
         self.T = self.T@rotate_x(ax)@rotate_y(ay)@rotate_z(az)
 
     def draw(self):
+        if not self.enabled:
+            if self.drawn: #need to remove from plot
+
+
+                for a in self.axes:
+                    self.ax.lines.remove(a)
+                del self.axes
+
+                if self.labels:
+                    for l in self.txts:
+                        self.ax.texts.remove(l)
+                    del self.txts
+
+                self.drawn = False
+            return
+        
         if not self.drawn:
             self._draw_first()
             return

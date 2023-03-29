@@ -31,9 +31,12 @@ class Position_controller:
         return qd
 
 
-    def position_controller(self, J0, Te, goal):
+    def position_controller(self, J0, Te, qs, goal):
         # Calculate the required end-effector velocity and whether the robot has arrived
         ev, arrived = rtb.p_servo(Te, goal, gain=self.k, threshold=0.001, method="angle-axis")
+        if arrived:
+            n = len(qs)
+            return np.zeros(n), True
 
         # Calculate the required joint velocities and apply to the robot
         qd =  self._joint_velocity(J0, ev)
