@@ -15,40 +15,46 @@ from arm_sim.controller import Controller
 from Driver import Driver
 from xbox_controller import XboxController
 
+##PROGRAM FLAGS
 SIMULATE = True #if true then no interfacing with hardware, and motion is simulated
+USE_XBX_CTR = False
 
+##SIM PARMS
+dt = 0.1 # controller time steps, how often new qd is calculated
+update_dt = dt/4 # how often plots are updated
+
+##INIT ARM MODEL
+arm = EiT_arm(q0=[0.21, -0.03, 0.35, -1.90, -0.04])  # initial pose
+
+##INIT GUI
 Form, Window = uic.loadUiType("gui/view.ui")
 app = QApplication([])
 window = Window()
 form = Form()
-
 form.setupUi(window)
 
-# Create figure with subplots
-figure = plt.figure()
+figure = plt.figure() # Create figure with subplots
 form.simulationLayout.addWidget(figure.canvas)
-
-arm = EiT_arm(q0=[0.21, -0.03, 0.35, -1.90, -0.04])  # initial pose
-# controller time steps, how often new qd is calculated
-dt = 0.1
-# how often plots are updated
-update_dt = dt/4
-
 
 env = rtb.backends.PyPlot.PyPlot()
 env.launch(name="EiT environment", fig=figure)  # lauches a second plot
 env.add(arm)
 plt.close()  # closes second plot
 
+## CONTROL
 ep = EndPosition(arm.fkine(arm.q).A, env.ax) #the end position axes in the plot
-
 ctr = Controller(arm, ep.get_pos(), dt) #arm controller when in end-position mode
 ctr.start()
 
-if not SIMULATE:
+## XBOX
+if USE_XBX_CTR or not SIMULATE: #need xbox controller if hardware is used to control claw
     xbxCtrl = XboxController()
+
+## HARDWARE
+if not SIMULATE:
     driver = Driver(arm, xbxCtrl, dt, ctr) ##assign to variable to avoid garbage collection?
 
+##GUI setup
 def set_sliders():
     ang = arm.q_degrees().astype(int)
     form.q1_slider.setValue(ang[0])
@@ -72,8 +78,7 @@ def slider_change():
     form.q3.setText(str(arr[2]))
     form.q4.setText(str(arr[3]))
     form.q5.setText(str(arr[4]))
-    arm.qr = qs  #updates qr which is accesed by driver, should
-
+    arm.qr = qs  #Sets reference q
 
 def initialize_view():
     # Set up angle slider 1
@@ -109,26 +114,9 @@ def initialize_view():
 
 initialize_view()
 
-
-def changeTab(tabIndex):
-    arm.mode = tabIndex
-    if tabIndex == 0:
-        ctr.disable()
-        ep.disable()
-        set_sliders()
-    elif tabIndex == 1:
-        ep.set_pos(arm.fkine(arm.q).A)
-        ctr.set_position(ep.get_pos())
-        ep.enable()
-        ctr.enable()
-
-
-form.tabWidget.currentChanged.connect(changeTab)
-form.mode_select.currentIndexChanged.connect(
-    lambda: ctr.change_mode(form.mode_select.currentText()))
-
-inc = 0.02  # increments for movement
+inc = 0.02  # increments for movement on button press
 inc_a = 5*np.pi/180  # angular increments
+inc_analog = 0.04 #increments for joystick
 
 form.x_up.clicked.connect(lambda: ep.translate(inc, 0, 0))
 form.y_up.clicked.connect(lambda: ep.translate(0, inc, 0))
@@ -143,16 +131,64 @@ form.x_c.clicked.connect(lambda: ep.rotate(-inc_a, 0, 0))
 form.y_c.clicked.connect(lambda: ep.rotate(0, -inc_a, 0))
 form.z_c.clicked.connect(lambda: ep.rotate(0, 0, -inc_a))
 
+def inc_arm_ref(i, x):
+    arm.qr[i] = inc_analog*x
 
-form.set_goal.clicked.connect(lambda: ctr.set_position(ep.get_pos()))
-form.follow.stateChanged.connect(lambda: form.set_goal.setEnabled(not form.follow.isChecked()))
+def register_xbx_funcs(mode):
+    for code in ['ABS_X', 'ABS_Y', 'ABS_RX', 'ABS_RY', 'BTN_TR', 'BTN_TL', 'BTN_NORTH', 'BTN_SOUTH', 'BTN_WEST', 'BTN_EAST']:
+        xbxCtrl.unregister_event_function(code)
+
+    if mode == 0:
+        xbxCtrl.register_event_function('ABS_Y', lambda x: inc_arm_ref(0, x)) #left joystick up/down
+        xbxCtrl.register_event_function('ABS_X', lambda x: inc_arm_ref(1, x)) #left joystick left/right
+        xbxCtrl.register_event_function('ABS_RY', lambda x: inc_arm_ref(2, x)) #right joystick up/down
+        xbxCtrl.register_event_function('ABS_RX', lambda x: inc_arm_ref(3, x)) #right joystick left/right
+
+    elif mode == 1: #follow end position
+        xbxCtrl.register_event_function('ABS_Y', lambda x: ep.translate(inc*x, 0, 0)) #left joystick up/down
+        xbxCtrl.register_event_function('ABS_X', lambda x: ep.translate(0, inc*x, 0)) #left joystick left/right
+        xbxCtrl.register_event_function('ABS_RY', lambda x: ep.translate(0, 0, inc*x)) #right joystick up/down
+
+        xbxCtrl.register_event_function('BTN_WEST', lambda _: ep.rotate(inc_a, 0, 0)) #X-button, rotate X ccw
+        xbxCtrl.register_event_function('BTN_NORTH', lambda _: ep.rotate(0, inc_a, 0)) #Y-Button, rotate Y ccw
+        xbxCtrl.register_event_function('BTN_TR', lambda _: ep.rotate(0, 0, inc_a))  #right bumper, rotate Z ccw
+
+        xbxCtrl.register_event_function('BTN_SOUTH', lambda _: ep.rotate(-inc_a, 0, 0)) #A-button, rotate X cw
+        xbxCtrl.register_event_function('BTN_EAST', lambda _: ep.rotate(0, -inc_a, 0)) #B-Button, rotate Y cw
+        xbxCtrl.register_event_function('BTN_TL', lambda _: ep.rotate(0, 0, -inc_a))  #left bumper, rotate Z cw
+    else:
+        raise ValueError(f"Invalid mode encountered in register_xbx_funcs. MODE: {mode}")
+        
+def changeTab(tabIndex):
+    if USE_XBX_CTR:
+        register_xbx_funcs(tabIndex) #change what xbox controller does
+
+    if tabIndex == 0:
+        ctr.disable()
+        ep.disable()
+        set_sliders()
+    elif tabIndex == 1:
+        ep.set_pos(arm.fkine(arm.q).A)
+        ctr.set_position(ep.get_pos())
+        ep.enable()
+        ctr.enable()
+
+
+form.tabWidget.currentChanged.connect(changeTab) #tabs
+form.mode_select.currentIndexChanged.connect(lambda: ctr.change_mode(form.mode_select.currentText())) #rullgardin
+
+form.set_goal.clicked.connect(lambda: ctr.set_position(ep.get_pos())) #set-goal button
+form.follow.stateChanged.connect(lambda: form.set_goal.setEnabled(not form.follow.isChecked())) #enable/disable button on check
+
+if USE_XBX_CTR:
+    xbxCtrl.register_event_function('BTN_SELECT', lambda _: form.tabWidget.setCurrentIndex(form.tabWidget.currentIndex()^1)) #Select-button, changes tab !!MIGHT NOT CALL change tab!!
+    register_xbx_funcs(form.tabWidget.currentIndex())
 
 
 def q_change():  # only for simulation
     while True:
-        # Encoder values. Here simulated by forward euler integration
         if ctr.enabled:
-            arm.q = np.clip(arm.q + update_dt*arm.qd, arm.q_lims[0, :], arm.q_lims[1, :])
+            arm.q = np.clip(arm.q + update_dt*arm.qd, arm.q_lims[0, :], arm.q_lims[1, :]) #Encoder values. Here simulated by forward euler integration
         else:
             arm.q = arm.qr
         time.sleep(update_dt)
@@ -166,8 +202,7 @@ def update():  # update plot periodically
     env.robots[0].draw()
     ep.draw()
 
-    follow = form.follow.isChecked()
-    if follow:
+    if form.follow.isChecked():
         ctr.set_position(ep.get_pos())
 
 

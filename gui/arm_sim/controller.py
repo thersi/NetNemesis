@@ -37,8 +37,9 @@ class Controller:
         print("Set controller mode to: ", new_mode)
 
     def set_position(self, T):
-        self.T = T
-        self.arrived = False
+        if not np.allclose(self.T, T):
+            self.T = T
+            self.arrived = False
 
     def start(self):
         self.t = threading.Thread(target=self._control, daemon=True)

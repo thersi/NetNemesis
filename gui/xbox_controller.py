@@ -27,10 +27,26 @@ class XboxController:
     UpDPad = 0
     DownDPad = 0
     _monitor_thread = None
+
+    event_functions = {}
     
     def __init__(self):
         self._monitor_thread = threading.Thread(target=self._monitor_controller, daemon=True)
         self._monitor_thread.start()
+
+
+    def register_event_function(self, event, function):
+        """
+        Register a function which is called when specified event happens.
+        The function must take 1 argument: the event state
+        The function should be quick to avoid blocking of input reading
+        """
+        self.event_functions[event] = function
+
+    def unregister_event_function(self, event):
+        if event in self.event_functions.keys:
+            self.event_functions.pop(event)
+
 
     def read(self): # return the buttons/triggers that you care about in this methode
         left_x = self.LeftJoystickX
@@ -92,6 +108,17 @@ class XboxController:
                     self.UpDPad = event.state
                 elif event.code == 'BTN_TRIGGER_HAPPY4':
                     self.DownDPad = event.state
+
+                if event.code in self.event_functions.keys: #trigger event
+                    fn = self.event_functions[event.code]
+                    arg = event.state
+
+                    if event.code in ['ABS_X', 'ABS_Y', 'ABS_RX', 'ABS_RY']: #normalize joystick values
+                        arg /= XboxController.MAX_JOY_VAL
+                    elif event.code in ['ABS_Z', 'ABS_RZ']: #normalize triggers
+                        arg /= XboxController.MAX_TRIG_VAL
+
+                    fn(arg) #call registered function
 
 if __name__ == '__main__':
     joy = XboxController()
