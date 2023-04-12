@@ -93,7 +93,7 @@ class Optimization_controller:
         Ain[:n, :n], bin[:n] = self._joint_velocity_damper(qs)
 
         # Linear component of objective function: the manipulability Jacobian, but have no manipulability so is zero
-        # c = np.r_[λm * -Jm.reshape((panda.n,)), np.zeros(6)]
+        # c = np.r_[λm * -Jm.reshape((n,)), np.zeros(6)]
         c = np.zeros(n + 6)
 
         # The lower and upper bounds on the joint velocity and slack variable
@@ -103,7 +103,6 @@ class Optimization_controller:
         # Solve for the joint velocities qd and apply to the robot
         xd = qp.solve_qp(Q, c, Ain, bin, Aeq, beq, lb=lb, ub=ub, solver='quadprog')
 
-        # Apply the joint velocities to the Panda
         if xd is not None:
             return xd[:n], arrived
         return None, None

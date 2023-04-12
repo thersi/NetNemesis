@@ -15,7 +15,7 @@ from arm_sim.controller import Controller
 from Driver import Driver
 from xbox_controller import XboxController
 
-SIMULATE = False #if true then no interfacing with hardware, and motion is simulated
+SIMULATE = True #if true then no interfacing with hardware, and motion is simulated
 
 Form, Window = uic.loadUiType("gui/view.ui")
 app = QApplication([])
@@ -40,9 +40,9 @@ env.launch(name="EiT environment", fig=figure)  # lauches a second plot
 env.add(arm)
 plt.close()  # closes second plot
 
-ep = EndPosition(arm.fkine(arm.q).A, env.ax)
+ep = EndPosition(arm.fkine(arm.q).A, env.ax) #the end position axes in the plot
 
-ctr = Controller(arm, ep.get_pos(), dt)
+ctr = Controller(arm, ep.get_pos(), dt) #arm controller when in end-position mode
 ctr.start()
 
 if not SIMULATE:
@@ -150,7 +150,7 @@ form.follow.stateChanged.connect(lambda: form.set_goal.setEnabled(not form.follo
 
 def q_change():  # only for simulation
     while True:
-        # get encoder values. Here simulated by forward euler integration
+        # Encoder values. Here simulated by forward euler integration
         if ctr.enabled:
             arm.q = np.clip(arm.q + update_dt*arm.qd, arm.q_lims[0, :], arm.q_lims[1, :])
         else:
