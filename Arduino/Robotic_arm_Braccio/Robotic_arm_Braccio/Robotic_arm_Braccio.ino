@@ -193,7 +193,6 @@ void readSerial()
   }
 }
 // digitalWrite(LED_BUILTIN, LOW);
-}
 
 void updateServos()
 {

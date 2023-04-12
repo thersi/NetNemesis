@@ -36,9 +36,6 @@ class Controller(XboxController):
         y = threading.Thread(target=self._sendDataThread, daemon=True)
         y.start()
 
-        # form.onButton.clicked.connect(lambda: ser.write(str.encode('<Servo1: ' + servo6  + "; " + 'Servo2: ' + servo2 + "; " + 'Servo3: ' + servo3 + "; " + 'Servo4: ' + servo4 + "; " + 'Servo5: ' + servo5 + "; " + 'Servo6: ' + servo6 + ";>")))
-        # form.offButton.clicked.connect(lambda: ser.write(str.encode('<Servo1: 90; Servo2: 60; Servo3: 90; Servo4: 90; Servo5: 45; Servo6: 73;>')))
-
         super().__init__()
         time.sleep(2)
 
@@ -72,12 +69,6 @@ class Controller(XboxController):
 
                         print("<" + str(ServoPos1) + ", " + str(ServoPos2) + ", " + str(ServoPos3) +
                               ", " + str(ServoPos4) + ", " + str(ServoPos5) + ", " + str(ServoPos6) + ">")
-                        # print("ServoPos1: ", ServoPos1)
-                        # print("ServoPos2: ", ServoPos2)
-                        # print("ServoPos3: ", ServoPos3)
-                        # print("ServoPos4: ", ServoPos4)
-                        # print("ServoPos5: ", ServoPos5)
-                        # print("ServoPos6: ", ServoPos6)
                         self.arm.q[0] = ServoPos1*np.pi/180.0
                         self.arm.q[1] = ServoPos2*np.pi/180.0
                         self.arm.q[2] = ServoPos3*np.pi/180.0
@@ -87,49 +78,6 @@ class Controller(XboxController):
 
                     # self.arm.q_degrees(curr_degs)
                     # self.arm.claw_deg(claw_deg)
-
-                    # if "ServoPos1" in string:
-                    #     tempArray = re.findall(r'\d+', string)
-                    #     ServoPos1 = float(tempArray[1])
-
-                    #     self.arm.q[0] = ServoPos1*np.pi/180.0
-
-                    #     #print("ServoPos1:", ServoPos1)
-                    # if "ServoPos2" in string:
-                    #     tempArray = re.findall(r'\d+', string)
-                    #     ServoPos2 = float(tempArray[1])
-
-                    #     self.arm.q[1] = ServoPos2*np.pi/180.0
-
-                    #     #print("ServoPos2:", ServoPos2)
-                    # if "ServoPos3" in string:
-                    #     tempArray = re.findall(r'\d+', string)
-                    #     ServoPos3 = float(tempArray[1])
-
-                    #     self.arm.q[2] = ServoPos3*np.pi/180.0
-
-                    #     #print("ServoPos3:", ServoPos3)
-                    # if "ServoPos4" in string:
-                    #     tempArray = re.findall(r'\d+', string)
-                    #     ServoPos4 = float(tempArray[1])
-
-                    #     self.arm.q[3] = ServoPos4*np.pi/180.0
-
-                    #     print("ServoPos4:", ServoPos4)
-                    # if "ServoPos5" in string:
-                    #     tempArray = re.findall(r'\d+', string)
-                    #     ServoPos5 = float(tempArray[1])
-
-                    #     self.arm.q[4] = ServoPos5*np.pi/180.0
-
-                    #     #print("ServoPos5:", ServoPos5)
-                    # if "ServoPos6" in string:
-                    #     tempArray = re.findall(r'\d+', string)
-                    #     ServoPos6 = float(tempArray[1])
-
-                    # self.arm.claw_angle = ServoPos6*np.pi/180.0
-
-                        # print("ServoPos6:", ServoPos6)
 
     def _sendDataThread(self):
 

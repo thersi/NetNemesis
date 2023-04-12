@@ -15,6 +15,7 @@ from arm_sim.controller import Controller
 from Driver import Driver
 from xbox_controller import XboxController
 
+SIMULATE = False #if true then no interfacing with hardware, and motion is simulated
 
 Form, Window = uic.loadUiType("gui/view.ui")
 app = QApplication([])
@@ -33,8 +34,6 @@ dt = 0.1
 # how often plots are updated
 update_dt = dt/4
 
-# xbxCtrl = XboxController()
-# Driver(arm, XboxController) ##assign to variable to avoid garbage collection?
 
 env = rtb.backends.PyPlot.PyPlot()
 env.launch(name="EiT environment", fig=figure)  # lauches a second plot
@@ -42,11 +41,13 @@ env.add(arm)
 plt.close()  # closes second plot
 
 ep = EndPosition(arm.fkine(arm.q).A, env.ax)
-ep.set_pos(arm.fkine([0.61, -0.03, 0.35, -1.90, -0.04]).A)
 
 ctr = Controller(arm, ep.get_pos(), dt)
 ctr.start()
 
+if not SIMULATE:
+    xbxCtrl = XboxController()
+    driver = Driver(arm, xbxCtrl, dt, ctr) ##assign to variable to avoid garbage collection?
 
 def set_sliders():
     ang = arm.q_degrees().astype(int)
@@ -71,7 +72,7 @@ def slider_change():
     form.q3.setText(str(arr[2]))
     form.q4.setText(str(arr[3]))
     form.q5.setText(str(arr[4]))
-    arm.q = qs  # Shall not be done this way as this should only be changed by encoders. Send using Driver
+    arm.qr = qs  #updates qr which is accesed by driver, should
 
 
 def initialize_view():
@@ -110,6 +111,7 @@ initialize_view()
 
 
 def changeTab(tabIndex):
+    arm.mode = tabIndex
     if tabIndex == 0:
         ctr.disable()
         ep.disable()
@@ -143,19 +145,21 @@ form.z_c.clicked.connect(lambda: ep.rotate(0, 0, -inc_a))
 
 
 form.set_goal.clicked.connect(lambda: ctr.set_position(ep.get_pos()))
-form.follow.stateChanged.connect(
-    lambda: form.set_goal.setEnabled(not form.follow.isChecked()))
+form.follow.stateChanged.connect(lambda: form.set_goal.setEnabled(not form.follow.isChecked()))
 
 
-def q_change():  # will be removed when arm encoders are up
+def q_change():  # only for simulation
     while True:
         # get encoder values. Here simulated by forward euler integration
-        arm.q = np.clip(arm.q + update_dt*arm.qd, arm.q_lims[0, :], arm.q_lims[1, :])
+        if ctr.enabled:
+            arm.q = np.clip(arm.q + update_dt*arm.qd, arm.q_lims[0, :], arm.q_lims[1, :])
+        else:
+            arm.q = arm.qr
         time.sleep(update_dt)
 
-
-t = threading.Thread(target=q_change, daemon=True)
-t.start()
+if SIMULATE:
+    t = threading.Thread(target=q_change, daemon=True)
+    t.start()
 
 
 def update():  # update plot periodically
@@ -170,7 +174,7 @@ def update():  # update plot periodically
 # Initialize QTimer
 timer = QTimer()
 timer.timeout.connect(update)
-timer.start(int(update_dt*1000)) #how often to update (in ms dt is in s)
+timer.start(int(update_dt*1000)) #how often to update (in ms, dt is in s)
 
 window.show()
 app.exec()
