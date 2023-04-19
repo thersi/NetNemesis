@@ -132,7 +132,13 @@ form.y_c.clicked.connect(lambda: ep.rotate(0, -inc_a, 0))
 form.z_c.clicked.connect(lambda: ep.rotate(0, 0, -inc_a))
 
 def inc_arm_ref(i, x):
-    arm.qr[i] = inc_analog*x
+    arm.qr[i] += inc_analog*x
+    form.q1_slider.setSliderPosition(arm.qr[0])
+    form.q2_slider.setSliderPosition(arm.qr[1])
+    form.q3_slider.setSliderPosition(arm.qr[2])
+    form.q4_slider.setSliderPosition(arm.qr[3])
+    form.q5_slider.setSliderPosition(arm.qr[4])
+    slider_change()
 
 def register_xbx_funcs(mode):
     for code in ['ABS_X', 'ABS_Y', 'ABS_RX', 'ABS_RY', 'BTN_TR', 'BTN_TL', 'BTN_NORTH', 'BTN_SOUTH', 'BTN_WEST', 'BTN_EAST']:
