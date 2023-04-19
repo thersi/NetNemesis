@@ -64,9 +64,11 @@ class Driver:
             claw = np.interp(controller_state[5], [0, 1], [10, 73])
 
             if self.controller.enabled: #use control signal in qd
-                servos = (self.arm.q + self.dt*self.arm.qd)*180/np.pi #euler integrate next reference position for arm
-            else: #mode is direct control of angles
-                servos = self.arm.qr*180/np.pi
+                self.arm.qr = self.arm.q + self.dt*self.arm.qd #euler integrate next reference position for arm                
+            
+            servos = np.clip(self.arm.qr*180/np.pi, -135, 135)
+            
+            self.arm.q[4] = self.arm.qr[4] #encoder 4 does not work so we pretend it is perfect
             
             msg = "<" + ", ".join(str(int(s + 0.5)) for s in np.append(servos, claw)) + ">"
             self.ser.write(str.encode(msg))
