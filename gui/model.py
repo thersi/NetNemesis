@@ -189,7 +189,7 @@ form.set_goal.clicked.connect(lambda: ctr.set_position(ep.get_pos())) #set-goal 
 form.follow.stateChanged.connect(lambda: form.set_goal.setEnabled(not form.follow.isChecked())) #enable/disable button on check
 
 if USE_XBX_CTR:
-    xbxCtrl.register_event_function('BTN_SELECT', lambda _: form.tabWidget.setCurrentIndex(form.tabWidget.currentIndex()^1)) #Select-button, changes tab !!MIGHT NOT CALL change tab!!
+    xbxCtrl.register_event_function('BTN_SELECT', lambda v: form.tabWidget.setCurrentIndex(form.tabWidget.currentIndex()^1) if v == 1 else None) #Select-button, changes tab !!MIGHT NOT CALL change tab!!
     register_xbx_funcs(form.tabWidget.currentIndex())
 
 
