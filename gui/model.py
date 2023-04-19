@@ -17,7 +17,7 @@ from xbox_controller import XboxController
 
 ##PROGRAM FLAGS
 SIMULATE = True #if true then no interfacing with hardware, and motion is simulated
-USE_XBX_CTR = False
+USE_XBX_CTR = True
 
 ##SIM PARMS
 dt = 0.1 # controller time steps, how often new qd is calculated
@@ -153,8 +153,8 @@ def register_xbx_funcs(mode):
         xbxCtrl.unregister_event_function(code)
 
     if mode == 0:
-        xbxCtrl.register_event_function('BTN_TL', lambda _: inc_arm_ref(0, 3)) #bumper behind, 3 to give greater effect
-        xbxCtrl.register_event_function('BTN_TR', lambda _: inc_arm_ref(0, -3)) #bumper behind
+        xbxCtrl.register_event_function('BTN_TL', lambda x: inc_arm_ref(0, 3*x)) #bumper behind, 3 to give greater effect
+        xbxCtrl.register_event_function('BTN_TR', lambda x: inc_arm_ref(0, -3*x)) #bumper behind
         xbxCtrl.register_event_function('ABS_Y', lambda x: inc_arm_ref(1, x)) #left joystick up/down
         xbxCtrl.register_event_function('ABS_X', lambda x: inc_arm_ref(2, x)) #left joystick left/right
         xbxCtrl.register_event_function('ABS_RY', lambda x: inc_arm_ref(3, x)) #right joystick up/down
@@ -208,8 +208,8 @@ def rotateViewAzim(x):
 
 if USE_XBX_CTR:
     xbxCtrl.register_event_function('BTN_SELECT', lambda v: form.tabWidget.setCurrentIndex(form.tabWidget.currentIndex()^1) if v == 1 else None) #Select-button, changes tab !!MIGHT NOT CALL change tab!!
-    xbxCtrl.register_event_function('ABS_HAT0X', lambda v: rotateViewElev(v))
-    xbxCtrl.register_event_function('ABS_HAT0Y', lambda v: rotateViewAzim(v))
+    xbxCtrl.register_event_function('ABS_HAT0X', lambda v: rotateViewAzim(v))
+    xbxCtrl.register_event_function('ABS_HAT0Y', lambda v: rotateViewElev(-v))
     register_xbx_funcs(form.tabWidget.currentIndex())
 
 
