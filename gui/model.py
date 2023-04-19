@@ -16,8 +16,8 @@ from Driver import Driver
 from xbox_controller import XboxController
 
 ##PROGRAM FLAGS
-SIMULATE = False #if true then no interfacing with hardware, and motion is simulated
-USE_XBX_CTR = True
+SIMULATE = True #if true then no interfacing with hardware, and motion is simulated
+USE_XBX_CTR = False
 
 ##SIM PARMS
 dt = 0.1 # controller time steps, how often new qd is calculated
@@ -195,6 +195,9 @@ form.mode_select.currentIndexChanged.connect(lambda: ctr.change_mode(form.mode_s
 
 form.set_goal.clicked.connect(lambda: ctr.set_position(ep.get_pos())) #set-goal button
 form.follow.stateChanged.connect(lambda: form.set_goal.setEnabled(not form.follow.isChecked())) #enable/disable button on check
+
+form.set_goal.setEnabled(False)
+form.follow.setChecked(True) #have follow mode enabled as default
 
 if USE_XBX_CTR:
     xbxCtrl.register_event_function('BTN_SELECT', lambda v: form.tabWidget.setCurrentIndex(form.tabWidget.currentIndex()^1) if v == 1 else None) #Select-button, changes tab !!MIGHT NOT CALL change tab!!
