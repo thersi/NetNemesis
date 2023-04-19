@@ -135,7 +135,7 @@ def inc_arm_ref(i, x):
     if abs(x) < 0.15:
         return
     
-    sliders = [form.q1_sider, form.q2_sider, form.q3_sider, form.q4_sider, form.q5_sider]
+    sliders = [form.q1_slider, form.q2_slider, form.q3_slider, form.q4_slider, form.q5_slider]
 
     q_deg = ((arm.qr[i] + inc_analog*x)*180/np.pi).astype(int)
 
