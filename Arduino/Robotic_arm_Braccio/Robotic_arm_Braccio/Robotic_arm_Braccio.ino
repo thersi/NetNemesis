@@ -261,8 +261,8 @@ void writeSerial()
   // real2Pos = 20;
   // real3Pos = 30;
   ////real4Pos = 40;
-  // real5Pos = 50;
-  // real6Pos = 60;
+  real5Pos = 0; // Not in used because of I2C using A4 and A5
+  real6Pos = 0; // Not in used because of I2C using A4 and A5
   //
   if (Serial.availableForWrite() > 0)
   {
