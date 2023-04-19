@@ -1258,7 +1258,7 @@
                                 }</string>
                         </property>
                         <property name="text">
-                            <string> ψ</string>
+                            <string>z</string>
                         </property>
                     </widget>
                     <widget class="QToolButton" name="z_cc">
@@ -1332,7 +1332,7 @@
                                 }</string>
                         </property>
                         <property name="text">
-                            <string>θ</string>
+                            <string>x</string>
                         </property>
                     </widget>
                     <widget class="QToolButton" name="x_cc">
@@ -1406,7 +1406,7 @@
                                 }</string>
                         </property>
                         <property name="text">
-                            <string>φ</string>
+                            <string>y</string>
                         </property>
                     </widget>
                     <widget class="QToolButton" name="y_cc">
