@@ -5,12 +5,13 @@ from arm_sim.transform import *
 class EndPosition:
     drawn = False
 
-    def __init__(self, T0, ax, scale=1/8, labels=True):
+    def __init__(self, T0, ax, scale=1/8, labels=True, reach = 1.2):
         self.T = T0
         self.ax = ax
         self.scale = scale
         self.labels = labels
         self.enabled = True
+        self.reach = reach
 
     def enable(self):
         self.enabled = True
@@ -19,13 +20,16 @@ class EndPosition:
         self.enabled = False
 
     def set_pos(self, T):
-        self.T = T
+        if np.linalg.norm(T[:3, 3]) < self.reach:
+            self.T = T
 
     def get_pos(self):
         return self.T
 
     def translate(self, dx, dy, dz): #along own axes
-        self.T = self.T@translate_xyz(dx, dy, dz)
+        newT = self.T@translate_xyz(dx, dy, dz)
+        if np.linalg.norm(newT[:3, 3]) < self.reach:
+            self.T = newT
 
     def rotate(self, ax, ay, az): #rotate about own axes
         self.T = self.T@rotate_x(ax)@rotate_y(ay)@rotate_z(az)
