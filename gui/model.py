@@ -42,7 +42,7 @@ env.add(arm)
 plt.close()  # closes second plot
 
 ## CONTROL
-ep = EndPosition(arm.fkine(arm.q).A, env.ax) #the end position axes in the plot
+ep = EndPosition(arm.fkine(arm.q).A, env.ax, reach=arm.length) #the end position axes in the plot
 ctr = Controller(arm, ep.get_pos(), dt) #arm controller when in end-position mode
 ctr.start()
 
@@ -136,19 +136,22 @@ def inc_arm_ref(i, x):
         return
     
     sliders = [form.q1_slider, form.q2_slider, form.q3_slider, form.q4_slider, form.q5_slider]
+    labels = [form.q1, form.q2, form.q3, form.q4, form.q5]
 
-    q_deg = ((arm.qr[i] + inc_analog*x)*180/np.pi).astype(int)
+    arm.qr[i] += inc_analog*x
+
+    q_deg = (arm.qr[i]*180/np.pi).astype(int)
 
     sliders[i].setSliderPosition(q_deg)
-    slider_change()
+    labels[i].setText(str(q_deg))
 
 def register_xbx_funcs(mode):
     for code in ['ABS_X', 'ABS_Y', 'ABS_RX', 'ABS_RY', 'BTN_TR', 'BTN_TL', 'BTN_NORTH', 'BTN_SOUTH', 'BTN_WEST', 'BTN_EAST']:
         xbxCtrl.unregister_event_function(code)
 
     if mode == 0:
-        xbxCtrl.register_event_function('BTN_TL', lambda _: inc_arm_ref(0, 1)) #bumper behind
-        xbxCtrl.register_event_function('BTN_TR', lambda _: inc_arm_ref(0, -1)) #bumper behind
+        xbxCtrl.register_event_function('BTN_TL', lambda _: inc_arm_ref(0, 3)) #bumper behind, 3 to give greater effect
+        xbxCtrl.register_event_function('BTN_TR', lambda _: inc_arm_ref(0, -3)) #bumper behind
         xbxCtrl.register_event_function('ABS_Y', lambda x: inc_arm_ref(1, x)) #left joystick up/down
         xbxCtrl.register_event_function('ABS_X', lambda x: inc_arm_ref(2, x)) #left joystick left/right
         xbxCtrl.register_event_function('ABS_RY', lambda x: inc_arm_ref(3, x)) #right joystick up/down

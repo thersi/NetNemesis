@@ -12,7 +12,6 @@ class EiT_arm(robot.DHRobot):
                  robot.RevoluteDH(d = 1/8 , a = 0, alpha=0)] 
         
 
-
         super().__init__(links, name='EiT arm')      
 
         self.q_lims = np.zeros((2, self.n))
@@ -30,6 +29,7 @@ class EiT_arm(robot.DHRobot):
             self._claw_angle = claw0
 
         self.control_mode = "p" #used in env.step to simulate robot, we do not use this since we simulate ourselves
+        self.length = sum([max(l.d, l.a) for l in links])
 
     def q_degrees(self):        
         return self.q*180/np.pi
