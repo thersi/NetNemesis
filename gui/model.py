@@ -138,12 +138,15 @@ def inc_arm_ref(i, x):
     sliders = [form.q1_slider, form.q2_slider, form.q3_slider, form.q4_slider, form.q5_slider]
     labels = [form.q1, form.q2, form.q3, form.q4, form.q5]
 
-    arm.qr[i] += inc_analog*x
 
-    q_deg = (arm.qr[i]*180/np.pi).astype(int)
+    new_qr = arm.qr[i] + inc_analog*x
+    q_deg = (new_qr*180/np.pi).astype(int)
 
-    sliders[i].setSliderPosition(q_deg)
-    labels[i].setText(str(q_deg))
+    
+    if abs(q_deg) < 135:
+        arm.qr[i] = new_qr 
+        sliders[i].setSliderPosition(q_deg)
+        labels[i].setText(str(q_deg))
 
 def register_xbx_funcs(mode):
     for code in ['ABS_X', 'ABS_Y', 'ABS_RX', 'ABS_RY', 'BTN_TR', 'BTN_TL', 'BTN_NORTH', 'BTN_SOUTH', 'BTN_WEST', 'BTN_EAST']:
