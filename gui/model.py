@@ -199,8 +199,17 @@ form.follow.stateChanged.connect(lambda: form.set_goal.setEnabled(not form.follo
 form.set_goal.setEnabled(False)
 form.follow.setChecked(True) #have follow mode enabled as default
 
+
+def rotateViewElev(x):
+    env.ax.elev += 5*x
+
+def rotateViewAzim(x):
+    env.ax.azim += 5*x
+
 if USE_XBX_CTR:
     xbxCtrl.register_event_function('BTN_SELECT', lambda v: form.tabWidget.setCurrentIndex(form.tabWidget.currentIndex()^1) if v == 1 else None) #Select-button, changes tab !!MIGHT NOT CALL change tab!!
+    xbxCtrl.register_event_function('ABS_HAT0X', lambda v: rotateViewElev(v))
+    xbxCtrl.register_event_function('ABS_HAT0Y', lambda v: rotateViewAzim(v))
     register_xbx_funcs(form.tabWidget.currentIndex())
 
 
