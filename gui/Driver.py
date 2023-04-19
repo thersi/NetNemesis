@@ -56,7 +56,7 @@ class Driver:
                         self.arm.q[2] = ServoPos3*np.pi/180.0
                         self.arm.q[3] = ServoPos4*np.pi/180.0
                         self.arm.q[4] = ServoPos5*np.pi/180.0
-                        self.arm.claw_angle = ServoPos6*np.pi/180.0
+                        #self.arm.claw_angle = ServoPos6*np.pi/180.0
 
     def _sendData(self):
         while True:
