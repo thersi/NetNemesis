@@ -132,14 +132,14 @@ form.y_c.clicked.connect(lambda: ep.rotate(0, -inc_a, 0))
 form.z_c.clicked.connect(lambda: ep.rotate(0, 0, -inc_a))
 
 def inc_arm_ref(i, x):
-    arm.qr[i] += inc_analog*x
-    q_deg = (arm.qr*180/np.pi).astype(int)
+    if abs(x) < 0.15:
+        return
+    
+    sliders = [form.q1_sider, form.q2_sider, form.q3_sider, form.q4_sider, form.q5_sider]
 
-    form.q1_slider.setSliderPosition(q_deg[0])
-    form.q2_slider.setSliderPosition(q_deg[1])
-    form.q3_slider.setSliderPosition(q_deg[2])
-    form.q4_slider.setSliderPosition(q_deg[3])
-    form.q5_slider.setSliderPosition(q_deg[4])
+    q_deg = ((arm.qr[i] + inc_analog*x)*180/np.pi).astype(int)
+
+    sliders[i].setSliderPosition(q_deg)
     slider_change()
 
 def register_xbx_funcs(mode):
@@ -147,10 +147,12 @@ def register_xbx_funcs(mode):
         xbxCtrl.unregister_event_function(code)
 
     if mode == 0:
-        xbxCtrl.register_event_function('ABS_Y', lambda x: inc_arm_ref(0, x)) #left joystick up/down
-        xbxCtrl.register_event_function('ABS_X', lambda x: inc_arm_ref(1, x)) #left joystick left/right
-        xbxCtrl.register_event_function('ABS_RY', lambda x: inc_arm_ref(2, x)) #right joystick up/down
-        xbxCtrl.register_event_function('ABS_RX', lambda x: inc_arm_ref(3, x)) #right joystick left/right
+        xbxCtrl.register_event_function('BTN_TL', lambda _: inc_arm_ref(0, 1)) #bumper behind
+        xbxCtrl.register_event_function('BTN_TR', lambda _: inc_arm_ref(0, -1)) #bumper behind
+        xbxCtrl.register_event_function('ABS_Y', lambda x: inc_arm_ref(1, x)) #left joystick up/down
+        xbxCtrl.register_event_function('ABS_X', lambda x: inc_arm_ref(2, x)) #left joystick left/right
+        xbxCtrl.register_event_function('ABS_RY', lambda x: inc_arm_ref(3, x)) #right joystick up/down
+        xbxCtrl.register_event_function('ABS_RX', lambda x: inc_arm_ref(4, x)) #right joystick left/right
 
     elif mode == 1: #follow end position
         xbxCtrl.register_event_function('ABS_Y', lambda x: ep.translate(inc_analog*x, 0, 0)) #left joystick up/down
