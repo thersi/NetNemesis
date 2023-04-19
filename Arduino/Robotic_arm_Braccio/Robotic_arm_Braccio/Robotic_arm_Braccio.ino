@@ -269,20 +269,19 @@ void writeSerial()
     if (real1Pos != oldReal1Pos || real2Pos != oldReal2Pos || real3Pos != oldReal3Pos ||
         real4Pos != oldReal4Pos || real5Pos != oldReal5Pos || real6Pos != oldReal6Pos)
     {
-      // Serial.print("<");
-      // Serial.print(real1Pos);
-      // Serial.print(",");
-      // Serial.print(real2Pos);
-      // Serial.print(",");
-      // Serial.print(real3Pos);
-      // Serial.print(",");
-      // Serial.print(real4Pos);
-      // Serial.print(",");
-      // Serial.print(real5Pos);
-      // Serial.print(",");
-      // Serial.print(real6Pos);
-      // Serial.println(">");
-      //Serial.println(real6Pos);
+      Serial.print("<");
+      Serial.print(real1Pos);
+      Serial.print(",");
+      Serial.print(real2Pos);
+      Serial.print(",");
+      Serial.print(real3Pos);
+      Serial.print(",");
+      Serial.print(real4Pos);
+      Serial.print(",");
+      Serial.print(real5Pos);
+      Serial.print(",");
+      Serial.print(real6Pos);
+      Serial.println(">");
 
       oldReal1Pos = real1Pos;
       oldReal2Pos = real2Pos;
