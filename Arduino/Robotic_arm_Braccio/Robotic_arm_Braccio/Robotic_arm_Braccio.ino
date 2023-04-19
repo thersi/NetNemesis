@@ -49,7 +49,7 @@ short oldServo5Pos;
 short tempPos5;
 
 short servo6In;
-short servo6Pos = 10;
+short servo6Pos = 0;
 short real6Pos;
 short oldReal6Pos;
 short oldServo6Pos;
@@ -228,7 +228,8 @@ void updateServos()
   }
   if (oldServo6Pos != servo6Pos)
   {
-    gripper.write(servo6Pos, 30);
+    int servoValue = map(servo6Pos, 0, 270, 500, 2500);
+    gripper.write(servoValue, 30);
     oldServo6Pos = servo6Pos;
   }
 
@@ -254,6 +255,8 @@ void writeSerial()
   real5Pos = map(servo5In, 47, 609, 0, 270);
   real6Pos = map(servo6In, 47, 609, 0, 270);
 
+  Serial.println(servo6In);
+
   // real1Pos = 10;
   // real2Pos = 20;
   // real3Pos = 30;
@@ -266,19 +269,20 @@ void writeSerial()
     if (real1Pos != oldReal1Pos || real2Pos != oldReal2Pos || real3Pos != oldReal3Pos ||
         real4Pos != oldReal4Pos || real5Pos != oldReal5Pos || real6Pos != oldReal6Pos)
     {
-      Serial.print("<");
-      Serial.print(real1Pos);
-      Serial.print(",");
-      Serial.print(real2Pos);
-      Serial.print(",");
-      Serial.print(real3Pos);
-      Serial.print(",");
-      Serial.print(real4Pos);
-      Serial.print(",");
-      Serial.print(real5Pos);
-      Serial.print(",");
-      Serial.print(real6Pos);
-      Serial.println(">");
+      // Serial.print("<");
+      // Serial.print(real1Pos);
+      // Serial.print(",");
+      // Serial.print(real2Pos);
+      // Serial.print(",");
+      // Serial.print(real3Pos);
+      // Serial.print(",");
+      // Serial.print(real4Pos);
+      // Serial.print(",");
+      // Serial.print(real5Pos);
+      // Serial.print(",");
+      // Serial.print(real6Pos);
+      // Serial.println(">");
+      //Serial.println(real6Pos);
 
       oldReal1Pos = real1Pos;
       oldReal2Pos = real2Pos;
