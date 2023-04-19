@@ -71,13 +71,13 @@ def slider_change():
            form.q4_slider.value(),
            form.q5_slider.value()]
 
-    qs = np.asarray(arr)*np.pi/180
-
     form.q1.setText(str(arr[0]))
     form.q2.setText(str(arr[1]))
     form.q3.setText(str(arr[2]))
     form.q4.setText(str(arr[3]))
     form.q5.setText(str(arr[4]))
+
+    qs = np.asarray(arr)*np.pi/180
     arm.qr = qs  #Sets reference q
 
 def initialize_view():
@@ -133,11 +133,13 @@ form.z_c.clicked.connect(lambda: ep.rotate(0, 0, -inc_a))
 
 def inc_arm_ref(i, x):
     arm.qr[i] += inc_analog*x
-    form.q1_slider.setSliderPosition(arm.qr[0])
-    form.q2_slider.setSliderPosition(arm.qr[1])
-    form.q3_slider.setSliderPosition(arm.qr[2])
-    form.q4_slider.setSliderPosition(arm.qr[3])
-    form.q5_slider.setSliderPosition(arm.qr[4])
+    q_deg = (arm.qr*180/np.pi).astype(int)
+
+    form.q1_slider.setSliderPosition(q_deg[0])
+    form.q2_slider.setSliderPosition(q_deg[1])
+    form.q3_slider.setSliderPosition(q_deg[2])
+    form.q4_slider.setSliderPosition(q_deg[3])
+    form.q5_slider.setSliderPosition(q_deg[4])
     slider_change()
 
 def register_xbx_funcs(mode):

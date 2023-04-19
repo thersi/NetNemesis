@@ -42,15 +42,16 @@ class Driver:
 
                     if "<" in string and ">" in string and not "<Ready>" in string:
                         string = string.split(",")
-                        ServoPos1 = int(string[0].translate({ord('<'): None}))
-                        ServoPos2 = int(string[1])
-                        ServoPos3 = int(string[2])
-                        ServoPos4 = int(string[3])
-                        ServoPos5 = int(string[4])
+                        ServoPos1 = int(string[0].translate({ord('<'): None})) - 135 #go from 0 - 270 to -135, 135
+                        ServoPos2 = int(string[1]) - 135
+                        ServoPos3 = int(string[2]) - 135
+                        ServoPos4 = int(string[3]) - 135
+                        ServoPos5 = int(string[4]) - 135
                         ServoPos6 = int(string[5].translate({ord('>'): None}))
 
                         print("<" + str(ServoPos1) + ", " + str(ServoPos2) + ", " + str(ServoPos3) +
                               ", " + str(ServoPos4) + ", " + str(ServoPos5) + ", " + str(ServoPos6) + ">")
+                        
                         self.arm.q[0] = ServoPos1*np.pi/180.0
                         self.arm.q[1] = ServoPos2*np.pi/180.0
                         self.arm.q[2] = ServoPos3*np.pi/180.0
@@ -66,7 +67,7 @@ class Driver:
             if self.controller.enabled: #use control signal in qd
                 self.arm.qr = self.arm.q + self.dt*self.arm.qd #euler integrate next reference position for arm                
             
-            servos = np.clip(self.arm.qr*180/np.pi, -135, 135)
+            servos = np.clip(self.arm.qr*180/np.pi, -135, 135) + 135 #arduino works from 0 to 270, not -135 to 135
             
             self.arm.q[4] = self.arm.qr[4] #encoder 4 does not work so we pretend it is perfect
             
