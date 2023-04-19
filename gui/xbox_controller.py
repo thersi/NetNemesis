@@ -44,7 +44,7 @@ class XboxController:
         self.event_functions[event] = function
 
     def unregister_event_function(self, event):
-        if event in self.event_functions.keys:
+        if event in self.event_functions.keys():
             self.event_functions.pop(event)
 
 
@@ -109,7 +109,7 @@ class XboxController:
                 elif event.code == 'BTN_TRIGGER_HAPPY4':
                     self.DownDPad = event.state
 
-                if event.code in self.event_functions.keys: #trigger event
+                if event.code in self.event_functions.keys(): #trigger event
                     fn = self.event_functions[event.code]
                     arg = event.state
 

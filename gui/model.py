@@ -116,7 +116,7 @@ initialize_view()
 
 inc = 0.02  # increments for movement on button press
 inc_a = 5*np.pi/180  # angular increments
-inc_analog = 0.04 #increments for joystick
+inc_analog = 0.01 #increments for joystick
 
 form.x_up.clicked.connect(lambda: ep.translate(inc, 0, 0))
 form.y_up.clicked.connect(lambda: ep.translate(0, inc, 0))
@@ -132,7 +132,13 @@ form.y_c.clicked.connect(lambda: ep.rotate(0, -inc_a, 0))
 form.z_c.clicked.connect(lambda: ep.rotate(0, 0, -inc_a))
 
 def inc_arm_ref(i, x):
-    arm.qr[i] = inc_analog*x
+    arm.qr[i] += inc_analog*x
+    form.q1_slider.setSliderPosition(arm.qr[0])
+    form.q2_slider.setSliderPosition(arm.qr[1])
+    form.q3_slider.setSliderPosition(arm.qr[2])
+    form.q4_slider.setSliderPosition(arm.qr[3])
+    form.q5_slider.setSliderPosition(arm.qr[4])
+    slider_change()
 
 def register_xbx_funcs(mode):
     for code in ['ABS_X', 'ABS_Y', 'ABS_RX', 'ABS_RY', 'BTN_TR', 'BTN_TL', 'BTN_NORTH', 'BTN_SOUTH', 'BTN_WEST', 'BTN_EAST']:
@@ -145,9 +151,9 @@ def register_xbx_funcs(mode):
         xbxCtrl.register_event_function('ABS_RX', lambda x: inc_arm_ref(3, x)) #right joystick left/right
 
     elif mode == 1: #follow end position
-        xbxCtrl.register_event_function('ABS_Y', lambda x: ep.translate(inc*x, 0, 0)) #left joystick up/down
-        xbxCtrl.register_event_function('ABS_X', lambda x: ep.translate(0, inc*x, 0)) #left joystick left/right
-        xbxCtrl.register_event_function('ABS_RY', lambda x: ep.translate(0, 0, inc*x)) #right joystick up/down
+        xbxCtrl.register_event_function('ABS_Y', lambda x: ep.translate(inc_analog*x, 0, 0)) #left joystick up/down
+        xbxCtrl.register_event_function('ABS_X', lambda x: ep.translate(0, inc_analog*x, 0)) #left joystick left/right
+        xbxCtrl.register_event_function('ABS_RY', lambda x: ep.translate(0, 0, inc_analog*x)) #right joystick up/down
 
         xbxCtrl.register_event_function('BTN_WEST', lambda _: ep.rotate(inc_a, 0, 0)) #X-button, rotate X ccw
         xbxCtrl.register_event_function('BTN_NORTH', lambda _: ep.rotate(0, inc_a, 0)) #Y-Button, rotate Y ccw
