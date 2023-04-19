@@ -140,7 +140,7 @@ def inc_arm_ref(i, x):
 
 
     new_qr = arm.qr[i] + inc_analog*x
-    q_deg = (new_qr*180/np.pi).astype(int)
+    q_deg = (new_qr*180/np.pi + 0.5).astype(int)
 
     
     if abs(q_deg) < 135:
