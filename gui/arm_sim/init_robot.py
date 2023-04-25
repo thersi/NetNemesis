@@ -6,11 +6,11 @@ class EiT_arm(robot.DHRobot):
     _claw_degree = 0
 
     def __init__(self, q0_rad = None, claw0_deg = None):        
-        links = [robot.RevoluteDH(d = 0.2, a = 0, alpha=np.pi/2),
-                 robot.RevoluteDH(d = 0, a = 1/2, alpha= 0, offset= np.pi/2),
-                 robot.RevoluteDH(d = 0, a = 1/2, alpha = -np.pi/2),
-                 robot.RevoluteDH(d = 0, a = 0, alpha= -np.pi/2, offset= -np.pi/2),
-                 robot.RevoluteDH(d = 1/8 , a = 0, alpha=0)]                
+        links = [robot.RevoluteDH(d = 0.0425, a = 0, alpha=np.pi/2),
+                 robot.RevoluteDH(d = 0, a = 0.173, alpha= 0, offset= np.pi/2),
+                 robot.RevoluteDH(d = 0, a = 0.130, alpha = -np.pi/2),
+                 robot.RevoluteDH(d = 0.0, a = 0, alpha= -np.pi/2, offset= -np.pi/2),
+                 robot.RevoluteDH(d = 0.032 , a = 0, alpha=0)]                
         
         if q0_rad is not None:
             self._q_rads = q0_rad
