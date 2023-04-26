@@ -5,7 +5,7 @@ from arm_sim.transform import *
 class EndPosition:
     drawn = False
 
-    def __init__(self, T0, ax, scale=1/8, labels=True, reach = 1.2):
+    def __init__(self, T0, ax, scale=1/24, labels=True, reach = 1.2):
         self.T = T0
         self.ax = ax
         self.scale = scale

@@ -29,7 +29,7 @@ class EiT_arm(robot.DHRobot):
             self._claw_angle = claw0
 
         self.control_mode = "p" #used in env.step to simulate robot, we do not use this since we simulate ourselves
-        self.length = sum([max(l.d, l.a) for l in links])
+        self.length = sum([l.d + l.a for l in links])
 
     def q_degrees(self):        
         return self.q*180/np.pi
