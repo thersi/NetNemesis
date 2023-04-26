@@ -72,6 +72,7 @@ class Driver:
             self.arm.q[4] = self.arm.qr[4] #encoder 4 does not work so we pretend it is perfect
             
             msg = "<" + ", ".join(str(int(s + 0.5)) for s in np.append(servos, claw)) + ">"
+            #print(msg)
             self.ser.write(str.encode(msg))
             
             time.sleep(self.dt)

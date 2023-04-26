@@ -29,20 +29,20 @@ short oldReal2Pos;
 short oldServo2Pos;
 
 short servo3In;
-short servo3Pos = 180;
+short servo3Pos = 45;
 short real3Pos;
 short oldReal3Pos;
 short oldServo3Pos;
 
 short servo4In;
-short servo4Pos = 180;
+short servo4Pos = 135;
 short real4Pos;
 short oldReal4Pos;
 short oldServo4Pos;
 short tempPos4;
 
 short servo5In;
-short servo5Pos = 10;
+short servo5Pos = 90;
 short real5Pos;
 short oldReal5Pos;
 short oldServo5Pos;
@@ -78,12 +78,12 @@ void setup()
 {
   Serial.begin(9600);
 
-  gripper.write(10);
-  wrist_rot.write(90);
-  wrist_ver.write(180);
-  elbow.write(180);
-  shoulder.write(5);
-  base.write(90);
+  gripper.write(10, 100);
+  wrist_rot.write(90, 100);
+  wrist_ver.write(135, 100);
+  elbow.write(135, 100);
+  shoulder.write(135, 100);
+  base.write(90, 100);
 
   // Serial.setTimeout(100);
   // Braccio.ServoMovement(20, 90, 5, 180, 180, 90, 10);
@@ -97,6 +97,7 @@ void setup()
   elbow.attach(9, 500, 2500);
   shoulder.attach(10, 500, 2500);
   base.attach(11, 500, 2500);
+
 
   updateServos();
 
@@ -254,8 +255,6 @@ void writeSerial()
   real4Pos = map(servo4In, 47, 609, 0, 270);
   real5Pos = map(servo5In, 47, 609, 0, 270);
   real6Pos = map(servo6In, 47, 609, 0, 270);
-
-  Serial.println(servo6In);
 
   // real1Pos = 10;
   // real2Pos = 20;
