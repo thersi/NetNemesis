@@ -17,7 +17,7 @@ from xbox_controller import XboxController
 
 ##PROGRAM FLAGS
 SIMULATE = True #if true then no interfacing with hardware, and motion is simulated
-USE_XBX_CTR = True
+USE_XBX_CTR = False
 
 ##SIM PARMS
 dt = 0.1 # controller time steps, how often new qd is calculated
@@ -38,7 +38,7 @@ form.simulationLayout.addWidget(figure.canvas)
 
 env = rtb.backends.PyPlot.PyPlot()
 env.launch(name="EiT environment", fig=figure)  # lauches a second plot
-env.add(arm)
+env.add(arm,  options = {"jointaxislength": 0.1})
 plt.close()  # closes second plot
 
 ## CONTROL
