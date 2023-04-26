@@ -24,7 +24,7 @@ dt = 0.1 # controller time steps, how often new qd is calculated
 update_dt = dt/4 # how often plots are updated
 
 ##INIT ARM MODEL
-arm = EiT_arm(q0=[0.21, -0.03, 0.35, -1.90, -0.04])  # initial pose
+arm = EiT_arm(q0=np.array([-45, -130, -90, 0, -45])*np.pi / 180)  # initial pose
 
 ##INIT GUI
 Form, Window = uic.loadUiType("gui/view.ui")
@@ -38,7 +38,7 @@ form.simulationLayout.addWidget(figure.canvas)
 
 env = rtb.backends.PyPlot.PyPlot()
 env.launch(name="EiT environment", fig=figure)  # lauches a second plot
-env.add(arm,  options = {"jointaxislength": 0.1})
+env.add(arm, options={'jointaxislength':0.1})
 plt.close()  # closes second plot
 
 ## CONTROL
@@ -105,6 +105,8 @@ def initialize_view():
     form.q5_slider.setMinimum(-135)
     form.q5_slider.setMaximum(135)
     form.q5_slider.valueChanged.connect(slider_change)
+    
+    arm.qr = np.array([-45, -130, -90, 0, -45])*np.pi / 180 #set reference to current position
 
     set_sliders()
     # Add modes to mode_select
@@ -149,12 +151,12 @@ def inc_arm_ref(i, x):
         labels[i].setText(str(q_deg))
 
 def register_xbx_funcs(mode):
-    for code in ['ABS_X', 'ABS_Y', 'ABS_RX', 'ABS_RY', 'BTN_TR', 'BTN_TL', 'BTN_NORTH', 'BTN_SOUTH', 'BTN_WEST', 'BTN_EAST']:
+    for code in ['ABS_X', 'ABS_Y', 'ABS_RX', 'ABS_RY', 'BTN_TR', 'BTN_TL', 'BTN_NORTH', 'BTN_SOUTH', 'BTN_WEST', 'BTN_EAST', 'BTN_START']:
         xbxCtrl.unregister_event_function(code)
 
     if mode == 0:
-        xbxCtrl.register_event_function('BTN_TL', lambda x: inc_arm_ref(0, 3*x)) #bumper behind, 3 to give greater effect
-        xbxCtrl.register_event_function('BTN_TR', lambda x: inc_arm_ref(0, -3*x)) #bumper behind
+        xbxCtrl.register_event_function('BTN_TL', lambda x: inc_arm_ref(0, 5*x)) #bumper behind, 3 to give greater effect
+        xbxCtrl.register_event_function('BTN_TR', lambda x: inc_arm_ref(0, -5*x)) #bumper behind
         xbxCtrl.register_event_function('ABS_Y', lambda x: inc_arm_ref(1, x)) #left joystick up/down
         xbxCtrl.register_event_function('ABS_X', lambda x: inc_arm_ref(2, x)) #left joystick left/right
         xbxCtrl.register_event_function('ABS_RY', lambda x: inc_arm_ref(3, x)) #right joystick up/down
@@ -172,6 +174,7 @@ def register_xbx_funcs(mode):
         xbxCtrl.register_event_function('BTN_SOUTH', lambda _: ep.rotate(-inc_a, 0, 0)) #A-button, rotate X cw
         xbxCtrl.register_event_function('BTN_EAST', lambda _: ep.rotate(0, -inc_a, 0)) #B-Button, rotate Y cw
         xbxCtrl.register_event_function('BTN_TL', lambda _: ep.rotate(0, 0, -inc_a))  #left bumper, rotate Z cw
+        xbxCtrl.register_event_function('BTN_START', lambda v: form.mode_select.setCurrentIndex((form.mode_select.currentIndex()+1)%3) if v == 1 else None) #start button, set goal to current position
     else:
         raise ValueError(f"Invalid mode encountered in register_xbx_funcs. MODE: {mode}")
         
@@ -199,6 +202,7 @@ form.follow.stateChanged.connect(lambda: form.set_goal.setEnabled(not form.follo
 form.set_goal.setEnabled(False)
 form.follow.setChecked(True) #have follow mode enabled as default
 
+form.tabWidget.setCurrentIndex(0) #set to tab 0 as default
 
 def rotateViewElev(x):
     env.ax.elev += 5*x
@@ -213,6 +217,7 @@ if USE_XBX_CTR:
     register_xbx_funcs(form.tabWidget.currentIndex())
 
 
+
 def q_change():  # only for simulation
     while True:
         if ctr.enabled:
@@ -222,6 +227,7 @@ def q_change():  # only for simulation
         time.sleep(update_dt)
 
 if SIMULATE:
+
     t = threading.Thread(target=q_change, daemon=True)
     t.start()
 
