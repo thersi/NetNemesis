@@ -7,7 +7,7 @@ from tqdm import tqdm
 def main():
     arm = EiT_arm()
 
-    angle_array = np.linspace(0, 270, 15) * np.pi / 180
+    angle_array = np.linspace(-135, 135, 18) * np.pi / 180
 
     angles = itertools.product(angle_array, repeat=5)
     num_poses = len(angle_array) ** 5
@@ -29,7 +29,7 @@ def main():
     
     # Set vmin and vmax to increase contrast of areas with no measurements
     vmin = np.percentile(H, 10)
-    vmax = np.percentile(H, 90)
+    vmax = np.percentile(H, 95)
     
     # Create heatmap
     fig = plt.figure()
