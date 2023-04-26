@@ -24,7 +24,7 @@ dt = 0.1 # controller time steps, how often new qd is calculated
 update_dt = dt/4 # how often plots are updated
 
 ##INIT ARM MODEL
-arm = EiT_arm(q0=np.array([-45, -130, -90, 0, -45])*np.pi / 180)  # initial pose
+arm = EiT_arm(q0=np.array([0, 45, -90, 0, -45])*np.pi / 180)  # initial pose
 
 ##INIT GUI
 Form, Window = uic.loadUiType("gui/view.ui")
@@ -40,6 +40,9 @@ env = rtb.backends.PyPlot.PyPlot()
 env.launch(name="EiT environment", fig=figure)  # lauches a second plot
 env.add(arm, options={'jointaxislength':0.1})
 plt.close()  # closes second plot
+env.ax.set_xlim(-0.4, 0.4)
+env.ax.set_ylim(-0.4, 0.4)
+env.ax.set_zlim(0, 0.8)
 
 ## CONTROL
 ep = EndPosition(arm.fkine(arm.q).A, env.ax, reach=arm.length) #the end position axes in the plot
