@@ -4,7 +4,7 @@ import roboticstoolbox.robot as robot
 class EiT_arm(robot.DHRobot):
     claw_angle = 0
 
-    def __init__(self, q0_rad = None, claw0_deg = None):        
+    def __init__(self, q0 = None, claw0 = None):        
         links = [robot.RevoluteDH(d = 0.0425, a = 0, alpha=np.pi/2),
                  robot.RevoluteDH(d = 0, a = 0.173, alpha= 0, offset= np.pi/2),
                  robot.RevoluteDH(d = 0, a = 0.130, alpha = -np.pi/2),
