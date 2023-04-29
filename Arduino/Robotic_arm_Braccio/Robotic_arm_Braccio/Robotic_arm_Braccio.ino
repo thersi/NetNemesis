@@ -2,19 +2,12 @@
 // Program for the control of a robotic arm. The arm is to be controlled from a interface
 // through a computer where instructions to the arm is sent via Serial.
 
-// The format of the message will be as following:
+// The format of the message will be as following (encoded):
 //    b'<x,y,z,a,b,c>'
 
 #include <VarSpeedServo.h>
 
 String line;
-
-// String servo1 = "";
-// String servo2 = "";
-// String servo3 = "";
-// String servo4 = "";
-// String servo5 = "";
-// String servo6 = "";
 
 short servo1In;
 short servo1Pos = 90;
@@ -85,12 +78,9 @@ void setup()
   shoulder.write(135, 100);
   base.write(90, 100);
 
-  // Serial.setTimeout(100);
-  // Braccio.ServoMovement(20, 90, 5, 180, 180, 90, 10);
-
   pinMode(12, OUTPUT); // you need to set HIGH the pin 12
   digitalWrite(12, HIGH);
-  // Braccio.begin(SOFT_START_DISABLED);
+
   gripper.attach(3, 500, 2500);
   wrist_rot.attach(5, 500, 2500);
   wrist_ver.attach(6, 500, 2500);
@@ -125,6 +115,7 @@ void loop()
     timeOld = timeNow;
   }
 }
+
 void parseData()
 { // split the data into its parts
 
@@ -147,13 +138,6 @@ void parseData()
 
   strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
   servo6Pos = atoi(strtokIndx);   // convert this part to an integer
-
-  // Serial.println(servo1Pos);
-  // Serial.println(servo2Pos);
-  // Serial.println(servo3Pos);
-  // Serial.println(servo4Pos);
-  // Serial.println(servo5Pos);
-  // Serial.println(servo6Pos);
 }
 
 void readSerial()
@@ -193,7 +177,6 @@ void readSerial()
     }
   }
 }
-// digitalWrite(LED_BUILTIN, LOW);
 
 void updateServos()
 {
@@ -233,11 +216,6 @@ void updateServos()
     gripper.write(servoValue, 30);
     oldServo6Pos = servo6Pos;
   }
-
-  // Braccio.ServoMovement(10, servo1Pos, servo2Pos, servo3Pos, servo4Pos, servo5Pos, servo6Pos);
-  // myservo.write(servo6Pos);
-
-  // delay(100);
 }
 
 void writeSerial()
@@ -256,13 +234,9 @@ void writeSerial()
   real5Pos = map(servo5In, 47, 609, 0, 270);
   real6Pos = map(servo6In, 47, 609, 0, 270);
 
-  // real1Pos = 10;
-  // real2Pos = 20;
-  // real3Pos = 30;
-  ////real4Pos = 40;
-  real5Pos = 0; // Not in used because of I2C using A4 and A5
-  real6Pos = 0; // Not in used because of I2C using A4 and A5
-  //
+  real5Pos = 0; // Not in use because of I2C using A4 and A5
+  real6Pos = 0; // Not in use because of I2C using A4 and A5
+  
   if (Serial.availableForWrite() > 0)
   {
     if (real1Pos != oldReal1Pos || real2Pos != oldReal2Pos || real3Pos != oldReal3Pos ||

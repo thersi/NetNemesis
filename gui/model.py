@@ -16,8 +16,8 @@ from Driver import Driver
 from xbox_controller import XboxController
 
 ##PROGRAM FLAGS
-SIMULATE = True #if true then no interfacing with hardware, and motion is simulated
-USE_XBX_CTR = False
+SIMULATE = False #if true then no interfacing with hardware, and motion is simulated
+USE_XBX_CTR = True
 
 ##SIM PARMS
 dt = 0.1 # controller time steps, how often new qd is calculated
