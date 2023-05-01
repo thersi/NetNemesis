@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Hov"
+  given-names: "Henrik"
+- family-names: "Hjermstad"
+  given-names: "Erling"
+- family-names: "Enkerud Lien"
+  given-names: "Tobias"
+- family-names: "Hammarstrøm"
+  given-names: "Henrik"
+- family-names: "Auflem"
+  given-names: "Aleksander"
+- family-names: "Sigmundstad"
+  given-names: "Therese"
+title: "NetNemesis"
+version: 1.0.0
+date-released: 2023-05-01
+url: "https://github.com/thersi/NetNemesis"
